@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="search_hint">Enter the name of the city…</string>
+    <string name="add_content_description">Add</string>
+    <string name="search_locations_title">Search Locations</string>
+    <string name="search_error">Oops, there was an error</string>
+    <string name="search_error_refresh">Refresh</string>
+    <string name="search_empty">We didn\'t find anything</string>
+</resources>
