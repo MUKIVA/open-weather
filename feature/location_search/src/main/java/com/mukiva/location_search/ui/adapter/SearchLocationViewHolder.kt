@@ -2,20 +2,20 @@ package com.mukiva.location_search.ui.adapter
 
 import androidx.recyclerview.widget.RecyclerView
 import com.mukiva.location_search.databinding.ItemLocationBinding
-import com.mukiva.location_search.domain.LocationPoint
+import com.mukiva.location_search.domain.model.Location
 
 class SearchLocationViewHolder(
     private val binding: ItemLocationBinding,
-    private val onAddCallback: (id: String) -> Unit
+    private val onAddCallback: (location: Location) -> Unit
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(item: LocationPoint) = with(binding) {
+    fun bind(item: Location) = with(binding) {
         updateCityName(item.cityName)
         updateRegionName(item.regionName)
         updateCountryName(item.countryName)
 
         binding.root.setOnClickListener {
-            onAddCallback(item.cityName)
+            onAddCallback(item)
         }
     }
 

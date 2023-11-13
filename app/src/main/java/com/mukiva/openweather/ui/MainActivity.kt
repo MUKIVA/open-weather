@@ -1,15 +1,15 @@
 package com.mukiva.openweather.ui
 
+import android.annotation.SuppressLint
 import android.os.Bundle
-import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
-import com.mukiva.location_search.ui.LocationSearchFragment
+import com.mukiva.current_weather.ui.CurrentWeatherFragment
 import com.mukiva.openweather.R
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
+    @SuppressLint("CommitTransaction")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         if (savedInstanceState == null) {
             supportFragmentManager
                 .beginTransaction()
-                .replace(R.id.mainContainer, LocationSearchFragment.newInstance())
+                .replace(R.id.mainContainer, CurrentWeatherFragment.newInstance())
                 .commit()
         }
 

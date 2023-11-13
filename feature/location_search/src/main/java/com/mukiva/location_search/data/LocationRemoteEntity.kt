@@ -2,7 +2,7 @@ package com.mukiva.location_search.data
 
 import com.google.gson.annotations.SerializedName
 
-data class LocationJson(
+data class LocationRemoteEntity(
     @SerializedName("id")
     var id: Int? = null,
     @SerializedName("name")

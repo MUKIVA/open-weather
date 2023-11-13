@@ -20,7 +20,6 @@ interface AppComponent :
     LocationSearchDependencies {
 
     val apiKey: String
-    val application: String
 
     @Component.Builder
     interface Builder {

@@ -2,16 +2,13 @@ package com.mukiva.location_search.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintSet.Layout
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
 import com.mukiva.location_search.databinding.ItemLocationBinding
-import com.mukiva.location_search.domain.LocationPoint
+import com.mukiva.location_search.domain.model.Location
 
 class SearchLocationAdapter(
-    private val onAddCallback: (id: String) -> Unit
-) : ListAdapter<LocationPoint, SearchLocationViewHolder>(
+    private val onAddCallback: (location: Location) -> Unit
+) : ListAdapter<Location, SearchLocationViewHolder>(
     LocationItemDiffUtil()
 ) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchLocationViewHolder {

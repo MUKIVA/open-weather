@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorSurface">
+    android:background="?attr/colorSurface"
+    android:fitsSystemWindows="true">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list"
@@ -24,28 +25,36 @@
         app:liftOnScroll="true">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
+            android:id="@+id/collapsingToolbar"
+            style="?attr/collapsingToolbarLayoutLargeStyle"
             android:layout_width="match_parent"
             android:layout_height="200dp"
+            app:contentScrim="@android:color/transparent"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
-            app:statusBarScrim="@android:color/black"
-            app:expandedTitleMarginStart="32dp">
+            app:expandedTitleMarginStart="16dp"
+            app:expandedTitleTextColor="?attr/colorOnSurface"
+            app:collapsedTitleGravity="center_horizontal"
+            app:collapsedTitleTextColor="?attr/colorOnSurface">
 
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar"
-                app:titleMarginTop="48dp"
+                app:titleTextColor="@android:color/black"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:title="@string/search_locations_title"/>
+                android:background="@android:color/transparent"
+                app:title="@string/search_locations_title"
+                android:elevation="0dp" />
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
         <com.google.android.material.card.MaterialCardView
             style="@style/Widget.Material3.CardView.Filled"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="50dp"
             app:cardCornerRadius="100dp"
             android:layout_marginHorizontal="16dp"
-            android:layout_marginVertical="8dp">
+            android:layout_marginVertical="8dp"
+            android:elevation="100dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/search"
@@ -56,18 +65,32 @@
                 android:maxLines="1"
                 android:inputType="text"
                 android:imeOptions="actionSearch"
-                android:backgroundTint="@android:color/transparent"/>
+                android:backgroundTint="@android:color/transparent"
+                android:textColor="?attr/colorOnPrimaryContainer"/>
+
+            <ImageView
+                android:id="@+id/clearButton"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_cancel"
+                android:layout_gravity="center|end"
+                android:layout_marginEnd="16dp"
+                app:tint="?attr/colorOnPrimaryContainer"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/search_clear_field_description"
+                />
 
         </com.google.android.material.card.MaterialCardView>
 
     </com.google.android.material.appbar.AppBarLayout>
 
-
     <include
-        layout="@layout/lay_list_states"
         android:id="@+id/emptyView"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        layout="@layout/lay_list_states"
         android:layout_height="match_parent"
-        android:layout_width="match_parent"/>
+        android:layout_width="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
