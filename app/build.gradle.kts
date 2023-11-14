@@ -54,6 +54,7 @@ dependencies {
 
     implementation(project(":core:data"))
     implementation(project(":core:di"))
+    implementation(project(":core:navigation"))
     implementation(project(":feature:current_weather"))
     implementation(project(":feature:location_search"))
 

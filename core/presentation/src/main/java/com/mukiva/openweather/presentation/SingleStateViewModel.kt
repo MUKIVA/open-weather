@@ -42,4 +42,8 @@ open class SingleStateViewModel<TState, TEvent>(
         }
     }
 
+    open fun onResult(result: Any) {
+
+    }
+
 }

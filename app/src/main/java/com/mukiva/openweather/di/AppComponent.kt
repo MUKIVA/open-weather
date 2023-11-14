@@ -4,22 +4,29 @@ import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import androidx.lifecycle.ViewModelProvider
+import com.mukiva.core.navigation.INavigator
 import com.mukiva.current_weather.di.CurrentWeatherDependencies
 import com.mukiva.location_search.di.LocationSearchDependencies
 import com.mukiva.openweather.core.di.IApiKeyProvider
 import com.mukiva.openweather.core.di.IConnectionProvider
+import com.mukiva.openweather.navigator.MainNavigator
+import com.mukiva.openweather.ui.MainActivity
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
 import javax.inject.Scope
+import javax.inject.Singleton
 
-@[AppScope Component(modules = [AppModule::class])]
+@[AppScope Singleton Component(modules = [AppModule::class])]
 interface AppComponent :
     CurrentWeatherDependencies,
     LocationSearchDependencies {
 
     val apiKey: String
+
+    fun inject(activity: MainActivity)
 
     @Component.Builder
     interface Builder {
@@ -37,6 +44,12 @@ annotation class AppScope
 
 @Module
 class AppModule {
+
+//    private val mNavigator: INavigator by lazy {
+//        ViewModelProvider.AndroidViewModelFactory(application)
+//            .create(MainNavigator::class.java)
+//    }
+
     @Provides
     fun provideApiKeyProvider(apikey: String): IApiKeyProvider {
         return ApiKeyProvider(apikey)
@@ -45,6 +58,11 @@ class AppModule {
     @Provides
     fun provideConnectionProvider(application: Application): IConnectionProvider {
         return ConnectionProvider(application)
+    }
+    @[Singleton Provides]
+    fun provideNavigator(application: Application): INavigator {
+        return ViewModelProvider.AndroidViewModelFactory(application)
+            .create(MainNavigator::class.java)
     }
 }
 

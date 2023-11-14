@@ -9,8 +9,8 @@ import androidx.lifecycle.lifecycleScope
 import com.mukiva.current_weather.R
 import com.mukiva.current_weather.databinding.FragmentCurrentWeatherBinding
 import com.mukiva.current_weather.di.CurrentWeatherComponent
-import com.mukiva.current_weather.presentation.CurrentWeatherState
 import com.mukiva.current_weather.presentation.CurrentWeatherViewModel
+import com.mukiva.openweather.ui.viewBindings
 import kotlinx.coroutines.launch
 
 class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather) {
@@ -19,36 +19,41 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather) {
         CurrentWeatherComponent.get().factory
     }
 
-    private lateinit var mBinding: FragmentCurrentWeatherBinding
+    private val mBinding by viewBindings(FragmentCurrentWeatherBinding::bind)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initBinds(view)
-        initButtons()
+        initTitle()
         observeViewModel()
     }
 
-    private fun initButtons() {
-        mBinding.button.setOnClickListener {
-            mViewModel.fetchWeather()
+    private fun initTitle() = with(mBinding) {
+        toolbar.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.select_locations -> {
+                    mViewModel.onSelectLocations()
+                    return@setOnMenuItemClickListener false
+                }
+                R.id.settings -> {
+                    mViewModel.onSelectLocations()
+                    return@setOnMenuItemClickListener true
+                }
+                else -> false
+            }
         }
-    }
-
-    private fun initBinds(view: View) {
-        mBinding = FragmentCurrentWeatherBinding.bind(view)
+        toolbar.title = "London, 18℃"
     }
 
     private fun observeViewModel() {
         lifecycleScope.launch {
             mViewModel.state
                 .flowWithLifecycle(lifecycle)
-                .collect { updateFragmentState(it) }
+                .collect { updateFragmentState() }
         }
     }
 
-    private fun updateFragmentState(state: CurrentWeatherState) {
-        mBinding.textView.text = state.title
+    private fun updateFragmentState() {
     }
 
     companion object {

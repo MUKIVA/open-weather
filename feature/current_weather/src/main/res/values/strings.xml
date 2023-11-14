@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="select_locations">Select Locations</string>
+    <string name="settings">Settings</string>
+    <string name="mock_current_temp">7℃</string>
+    <string name="mock_city_name">London</string>
+</resources>
