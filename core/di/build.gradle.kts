@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.mukiva.openweather.core.di"
+    namespace = "com.mukiva.core.di"
     compileSdk = 34
 
     defaultConfig {
@@ -41,7 +41,7 @@ dependencies {
     kapt("com.google.dagger:dagger-android-processor:2.48")
     kapt("com.google.dagger:dagger-compiler:2.48")
 
-    implementation("androidx.core:core-ktx:1.9.0")
+    implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.10.0")
     testImplementation("junit:junit:4.13.2")

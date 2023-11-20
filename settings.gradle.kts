@@ -7,13 +7,21 @@ pluginManagement {
 }
 
 rootProject.name = "Open Weather"
+
 include(":app")
 include(":core:data")
 include(":core:domain")
-include(":feature:current_weather")
 include(":core:di")
 include(":core:presentation")
 include(":core:usecase")
-include(":feature:location_search")
 include(":core:ui")
 include(":core:navigation")
+
+include(":feature:settings:impl")
+include(":feature:settings:api")
+
+include(":feature:dashboard:api")
+include(":feature:dashboard:impl")
+
+include(":feature:location_manager:api")
+include(":feature:location_manager:impl")

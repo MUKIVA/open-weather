@@ -1,8 +1,8 @@
 package com.mukiva.openweather
 
 import android.app.Application
-import com.mukiva.current_weather.di.CurrentWeatherDepsStore
-import com.mukiva.location_search.di.LocationSearchDepsStore
+import com.di.DashboardDepsStore
+import com.mukiva.feature.location_manager_impl.di.LocationManagerDepsStore
 import com.mukiva.openweather.di.AppComponent
 import com.mukiva.openweather.di.DaggerAppComponent
 
@@ -17,7 +17,7 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        CurrentWeatherDepsStore.deps = appComponent
-        LocationSearchDepsStore.deps = appComponent
+        DashboardDepsStore.deps = appComponent
+        LocationManagerDepsStore.deps = appComponent
     }
 }

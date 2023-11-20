@@ -8,6 +8,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.viewbinding.ViewBinding
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
@@ -58,9 +59,13 @@ class FragmentViewBindingDelegate<T : ViewBinding>(
 fun <T : ViewBinding> Fragment.viewBindings(viewBindingFactory: (View) -> T) =
     FragmentViewBindingDelegate(this, viewBindingFactory)
 
+fun <T : ViewBinding> BottomSheetDialogFragment.viewBindings(viewBindingFactory: (View) -> T) =
+    FragmentViewBindingDelegate(this, viewBindingFactory)
+
 @MainThread
 inline fun <reified T> uiLazy(
     noinline objProvider: () -> T
 ): Lazy<T> {
     return lazy(LazyThreadSafetyMode.NONE) { objProvider() }
 }
+

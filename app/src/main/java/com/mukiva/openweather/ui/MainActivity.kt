@@ -8,10 +8,10 @@ import androidx.core.view.WindowCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.mukiva.core.navigation.INavigator
-import com.mukiva.current_weather.navigation.CurrentWeatherScreen
 import com.mukiva.openweather.App
 import com.mukiva.openweather.R
 import com.mukiva.openweather.navigator.MainNavigator
+import com.navigation.DashboardScreen
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         if (savedInstanceState == null) {
             (navigator as MainNavigator).launchFragment(
                 this,
-                CurrentWeatherScreen(),
+                DashboardScreen(),
                 addToBackStack = false
             )
         }

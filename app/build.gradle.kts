@@ -55,8 +55,13 @@ dependencies {
     implementation(project(":core:data"))
     implementation(project(":core:di"))
     implementation(project(":core:navigation"))
-    implementation(project(":feature:current_weather"))
-    implementation(project(":feature:location_search"))
+
+    implementation(project(":feature:dashboard:api"))
+    implementation(project(":feature:dashboard:impl"))
+
+    implementation(project(":feature:location_manager:api"))
+    implementation(project(":feature:location_manager:impl"))
+    
 
     //dagger
     implementation("com.google.dagger:dagger-android:2.48")

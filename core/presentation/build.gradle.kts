@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.mukiva.openweather.presentation"
+    namespace = "com.mukiva.core.presentation"
     compileSdk = 33
 
     defaultConfig {

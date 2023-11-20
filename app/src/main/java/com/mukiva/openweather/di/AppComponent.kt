@@ -5,9 +5,9 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import androidx.lifecycle.ViewModelProvider
+import com.di.DashboardDependencies
 import com.mukiva.core.navigation.INavigator
-import com.mukiva.current_weather.di.CurrentWeatherDependencies
-import com.mukiva.location_search.di.LocationSearchDependencies
+import com.mukiva.feature.location_manager_impl.di.LocationManagerDependencies
 import com.mukiva.openweather.core.di.IApiKeyProvider
 import com.mukiva.openweather.core.di.IConnectionProvider
 import com.mukiva.openweather.navigator.MainNavigator
@@ -21,8 +21,8 @@ import javax.inject.Singleton
 
 @[AppScope Singleton Component(modules = [AppModule::class])]
 interface AppComponent :
-    CurrentWeatherDependencies,
-    LocationSearchDependencies {
+    DashboardDependencies,
+    LocationManagerDependencies {
 
     val apiKey: String
 

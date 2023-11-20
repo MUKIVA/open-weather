@@ -1,6 +1,7 @@
 package com.mukiva.openweather.ui
 
-import com.mukiva.openweather.ui.databinding.LayListStatesBinding
+import com.mukiva.core.ui.R
+import com.mukiva.core.ui.databinding.LayListStatesBinding
 
 fun LayListStatesBinding.emptyView(msg: String) {
     loadIndicator.gone()
