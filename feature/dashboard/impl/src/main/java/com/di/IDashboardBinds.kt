@@ -8,7 +8,7 @@ import dagger.Module
 import dagger.multibindings.IntoMap
 
 @Module
-interface DashboardBinds {
+interface IDashboardBinds {
 
     @Binds
     @[IntoMap ViewModelKey(DashboardViewModel::class)]

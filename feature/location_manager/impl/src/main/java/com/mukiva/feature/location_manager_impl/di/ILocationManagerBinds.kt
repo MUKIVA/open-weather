@@ -8,7 +8,7 @@ import dagger.Module
 import dagger.multibindings.IntoMap
 
 @Module
-interface LocationManagerBinds {
+interface ILocationManagerBinds {
 
     @Binds
     @[IntoMap ViewModelKey(LocationManagerViewModel::class)]

@@ -8,7 +8,7 @@ import dagger.Module
 import dagger.multibindings.IntoMap
 
 @Module
-internal interface SettingsBinds {
+interface ISettingsBinds {
     @Binds
     @[IntoMap ViewModelKey(SettingsViewModel::class)]
     fun bindSettingsViewModel(viewModel: SettingsViewModel): ViewModel

@@ -6,7 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import com.di.DashboardComponent
+import com.di.IDashboardComponent
 import com.mukiva.feature.dashboard_impl.R
 import com.mukiva.feature.dashboard_impl.databinding.FragmentDashboardBinding
 import com.mukiva.openweather.ui.viewBindings
@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
 
     private val mViewModel: DashboardViewModel by viewModels {
-        DashboardComponent.get().factory
+        IDashboardComponent.get().factory
     }
 
     private val mBinding by viewBindings(FragmentDashboardBinding::bind)
@@ -36,7 +36,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
                     return@setOnMenuItemClickListener false
                 }
                 R.id.settings -> {
-                    mViewModel.onSelectLocations()
+                    mViewModel.onSettings()
                     return@setOnMenuItemClickListener true
                 }
                 else -> false

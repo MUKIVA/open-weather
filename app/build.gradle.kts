@@ -61,7 +61,9 @@ dependencies {
 
     implementation(project(":feature:location_manager:api"))
     implementation(project(":feature:location_manager:impl"))
-    
+
+    implementation(project(":feature:settings:api"))
+    implementation(project(":feature:settings:impl"))
 
     //dagger
     implementation("com.google.dagger:dagger-android:2.48")

@@ -5,7 +5,7 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-internal class SettingsModule {
+class SettingsModule {
 
     @Provides
     fun provideSettingsState() = SettingsState.default()

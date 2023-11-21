@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.View
 import android.view.animation.DecelerateInterpolator
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -15,7 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.mukiva.feature.location_manager_impl.R
 import com.mukiva.feature.location_manager_impl.databinding.FragmentLocationManagerBinding
-import com.mukiva.feature.location_manager_impl.di.LocationManagerComponent
+import com.mukiva.feature.location_manager_impl.di.ILocationManagerComponent
 import com.mukiva.feature.location_manager_impl.domain.model.Location
 import com.mukiva.feature.location_manager_impl.presentation.LocationManagerEvent
 import com.mukiva.feature.location_manager_impl.presentation.LocationManagerState
@@ -35,7 +36,7 @@ import kotlinx.coroutines.launch
 class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
 
     private val mViewModel: LocationManagerViewModel by viewModels {
-        LocationManagerComponent.get().factory
+        ILocationManagerComponent.get().factory
     }
     private val mBinding by viewBindings(FragmentLocationManagerBinding::bind)
     private val mAdapter by uiLazy { LocationManagerAdapter(
@@ -55,11 +56,17 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        initActionBar()
         initEmptyView()
         initList()
         initSearchBar()
         initCollapsingToolbarLayout()
         subscribeOnViewModel()
+    }
+
+    private fun initActionBar() = with(mBinding) {
+        (requireActivity() as AppCompatActivity)
+            .setSupportActionBar(toolbar)
     }
 
     private fun initEmptyView() = with(mBinding) {
@@ -167,6 +174,10 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
 
     private fun updateList(receivedLocations: List<Location>) {
         mAdapter.submitList(receivedLocations)
+    }
+
+    companion object {
+        fun newInstance() = LocationManagerFragment()
     }
 
 }

@@ -8,12 +8,12 @@ import com.mukiva.feature.settings_impl.databinding.ItemSettingsVariantBinding
 import com.mukiva.impl.domain.SettingItem
 import com.mukiva.impl.domain.SettingVariant
 
-internal sealed interface SettingsViewHolder {
+sealed interface ISettingsViewHolder {
     fun bind(item: SettingItem)
 
     class TitleViewHolder(
         private val binding: ItemSettingsGroupTitleBinding
-    ) : RecyclerView.ViewHolder(binding.root), SettingsViewHolder {
+    ) : RecyclerView.ViewHolder(binding.root), ISettingsViewHolder {
         override fun bind(item: SettingItem) = with(binding) {
             if (item !is SettingItem.Title) return
             title.text = item.name
@@ -22,7 +22,7 @@ internal sealed interface SettingsViewHolder {
 
     class ToggleViewHolder(
         private val binding: ItemSettingsToggleBinding
-    ) : RecyclerView.ViewHolder(binding.root), SettingsViewHolder {
+    ) : RecyclerView.ViewHolder(binding.root), ISettingsViewHolder {
         override fun bind(item: SettingItem) = with(binding) {
             if (item !is SettingItem.Toggle) return
             settingName.text = item.name
@@ -37,7 +37,7 @@ internal sealed interface SettingsViewHolder {
 
     class VariantViewHolder(
         private val binding: ItemSettingsVariantBinding
-    ) : RecyclerView.ViewHolder(binding.root), SettingsViewHolder {
+    ) : RecyclerView.ViewHolder(binding.root), ISettingsViewHolder {
         override fun bind(item: SettingItem) = with(binding) {
             if (item !is SettingItem.Variant) return
             settingName.text = item.name

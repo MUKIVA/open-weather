@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.ListAdapter
 import com.mukiva.feature.settings_impl.databinding.ItemSelectableItemBinding
 import com.mukiva.impl.domain.SettingVariant
 
-internal class VariantListAdapter(
+class VariantListAdapter(
     private val onVariantSelect: (SettingVariant) -> Unit
 ) : ListAdapter<SettingVariant, VariantViewHolder>(VariantDiffUtil) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VariantViewHolder {

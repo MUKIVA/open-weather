@@ -1,6 +1,6 @@
 package com.mukiva.impl.domain
 
-internal abstract class SettingItem(
+abstract class SettingItem(
     val id: Int
 ) {
 

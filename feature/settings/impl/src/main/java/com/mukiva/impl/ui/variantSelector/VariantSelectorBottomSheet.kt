@@ -12,7 +12,7 @@ import com.mukiva.openweather.ui.getComaptSerializable
 import com.mukiva.openweather.ui.uiLazy
 import com.mukiva.openweather.ui.viewBindings
 
-internal class VariantSelectorBottomSheet : BottomSheetDialogFragment(R.layout.bottomsheet_variant_selector) {
+class VariantSelectorBottomSheet : BottomSheetDialogFragment(R.layout.bottomsheet_variant_selector) {
 
     private var mCallbacks: VariantSelectorCallbacks? = null
     private val mBinding by viewBindings(BottomsheetVariantSelectorBinding::bind)

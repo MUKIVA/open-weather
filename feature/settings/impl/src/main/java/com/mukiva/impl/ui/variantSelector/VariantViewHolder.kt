@@ -4,7 +4,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mukiva.feature.settings_impl.databinding.ItemSelectableItemBinding
 import com.mukiva.impl.domain.SettingVariant
 
-internal class VariantViewHolder(
+class VariantViewHolder(
     private val binding: ItemSelectableItemBinding,
     private val onClick: (SettingVariant) -> Unit
 ) : RecyclerView.ViewHolder(binding.root) {

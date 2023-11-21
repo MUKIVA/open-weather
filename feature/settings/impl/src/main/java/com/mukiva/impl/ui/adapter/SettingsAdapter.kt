@@ -9,22 +9,22 @@ import com.mukiva.feature.settings_impl.databinding.ItemSettingsToggleBinding
 import com.mukiva.feature.settings_impl.databinding.ItemSettingsVariantBinding
 import com.mukiva.impl.domain.SettingItem
 
-internal class SettingsAdapter : ListAdapter<SettingItem, ViewHolder>(SettingsDiffUtil) {
+class SettingsAdapter : ListAdapter<SettingItem, ViewHolder>(SettingsDiffUtil) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return when(viewType) {
             SettingItem.TITLE_ITEM_ID -> {
-                SettingsViewHolder.TitleViewHolder(
+                ISettingsViewHolder.TitleViewHolder(
                     binding = ItemSettingsGroupTitleBinding.inflate(inflater, parent, false)
                 )
             }
             SettingItem.VARIANT_ITEM_ID -> {
-                SettingsViewHolder.VariantViewHolder(
+                ISettingsViewHolder.VariantViewHolder(
                     binding = ItemSettingsVariantBinding.inflate(inflater, parent, false)
                 )
             }
             SettingItem.TOGGLE_ITEM_ID -> {
-                SettingsViewHolder.ToggleViewHolder(
+                ISettingsViewHolder.ToggleViewHolder(
                     binding = ItemSettingsToggleBinding.inflate(inflater, parent, false)
                 )
             }
@@ -33,7 +33,7 @@ internal class SettingsAdapter : ListAdapter<SettingItem, ViewHolder>(SettingsDi
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        if (holder !is SettingsViewHolder) return
+        if (holder !is ISettingsViewHolder) return
         holder.bind(getItem(position))
     }
 

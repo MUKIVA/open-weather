@@ -45,6 +45,9 @@ dependencies {
     implementation(project(":core:presentation"))
     implementation(project(":core:usecase"))
     implementation(project(":core:ui"))
+    implementation(project(":core:navigation"))
+
+    implementation(project(":feature:location_manager:api"))
 
     //Dagger
     implementation("com.google.dagger:dagger-android:2.48")

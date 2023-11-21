@@ -1,23 +1,36 @@
 package com.mukiva.openweather
 
 import android.app.Application
-import com.di.DashboardDepsStore
-import com.mukiva.feature.location_manager_impl.di.LocationManagerDepsStore
-import com.mukiva.openweather.di.AppComponent
-import com.mukiva.openweather.di.DaggerAppComponent
+import com.mukiva.openweather.di.AppConfig
+import com.mukiva.openweather.di.ComponentHelper
+import com.mukiva.openweather.di.DaggerIAppComponent
+import com.mukiva.openweather.di.IAppComponent
 
 class App : Application() {
 
-    val appComponent: AppComponent by lazy {
-        DaggerAppComponent.builder()
+    init {
+        mInstance = this
+    }
+
+    val appComponent: IAppComponent by lazy {
+        DaggerIAppComponent.builder()
             .application(this)
-            .apiKey(BuildConfig.KEY_WEATHER_API)
+            .config(AppConfig(
+                apiKey = BuildConfig.KEY_WEATHER_API,
+                baseUrl = BuildConfig.WEATHER_API_BASE_URL
+            ))
             .build()
     }
 
     override fun onCreate() {
         super.onCreate()
-        DashboardDepsStore.deps = appComponent
-        LocationManagerDepsStore.deps = appComponent
+        ComponentHelper.initAll()
+    }
+
+    companion object {
+
+        private var mInstance: App? = null
+        val component: IAppComponent
+            get() = mInstance!!.appComponent
     }
 }
