@@ -8,18 +8,18 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.di.DashboardComponent
 import com.mukiva.feature.dashboard_impl.R
-import com.mukiva.feature.dashboard_impl.databinding.FragmentCurrentWeatherBinding
+import com.mukiva.feature.dashboard_impl.databinding.FragmentDashboardBinding
 import com.mukiva.openweather.ui.viewBindings
 import com.presentation.DashboardViewModel
 import kotlinx.coroutines.launch
 
-class DashboardFragment : Fragment(R.layout.fragment_current_weather) {
+class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
 
     private val mViewModel: DashboardViewModel by viewModels {
         DashboardComponent.get().factory
     }
 
-    private val mBinding by viewBindings(FragmentCurrentWeatherBinding::bind)
+    private val mBinding by viewBindings(FragmentDashboardBinding::bind)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

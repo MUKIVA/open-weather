@@ -14,7 +14,7 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.mukiva.feature.location_manager_impl.R
-import com.mukiva.feature.location_manager_impl.databinding.FragmentLocationSearchBinding
+import com.mukiva.feature.location_manager_impl.databinding.FragmentLocationManagerBinding
 import com.mukiva.feature.location_manager_impl.di.LocationManagerComponent
 import com.mukiva.feature.location_manager_impl.domain.model.Location
 import com.mukiva.feature.location_manager_impl.presentation.LocationManagerEvent
@@ -32,12 +32,12 @@ import com.mukiva.openweather.ui.viewBindings
 import com.mukiva.openweather.ui.visible
 import kotlinx.coroutines.launch
 
-class LocationManagerFragment : Fragment(R.layout.fragment_location_search) {
+class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
 
     private val mViewModel: LocationManagerViewModel by viewModels {
         LocationManagerComponent.get().factory
     }
-    private val mBinding by viewBindings(FragmentLocationSearchBinding::bind)
+    private val mBinding by viewBindings(FragmentLocationManagerBinding::bind)
     private val mAdapter by uiLazy { LocationManagerAdapter(
         onAddCallback = {
             mViewModel.addLocation(it)
