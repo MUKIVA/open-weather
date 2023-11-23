@@ -9,7 +9,10 @@ import com.mukiva.feature.settings_impl.databinding.ItemSettingsToggleBinding
 import com.mukiva.feature.settings_impl.databinding.ItemSettingsVariantBinding
 import com.mukiva.impl.domain.SettingItem
 
-class SettingsAdapter : ListAdapter<SettingItem, ViewHolder>(SettingsDiffUtil) {
+class SettingsAdapter(
+    private val onSelectVariant: (SettingItem.Variant) -> Unit,
+    private val onToggleOption: (SettingItem.Toggle) -> Unit
+) : ListAdapter<SettingItem, ViewHolder>(SettingsDiffUtil) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return when(viewType) {
@@ -20,12 +23,14 @@ class SettingsAdapter : ListAdapter<SettingItem, ViewHolder>(SettingsDiffUtil) {
             }
             SettingItem.VARIANT_ITEM_ID -> {
                 ISettingsViewHolder.VariantViewHolder(
-                    binding = ItemSettingsVariantBinding.inflate(inflater, parent, false)
+                    binding = ItemSettingsVariantBinding.inflate(inflater, parent, false),
+                    onClick = onSelectVariant
                 )
             }
             SettingItem.TOGGLE_ITEM_ID -> {
                 ISettingsViewHolder.ToggleViewHolder(
-                    binding = ItemSettingsToggleBinding.inflate(inflater, parent, false)
+                    binding = ItemSettingsToggleBinding.inflate(inflater, parent, false),
+                    onClick = onToggleOption
                 )
             }
             else -> throw IllegalStateException("Сan't create a holder with $viewType type")

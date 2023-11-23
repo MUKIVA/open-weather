@@ -3,14 +3,16 @@ package com.mukiva.impl.ui.variantSelector
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
+import androidx.core.os.bundleOf
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.mukiva.feature.settings_impl.R
 import com.mukiva.feature.settings_impl.databinding.BottomsheetVariantSelectorBinding
+import com.mukiva.impl.domain.SelectVariantState
 import com.mukiva.impl.domain.SettingVariant
-import com.mukiva.impl.domain.SettingVariantList
 import com.mukiva.openweather.ui.getComaptSerializable
 import com.mukiva.openweather.ui.uiLazy
 import com.mukiva.openweather.ui.viewBindings
+
 
 class VariantSelectorBottomSheet : BottomSheetDialogFragment(R.layout.bottomsheet_variant_selector) {
 
@@ -18,21 +20,29 @@ class VariantSelectorBottomSheet : BottomSheetDialogFragment(R.layout.bottomshee
     private val mBinding by viewBindings(BottomsheetVariantSelectorBinding::bind)
     private val mAdapter by uiLazy {
         VariantListAdapter(
-            onVariantSelect = { mCallbacks?.onItemSelect(it) }
+            onVariantSelect = {
+                mCallbacks?.onItemSelect(it)
+                dismiss()
+            }
         )
     }
 
-    private val mVariantList by uiLazy {
-        requireArguments().getComaptSerializable(ARG_VARIANT_LIST, SettingVariantList::class.java)
+    private val mState by uiLazy {
+        requireArguments().getComaptSerializable(
+            ARG_SELECT_VARIANT_STATE,
+            SelectVariantState::class.java
+        )!!
     }
     interface VariantSelectorCallbacks {
-        fun onItemSelect(item: SettingVariant)
+        fun onItemSelect(variant: SettingVariant)
         fun onCancel()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+        initTitle()
         initList()
 
     }
@@ -46,18 +56,24 @@ class VariantSelectorBottomSheet : BottomSheetDialogFragment(R.layout.bottomshee
         mCallbacks = callbacks
     }
 
+    private fun initTitle() = with(mBinding) {
+        toolbar.title = mState.title
+    }
+
     private fun initList() = with(mBinding) {
         variantList.adapter = mAdapter
-        mAdapter.submitList(mVariantList?.list)
+        mAdapter.submitList(mState.list)
     }
 
     companion object {
         const val TAG = "VARIANT_SELECTOR"
 
-        private const val ARG_VARIANT_LIST = "ARG_VARIANT_LIST"
+        private const val ARG_SELECT_VARIANT_STATE = "ARG_SELECT_VARIANT_STATE"
 
-        fun newInstance(variants: SettingVariantList) = VariantSelectorBottomSheet().apply {
-            arguments?.putSerializable(ARG_VARIANT_LIST, variants)
+        fun newInstance(state: SelectVariantState) = VariantSelectorBottomSheet().apply {
+            arguments = bundleOf(
+                ARG_SELECT_VARIANT_STATE to state
+            )
         }
 
     }

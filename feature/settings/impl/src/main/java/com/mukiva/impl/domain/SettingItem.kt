@@ -1,25 +1,25 @@
 package com.mukiva.impl.domain
 
+import com.mukiva.impl.domain.config.Group
+
 abstract class SettingItem(
-    val id: Int
+    val id: Int,
+    val group: Group
 ) {
 
     data class Title(
-        val name: String
-    ) : SettingItem(TITLE_ITEM_ID)
+        val groupType: Group
+    ) : SettingItem(TITLE_ITEM_ID, groupType)
 
     data class Toggle(
-        val name: String,
-        val description: String,
+        val groupType: Group,
         val isEnabled: Boolean
-    ) : SettingItem(TOGGLE_ITEM_ID)
-
+    ) : SettingItem(TOGGLE_ITEM_ID, groupType)
 
     data class Variant(
-        val name: String,
-        val description: String,
+        val groupType: Group,
         val variants: List<SettingVariant>
-    ) : SettingItem(VARIANT_ITEM_ID)
+    ) : SettingItem(VARIANT_ITEM_ID, groupType)
 
     companion object {
         const val TITLE_ITEM_ID = 0

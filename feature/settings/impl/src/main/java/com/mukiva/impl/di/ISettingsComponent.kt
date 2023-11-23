@@ -5,7 +5,7 @@ import dagger.Component
 
 @Component(
     modules = [ISettingsBinds::class, SettingsModule::class],
-    dependencies = []
+    dependencies = [ISettingsDependencies::class]
 )
 interface ISettingsComponent {
 
@@ -15,8 +15,9 @@ interface ISettingsComponent {
 
         private var mInstance: ISettingsComponent? = null
 
-        fun init() {
+        fun init(deps: ISettingsDependencies) {
             mInstance = DaggerISettingsComponent.builder()
+                .iSettingsDependencies(deps)
                 .build()
         }
 

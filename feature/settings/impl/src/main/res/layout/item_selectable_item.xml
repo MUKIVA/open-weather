@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:paddingVertical="4dp">
 
-    <com.google.android.material.radiobutton.MaterialRadioButton
+    <TextView
         android:id="@+id/variant"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

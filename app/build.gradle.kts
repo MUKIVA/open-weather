@@ -71,6 +71,7 @@ dependencies {
     kapt("com.google.dagger:dagger-android-processor:2.48")
     kapt("com.google.dagger:dagger-compiler:2.48")
 
+
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.compose.material3:material3:1.1.2")
     implementation("androidx.appcompat:appcompat:1.6.1")

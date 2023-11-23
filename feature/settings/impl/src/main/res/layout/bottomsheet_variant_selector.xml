@@ -4,22 +4,35 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@android:color/transparent"
     android:orientation="vertical">
+
+    <View
+        android:layout_width="30dp"
+        android:layout_height="5dp"
+        android:layout_gravity="center"
+        android:layout_marginVertical="8dp"
+        android:background="@drawable/background_bottom_sheet_handle"
+        android:alpha="0.5"/>
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent">
 
         <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:title="SettingName"
-            app:titleCentered="true"/>
+            app:titleCentered="true"
+            android:background="@android:color/transparent"/>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="?attr/colorOutline"/>
+            android:background="?attr/colorOutline"
+            android:alpha="0.5"/>
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -28,9 +41,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingHorizontal="16dp"
-        android:background="?attr/colorSurface"
+        android:background="@android:color/transparent"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/item_selectable_item"/>
-
 
 </LinearLayout>
