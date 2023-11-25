@@ -2,15 +2,20 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingVertical="4dp">
+    android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/variant"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:drawableStartCompat="@drawable/ic_circle"
         android:textAppearance="@style/TextAppearance.Material3.LabelLarge"
+        android:background="?attr/selectableItemBackground"
+        android:drawablePadding="8dp"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp"
         tools:text="Variant"/>
 
 </FrameLayout>

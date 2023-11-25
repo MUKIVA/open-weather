@@ -4,6 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="?attr/selectableItemBackground"
+    android:paddingHorizontal="16dp"
     android:paddingVertical="8dp">
 
     <TextView
@@ -11,7 +13,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         tools:text="Some name"
-        android:textAppearance="@style/TextAppearance.Material3.LabelLarge"
+        android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+        android:textColor="?attr/colorOnSurface"
         app:layout_constraintEnd_toStartOf="@id/selectedVariant"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
@@ -21,7 +24,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         tools:text="Some Description"
-        android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+        android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+        android:textColor="?attr/colorSecondary"
         app:layout_constraintEnd_toStartOf="@id/selectedVariant"
         app:layout_constraintTop_toBottomOf="@id/settingName"
         app:layout_constraintStart_toStartOf="@id/settingName"
@@ -32,9 +36,10 @@
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         tools:text="Variant"
-        android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+        android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
         android:gravity="center"
         app:drawableEndCompat="@drawable/ic_arrow_drop_down"
+        app:drawableTint="?attr/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>

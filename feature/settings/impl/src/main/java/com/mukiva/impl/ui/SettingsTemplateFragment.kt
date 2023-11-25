@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.google.android.material.appbar.CollapsingToolbarLayout.TITLE_COLLAPSE_MODE_SCALE
 import com.mukiva.feature.settings_impl.R
 import com.mukiva.feature.settings_impl.databinding.FragmentSettingsTemplateBinding
 import com.mukiva.impl.di.ISettingsComponent
@@ -86,6 +87,7 @@ class SettingsTemplateFragment : Fragment(R.layout.fragment_settings_template) {
 
     private fun initActionBar(title: String) = with(mBinding) {
         toolbar.title = title
+        collapsingToolbarLayout.titleCollapseMode = TITLE_COLLAPSE_MODE_SCALE
         (requireActivity() as AppCompatActivity).apply {
             setSupportActionBar(toolbar)
         }

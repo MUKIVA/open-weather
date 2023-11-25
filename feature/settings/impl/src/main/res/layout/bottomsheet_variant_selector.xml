@@ -40,9 +40,9 @@
         android:id="@+id/variantList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingHorizontal="16dp"
         android:background="@android:color/transparent"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:paddingVertical="8dp"
         tools:listitem="@layout/item_selectable_item"/>
 
 </LinearLayout>

@@ -1,10 +1,11 @@
 package com.mukiva.impl.ui.variantSelector
 
+import android.util.TypedValue
+import androidx.annotation.AttrRes
 import androidx.recyclerview.widget.RecyclerView
-import com.mukiva.feature.settings_impl.R
 import com.mukiva.feature.settings_impl.databinding.ItemSelectableItemBinding
 import com.mukiva.impl.domain.SettingVariant
-import org.w3c.dom.Attr
+import com.google.android.material.R as MaterialRes
 
 class VariantViewHolder(
     private val binding: ItemSelectableItemBinding,
@@ -18,9 +19,22 @@ class VariantViewHolder(
     }
 
     private fun setSelection(isSelected: Boolean) = with(binding.variant) {
-        setTextColor(when(isSelected) {
-            true -> R.color.selection_text_color
-            false -> R.color.default_text_color
-        })
+        when(isSelected) {
+            true -> getAttrColor(MaterialRes.attr.colorPrimary)
+            false -> getAttrColor(MaterialRes.attr.colorOnSurface)
+        }.let { colorRes ->
+            setTextColor(colorRes)
+            this.compoundDrawablesRelative.forEach {
+                it?.setTint(colorRes)
+            }
+        }
+
+    }
+
+    private fun getAttrColor(@AttrRes res: Int): Int {
+        val theme = itemView.context.theme
+        val color = TypedValue()
+        theme.resolveAttribute(res, color, true)
+        return color.data
     }
 }
