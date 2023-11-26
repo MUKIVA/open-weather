@@ -1,19 +1,20 @@
 package com.mukiva.feature.location_manager_impl.ui
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.util.Log
 import android.view.View
-import android.view.animation.DecelerateInterpolator
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.appbar.CollapsingToolbarLayout
+import androidx.recyclerview.widget.RecyclerView
+import com.mukiva.core.ui.databinding.LayListStatesBinding
 import com.mukiva.feature.location_manager_impl.R
 import com.mukiva.feature.location_manager_impl.databinding.FragmentLocationManagerBinding
 import com.mukiva.feature.location_manager_impl.di.ILocationManagerComponent
@@ -22,7 +23,6 @@ import com.mukiva.feature.location_manager_impl.presentation.LocationManagerEven
 import com.mukiva.feature.location_manager_impl.presentation.LocationManagerState
 import com.mukiva.feature.location_manager_impl.presentation.LocationManagerViewModel
 import com.mukiva.feature.location_manager_impl.ui.adapter.LocationManagerAdapter
-import com.mukiva.openweather.ui.CollapsingToolbarStateListener
 import com.mukiva.openweather.ui.emptyView
 import com.mukiva.openweather.ui.error
 import com.mukiva.openweather.ui.gone
@@ -31,6 +31,11 @@ import com.mukiva.openweather.ui.loading
 import com.mukiva.openweather.ui.uiLazy
 import com.mukiva.openweather.ui.viewBindings
 import com.mukiva.openweather.ui.visible
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
@@ -39,75 +44,112 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
         ILocationManagerComponent.get().factory
     }
     private val mBinding by viewBindings(FragmentLocationManagerBinding::bind)
-    private val mAdapter by uiLazy { LocationManagerAdapter(
+    private val mAddedAdapter by uiLazy { LocationManagerAdapter(
         onAddCallback = {
             mViewModel.addLocation(it)
         }
     )}
-    private val mEmptyViewAnimator by uiLazy {
-        EmptyViewAnimator(
-            viewGroup = mBinding.emptyView.root,
-            expandBottomPadding = mBinding.appbar.totalScrollRange,
-            collapsingBottomPadding = 0
+    private val mSearchAdapter by uiLazy {
+        LocationManagerAdapter(
+            onAddCallback = {
+                mViewModel.addLocation(it)
+            }
         )
     }
+
+    private val mSearchQueryFlow = MutableSharedFlow<String>()
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         initActionBar()
-        initEmptyView()
         initList()
-        initSearchBar()
-        initCollapsingToolbarLayout()
+        initSearchView()
+
         subscribeOnViewModel()
     }
 
     private fun initActionBar() = with(mBinding) {
         (requireActivity() as AppCompatActivity)
-            .setSupportActionBar(toolbar)
+            .setSupportActionBar(searchBar)
+
+        searchBar.contentInsetStartWithNavigation
     }
 
-    private fun initEmptyView() = with(mBinding) {
-
-        appbar.addOnOffsetChangedListener(object : CollapsingToolbarStateListener() {
-            override fun onStateChanged(state: State) {
-                Log.d("addOnOffsetChangedListener", "$state")
-                when (state) {
-                    State.COLLAPSED -> mEmptyViewAnimator.collapse()
-                    State.EXPANDED -> mEmptyViewAnimator.expand()
-                    else -> {}
+    @OptIn(FlowPreview::class)
+    private fun initSearchView() = with(mBinding) {
+        searchView
+            .editText
+            .addTextChangedListener {
+                lifecycleScope.launch {
+                    searchBar.setText(searchView.text)
+                    mSearchQueryFlow.emit(searchView.text.toString())
                 }
             }
-        })
-    }
 
-    private fun initCollapsingToolbarLayout() = with(mBinding) {
-        collapsingToolbar.titlePositionInterpolator = DecelerateInterpolator()
-        collapsingToolbar.titleCollapseMode = CollapsingToolbarLayout.TITLE_COLLAPSE_MODE_SCALE
-    }
+        searchView.setOnShowListener {
+            requireActivity().onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
 
-    private fun initSearchBar() = with(mBinding) {
-        clearButton.setOnClickListener {
-            mViewModel.clearQuery()
-            list.scrollToPosition(0)
-            appbar.setExpanded(true)
+                init {
+                    searchView.setOnHideListener {
+                        remove()
+                    }
+                }
+
+                override fun handleOnBackPressed() {
+                    searchView.hide()
+                }
+
+            })
         }
-        search.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                mViewModel.updateSearchQuery(s.toString())
-            }
-
-            override fun afterTextChanged(s: Editable?) {}
-
-        })
+        mSearchQueryFlow
+            .debounce(500)
+            .onEach { mViewModel.executeSearch(it) }
+            .launchIn(lifecycleScope)
     }
 
     private fun initList() = with(mBinding) {
-        list.adapter = mAdapter
+        addedList.adapter = mAddedAdapter
+        searchViewList.adapter = mSearchAdapter
+
+        ViewCompat.setOnApplyWindowInsetsListener(appbar) { v, insets ->
+            val statusBars = insets.getInsets(WindowInsetsCompat.Type.statusBars())
+
+            v.updatePadding(
+                bottom = statusBars.bottom,
+                top = statusBars.top,
+                right = statusBars.right,
+                left = statusBars.left
+            )
+
+            insets
+        }
+
+        ViewCompat.setOnApplyWindowInsetsListener(searchView) { v, insets ->
+            val ime = insets.getInsets(WindowInsetsCompat.Type.ime())
+
+            v.updatePadding(
+                top = ime.top,
+                bottom = ime.bottom,
+                left = ime.left,
+                right = ime.right
+            )
+
+            insets
+        }
+
+        ViewCompat.setOnApplyWindowInsetsListener(addedList) { v, insets ->
+            val nav = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+
+            v.updatePadding(
+                top = nav.top,
+                bottom = nav.bottom
+            )
+
+            insets
+        }
     }
 
     private fun subscribeOnViewModel() {
@@ -130,54 +172,73 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
     }
 
     private fun updateState(state: LocationManagerState) = with(mBinding) {
-        updateListState(state.listState)
-        updateSearch(state.query)
-        updateList(state.receivedLocations)
-    }
-
-    private fun updateListState(state: LocationManagerState.ListState) = with(mBinding) {
-        when(state) {
-            LocationManagerState.ListState.ERROR -> {
-                list.gone()
-                emptyView.error(
+        updateListState(
+            state = state.addedListState.type,
+            list = addedList,
+            emptyView = addedEmptyView,
+            onFailBind = {
+                mBinding.addedEmptyView.error(
                     msg = getString(R.string.search_error),
                     buttonText = getString(R.string.search_error_refresh),
-                    onButtonClick = { mViewModel.executeSearch(search.text?.toString() ?: "") }
+                    onButtonClick = { mViewModel.executeSearch("") }
                 )
             }
-            LocationManagerState.ListState.EMPTY -> {
+
+        )
+        updateListState(
+            state = state.searchListState.type,
+            list = searchViewList,
+            emptyView = searchEmptyView,
+            onFailBind = {
+                mBinding.searchEmptyView.error(
+                    msg = getString(R.string.search_error),
+                    buttonText = getString(R.string.search_error_refresh),
+                    onButtonClick = { mViewModel.executeSearch("") }
+                )
+            }
+        )
+        updateList(state.searchListState.list, mSearchAdapter)
+        updateList(state.addedListState.list, mAddedAdapter)
+    }
+
+    private fun updateListState(
+        state: LocationManagerState.ListStateType,
+        list: RecyclerView,
+        emptyView: LayListStatesBinding,
+        onFailBind: () -> Unit
+    ) {
+        when(state) {
+            LocationManagerState.ListStateType.ERROR -> {
+                list.gone()
+                onFailBind()
+            }
+            LocationManagerState.ListStateType.EMPTY -> {
                 list.gone()
                 emptyView.emptyView(
                     msg = getString(R.string.search_empty)
                 )
             }
-            LocationManagerState.ListState.LOADING -> {
+            LocationManagerState.ListStateType.LOADING -> {
                 list.gone()
                 emptyView.loading()
             }
-            LocationManagerState.ListState.CONTENT -> {
+            LocationManagerState.ListStateType.CONTENT -> {
                 list.visible()
                 emptyView.hide()
             }
         }
     }
 
-    private fun updateSearch(query: String) = with(mBinding) {
-        search.setText(query)
-        search.setSelection(search.text?.length ?: 0)
-        setClearButtonVisible(query.isNotEmpty())
-    }
-
-    private fun setClearButtonVisible(isVisible: Boolean) = with(mBinding) {
-        clearButton.isVisible = isVisible
-    }
-
-    private fun updateList(receivedLocations: List<Location>) {
-        mAdapter.submitList(receivedLocations)
+    private fun updateList(
+        list: List<Location>,
+        adapter: LocationManagerAdapter
+    ) {
+        adapter.submitList(list)
     }
 
     companion object {
         fun newInstance() = LocationManagerFragment()
     }
+
 
 }

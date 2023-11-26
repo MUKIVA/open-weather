@@ -3,50 +3,34 @@ package com.mukiva.feature.location_manager_impl.presentation
 import androidx.lifecycle.viewModelScope
 import com.mukiva.feature.location_manager_impl.domain.model.Location
 import com.mukiva.feature.location_manager_impl.domain.usecase.AddLocationUseCase
+import com.mukiva.feature.location_manager_impl.domain.usecase.GetAddedLocationsUseCase
 import com.mukiva.feature.location_manager_impl.domain.usecase.LocationSearchUseCase
 import com.mukiva.openweather.presentation.SingleStateViewModel
 import com.mukiva.usecase.ApiResult
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@OptIn(FlowPreview::class)
 class LocationManagerViewModel @Inject constructor(
     initialState: LocationManagerState,
     private val searchUseCase: LocationSearchUseCase,
-    private val addLocationUseCase: AddLocationUseCase
+    private val addLocationUseCase: AddLocationUseCase,
+    private val getAddedLocationsUseCase: GetAddedLocationsUseCase
 ) : SingleStateViewModel<LocationManagerState, LocationManagerEvent>(initialState) {
 
-    private val mSearchQueryFlow = MutableSharedFlow<String>()
-
     init {
-        mSearchQueryFlow
-            .debounce(QUERY_UPDATE_DEBOUNCE)
-            .onEach {
-                modifyState { copy(query = it) }
-                executeSearch(it)
+        fetchAddedLocations()
+    }
+
+    private fun fetchAddedLocations() {
+        viewModelScope.launch {
+            when (val result = getAddedLocationsUseCase()) {
+                is ApiResult.Success -> {
+                    updateAddedListState(result.data)
+                }
+                is ApiResult.Error -> {
+                    event(LocationManagerEvent.Toast(result.err.name))
+                }
             }
-            .launchIn(viewModelScope)
-
-    }
-
-    fun clearQuery() {
-        viewModelScope.launch {
-            mSearchQueryFlow.emit("")
-        }
-    }
-
-    fun updateSearchQuery(q: String) {
-
-        if (state.value.query == q)
-            return
-
-        viewModelScope.launch {
-            mSearchQueryFlow.emit(q)
         }
     }
 
@@ -57,54 +41,74 @@ class LocationManagerViewModel @Inject constructor(
                    event(LocationManagerEvent.Toast("FAIL: ${result.err}"))
                }
                is ApiResult.Success -> {
-                   val locations = state.value.receivedLocations
-                   updateListState(locations.filter {
+                   val locations = state.value.searchListState.list
+                   updateSearchListState(locations.filter {
                        it.uid != location.uid
                    })
+                   fetchAddedLocations()
                    event(LocationManagerEvent.Toast("SUCCESS ADD"))
                }
            }
         }
     }
 
-    private fun updateListState(list: List<Location>) {
+    private fun updateAddedListState(list: List<Location>) {
         modifyState {
             copy(
-                receivedLocations = list,
-                listState = when(list.size) {
-                    0 -> LocationManagerState.ListState.EMPTY
-                    else -> LocationManagerState.ListState.CONTENT
-                }
-            )}
+                addedListState = addedListState.copy(
+                    list = list,
+                    type = when(list.size) {
+                        0 -> LocationManagerState.ListStateType.EMPTY
+                        else -> LocationManagerState.ListStateType.CONTENT
+                    }
+                )
+            )
+        }
+    }
+
+    private fun updateSearchListState(list: List<Location>) {
+        modifyState {
+            copy(
+                searchListState = searchListState.copy(
+                    list = list,
+                    type = when(list.size) {
+                        0 -> LocationManagerState.ListStateType.EMPTY
+                        else -> LocationManagerState.ListStateType.CONTENT
+                    }
+                )
+            )
+        }
+    }
+
+    private fun setSearchListType(type: LocationManagerState.ListStateType) {
+        modifyState {
+            copy(
+                searchListState = searchListState.copy(
+                    type = type
+                )
+            )
+        }
     }
 
     fun executeSearch(q: String) {
-        modifyState { copy(listState = LocationManagerState.ListState.LOADING) }
+        setSearchListType(LocationManagerState.ListStateType.LOADING)
 
         if (q == "") {
-            modifyState { copy(listState = LocationManagerState.ListState.EMPTY) }
+            setSearchListType(LocationManagerState.ListStateType.EMPTY)
             return
         }
 
         viewModelScope.launch {
             when (val result = searchUseCase(q)) {
                 is ApiResult.Error -> {
-                    modifyState {
-                        copy(
-                            listState = LocationManagerState.ListState.ERROR
-                        )
-                    }
+                    setSearchListType(LocationManagerState.ListStateType.ERROR)
                 }
                 is ApiResult.Success -> {
-                    updateListState(result.data)
+                    updateSearchListState(result.data)
                 }
             }
         }
 
-    }
-
-    companion object {
-        private const val QUERY_UPDATE_DEBOUNCE = 500L
     }
 
 }

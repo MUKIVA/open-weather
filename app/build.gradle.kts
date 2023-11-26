@@ -55,6 +55,7 @@ dependencies {
     implementation(project(":core:data"))
     implementation(project(":core:di"))
     implementation(project(":core:navigation"))
+    implementation(project(":core:ui"))
 
     implementation(project(":feature:dashboard:api"))
     implementation(project(":feature:dashboard:impl"))

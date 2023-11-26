@@ -2,14 +2,13 @@ package com.mukiva.feature.location_manager_impl.presentation
 
 import com.mukiva.feature.location_manager_impl.domain.model.Location
 
-
 data class LocationManagerState(
-    val listState: ListState,
+    val searchListState: ListState<Location>,
+    val addedListState: ListState<Location>,
     val query: String,
-    val receivedLocations: List<Location>
 ) {
 
-    enum class ListState {
+    enum class ListStateType {
         ERROR,
         EMPTY,
         LOADING,
@@ -18,9 +17,15 @@ data class LocationManagerState(
 
     companion object {
         fun default() = LocationManagerState(
-            listState = ListState.EMPTY,
             query = "",
-            receivedLocations = emptyList()
+            searchListState = ListState(
+                type = ListStateType.EMPTY,
+                list = emptyList()
+            ),
+            addedListState = ListState(
+                type = ListStateType.EMPTY,
+                list = emptyList()
+            )
         )
     }
 
