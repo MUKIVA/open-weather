@@ -1,9 +1,9 @@
 package com.mukiva.feature.location_manager_impl.data
 
+import com.mukiva.core.network.IApiKeyProvider
 import com.mukiva.feature.location_manager_api.dto.LocationDTO
 import com.mukiva.feature.location_manager_api.repository.ILocationRepository
 import com.mukiva.feature.location_manager_impl.domain.ILocationSearchGateway
-import com.mukiva.openweather.core.di.IApiKeyProvider
 import javax.inject.Inject
 
 class LocationRepository @Inject constructor(

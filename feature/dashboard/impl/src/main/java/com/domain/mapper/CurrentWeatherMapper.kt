@@ -13,7 +13,7 @@ class CurrentWeatherMapper @Inject constructor(
 
     private val simpleDateFormat = SimpleDateFormat(DATE_PATTERN, Locale.getDefault())
 
-    fun com.data.CurrentJson.mapToDomain(): CurrentWeather {
+    fun com.data.CurrentRemote.mapToDomain(): CurrentWeather {
         return CurrentWeather(
             lastUpdatedEpoch = lastUpdatedEpoch ?: 0,
             lastUpdated = simpleDateFormat.parse(lastUpdated ?: "")

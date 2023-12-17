@@ -21,10 +21,6 @@ class MainNavigator(
         it.onBackPressedDispatcher.onBackPressed()
     }
 
-    override fun getString(msgRes: Int): String {
-        return getApplication<Application>().getString(msgRes)
-    }
-
     override fun onCleared() {
         super.onCleared()
         whenMainActivityActive.clear()

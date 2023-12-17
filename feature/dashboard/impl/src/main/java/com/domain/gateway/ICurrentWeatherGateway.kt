@@ -1,6 +1,6 @@
 package com.domain.gateway
 
-import com.data.CurrentWeatherJsonResponse
+import com.data.CurrentWeatherRemote
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -10,5 +10,5 @@ interface ICurrentWeatherGateway {
         @Query("key") key: String,
         @Query("q") q: String,
         @Query("aqi") aqi: String
-    ) : CurrentWeatherJsonResponse
+    ) : CurrentWeatherRemote
 }

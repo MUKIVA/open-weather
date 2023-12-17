@@ -9,7 +9,7 @@ class LocationMapper @Inject constructor() {
 
     private val simpleDateFormat = SimpleDateFormat(DATE_PATTERN, Locale.getDefault())
 
-    fun com.data.LocationJson.mapToDomain(): Location {
+    fun com.data.LocationRemote.mapToDomain(): Location {
         return Location(
             name = name ?: "UNKNOWN",
             region = region ?: "UNKNOWN",

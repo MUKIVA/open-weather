@@ -49,20 +49,13 @@ hilt {
 dependencies {
 
     //features
-    implementation(project(":core:data"))
-    implementation(project(":core:di"))
     implementation(project(":core:presentation"))
     implementation(project(":core:usecase"))
     implementation(project(":core:ui"))
     implementation(project(":core:navigation"))
+    implementation(project(":core:network"))
 
     implementation(project(":feature:location_manager:api"))
-
-//    //Dagger
-//    implementation("com.google.dagger:dagger-android:2.48")
-//    implementation("com.google.dagger:dagger-android-support:2.48")
-//    kapt("com.google.dagger:dagger-android-processor:2.48")
-//    kapt("com.google.dagger:dagger-compiler:2.48")
 
     //Hilt
     implementation("com.google.dagger:hilt-android:2.48.1")

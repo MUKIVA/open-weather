@@ -4,8 +4,8 @@ import android.util.Log
 import com.domain.gateway.ICurrentWeatherGateway
 import com.domain.mapper.CurrentWithLocationMapper
 import com.domain.model.CurrentWithLocation
-import com.mukiva.openweather.core.di.IApiKeyProvider
-import com.mukiva.openweather.core.di.IConnectionProvider
+import com.mukiva.core.network.IApiKeyProvider
+import com.mukiva.core.network.IConnectionProvider
 import com.mukiva.usecase.ApiError
 import com.mukiva.usecase.ApiResult
 import java.text.ParseException

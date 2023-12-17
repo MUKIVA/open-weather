@@ -1,8 +1,8 @@
 package com.mukiva.openweather.di
 
+import com.mukiva.core.network.IApiKeyProvider
+import com.mukiva.core.network.IConnectionProvider
 import com.mukiva.openweather.BuildConfig
-import com.mukiva.openweather.core.di.IApiKeyProvider
-import com.mukiva.openweather.core.di.IConnectionProvider
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
