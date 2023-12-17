@@ -13,8 +13,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.appbar.CollapsingToolbarLayout.TITLE_COLLAPSE_MODE_SCALE
 import com.mukiva.feature.settings_impl.R
 import com.mukiva.feature.settings_impl.databinding.FragmentSettingsTemplateBinding
-import com.mukiva.impl.di.ISettingsComponent
-import com.mukiva.impl.domain.SelectVariantState
+import com.mukiva.impl.domain.SettingVariantList
 import com.mukiva.impl.domain.SettingVariant
 import com.mukiva.impl.presentation.SettingsState
 import com.mukiva.impl.presentation.SettingsViewModel
@@ -23,16 +22,19 @@ import com.mukiva.impl.ui.adapter.SettingsAdapter
 import com.mukiva.impl.ui.variantSelector.VariantSelectorBottomSheet
 import com.mukiva.openweather.ui.uiLazy
 import com.mukiva.openweather.ui.viewBindings
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class SettingsTemplateFragment : Fragment(R.layout.fragment_settings_template) {
 
+    private val mViewModel by viewModels<SettingsViewModel>()
     private val mBinding by viewBindings(FragmentSettingsTemplateBinding::bind)
     private val mAdapter by uiLazy {
         SettingsAdapter(
             onSelectVariant = {
                 val bottomSheet = VariantSelectorBottomSheet.newInstance(
-                    state = SelectVariantState(
+                    state = SettingVariantList(
                         title = with(SettingStringResolver) {
                             requireContext().resolveName(it.group)
                                                             },
@@ -57,9 +59,6 @@ class SettingsTemplateFragment : Fragment(R.layout.fragment_settings_template) {
                 mViewModel.onToggleOption(it)
             }
         )
-    }
-    private val mViewModel : SettingsViewModel by viewModels {
-        ISettingsComponent.get().factory
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

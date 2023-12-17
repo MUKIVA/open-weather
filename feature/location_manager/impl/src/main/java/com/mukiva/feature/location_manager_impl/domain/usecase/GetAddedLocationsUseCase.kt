@@ -1,7 +1,7 @@
 package com.mukiva.feature.location_manager_impl.domain.usecase
 
 import android.util.Log
-import com.mukiva.feature.location_manager_impl.domain.ILocationRepository
+import com.mukiva.feature.location_manager_api.repository.ILocationRepository
 import com.mukiva.feature.location_manager_impl.domain.mapper.LocationMapper
 import com.mukiva.feature.location_manager_impl.domain.model.Location
 import com.mukiva.usecase.ApiError

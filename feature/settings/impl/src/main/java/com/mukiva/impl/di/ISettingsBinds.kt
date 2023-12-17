@@ -1,16 +1,25 @@
 package com.mukiva.impl.di
 
-import androidx.lifecycle.ViewModel
-import com.mukiva.impl.presentation.SettingsViewModel
-import com.mukiva.openweather.core.di.ViewModelKey
+import com.mukiva.api.navigation.ISettingsScreenProvider
+import com.mukiva.api.repository.IGeneralSettingsSetter
+import com.mukiva.api.repository.ISettingsRepository
+import com.mukiva.impl.domain.repository.SettingsRepository
+import com.mukiva.impl.navigation.SettingsScreenProvider
 import dagger.Binds
 import dagger.Module
-import dagger.multibindings.IntoMap
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 
 @Module
+@InstallIn(SingletonComponent::class)
 interface ISettingsBinds {
     @Binds
-    @[IntoMap ViewModelKey(SettingsViewModel::class)]
-    fun bindSettingsViewModel(viewModel: SettingsViewModel): ViewModel
+    fun bindGeneralSettingsSetter(setter: SettingsRepository): IGeneralSettingsSetter
+
+    @Binds
+    fun bindSettingsRepository(repo: SettingsRepository): ISettingsRepository
+
+    @Binds
+    fun bindSettingsScreenProvider(provider: SettingsScreenProvider): ISettingsScreenProvider
 
 }

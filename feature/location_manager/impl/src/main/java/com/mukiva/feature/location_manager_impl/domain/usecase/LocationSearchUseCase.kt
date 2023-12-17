@@ -1,8 +1,7 @@
 package com.mukiva.feature.location_manager_impl.domain.usecase
 
 import android.util.Log
-import com.mukiva.feature.location_manager_impl.data.LocationRemoteEntity
-import com.mukiva.feature.location_manager_impl.domain.ILocationRepository
+import com.mukiva.feature.location_manager_api.repository.ILocationRepository
 import com.mukiva.feature.location_manager_impl.domain.mapper.LocationMapper
 import com.mukiva.feature.location_manager_impl.domain.model.Location
 import com.mukiva.openweather.core.di.IConnectionProvider
@@ -24,11 +23,12 @@ class LocationSearchUseCase @Inject constructor(
         return try {
             CoroutineHelper.doIO {
                 val data = repository.searchRemote(q)
+                val local = repository.getAllLocal()
+                val result = data.filterNot { it in local }
                 ApiResult.Success(
-                    with (LocationMapper) { data.map<LocationRemoteEntity, Location> {
-                        val local = it.id?.let { id ->  repository.getLocalById(id) }
-                        it.asDomain(local)
-                    }.filter { !it.isAdded }}
+                    with (LocationMapper) {
+                        result.map { it.asDomain() }
+                    }
                 )
             }
         } catch (e: Exception) {

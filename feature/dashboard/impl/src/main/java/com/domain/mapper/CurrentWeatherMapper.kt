@@ -10,6 +10,7 @@ import javax.inject.Inject
 class CurrentWeatherMapper @Inject constructor(
     private val conditionMapper: ConditionMapper
 ) {
+
     private val simpleDateFormat = SimpleDateFormat(DATE_PATTERN, Locale.getDefault())
 
     fun com.data.CurrentJson.mapToDomain(): CurrentWeather {

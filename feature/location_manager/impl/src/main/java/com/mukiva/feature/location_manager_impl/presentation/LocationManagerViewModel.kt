@@ -7,9 +7,11 @@ import com.mukiva.feature.location_manager_impl.domain.usecase.GetAddedLocations
 import com.mukiva.feature.location_manager_impl.domain.usecase.LocationSearchUseCase
 import com.mukiva.openweather.presentation.SingleStateViewModel
 import com.mukiva.usecase.ApiResult
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@HiltViewModel
 class LocationManagerViewModel @Inject constructor(
     initialState: LocationManagerState,
     private val searchUseCase: LocationSearchUseCase,

@@ -10,25 +10,26 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import com.mukiva.core.navigation.INavigator
-import com.mukiva.openweather.App
 import com.mukiva.openweather.R
-import com.mukiva.api.ConfigStore
+import com.mukiva.impl.domain.repository.SettingsRepository
 import com.mukiva.api.Theme
 import com.mukiva.openweather.navigator.MainNavigator
 import com.navigation.DashboardScreen
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     @Inject
     lateinit var navigator: INavigator
     @Inject
-    lateinit var configStore: ConfigStore
+    lateinit var settingsRepository: SettingsRepository
 
     private val mAppConfig by lazy {
-        configStore.asAppConfig()
+        settingsRepository.asAppConfig()
             .onEach { updateAppTheme(it.theme) }
             .launchIn(lifecycleScope)
     }
@@ -52,8 +53,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val app = application as App
-        app.appComponent.inject(this)
+//        val app = application as App
+//        app.appComponent.inject(this)
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
 

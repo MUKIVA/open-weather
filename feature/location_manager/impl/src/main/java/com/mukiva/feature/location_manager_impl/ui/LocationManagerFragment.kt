@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mukiva.core.ui.databinding.LayListStatesBinding
 import com.mukiva.feature.location_manager_impl.R
 import com.mukiva.feature.location_manager_impl.databinding.FragmentLocationManagerBinding
-import com.mukiva.feature.location_manager_impl.di.ILocationManagerComponent
 import com.mukiva.feature.location_manager_impl.domain.model.Location
 import com.mukiva.feature.location_manager_impl.presentation.LocationManagerEvent
 import com.mukiva.feature.location_manager_impl.presentation.LocationManagerState
@@ -31,6 +30,7 @@ import com.mukiva.openweather.ui.loading
 import com.mukiva.openweather.ui.uiLazy
 import com.mukiva.openweather.ui.viewBindings
 import com.mukiva.openweather.ui.visible
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.debounce
@@ -38,11 +38,10 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
 
-    private val mViewModel: LocationManagerViewModel by viewModels {
-        ILocationManagerComponent.get().factory
-    }
+    private val mViewModel by viewModels<LocationManagerViewModel>()
     private val mBinding by viewBindings(FragmentLocationManagerBinding::bind)
     private val mAddedAdapter by uiLazy { LocationManagerAdapter(
         onAddCallback = {

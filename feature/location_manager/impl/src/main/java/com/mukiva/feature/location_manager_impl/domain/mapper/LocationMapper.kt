@@ -1,39 +1,28 @@
 package com.mukiva.feature.location_manager_impl.domain.mapper
 
-import com.mukiva.feature.location_manager_impl.data.LocationLocalEntity
-import com.mukiva.feature.location_manager_impl.data.LocationRemoteEntity
+import com.mukiva.feature.location_manager_api.dto.LocationDTO
 import com.mukiva.feature.location_manager_impl.domain.model.Location
 
 object LocationMapper {
 
-    fun LocationRemoteEntity.asDomain(
-        localEntity: LocationLocalEntity?
-    ) = run {
-        Location(
-            uid = id ?: 0,
-            cityName = name ?: "Unknown",
-            regionName = region ?: "Unknown",
-            countryName = country ?: "Unknown",
-            isAdded = localEntity != null
-        )
-    }
-
-    fun LocationLocalEntity.asDomain() = run {
+    fun LocationDTO.asDomain() = run {
         Location(
             uid = uid,
             cityName = cityName ?: "Unknown",
             regionName = regionName ?: "Unknown",
             countryName = countryName ?: "Unknown",
-            isAdded = true
+            isAdded = false
         )
     }
 
-    fun Location.asLocalEntity() = run {
-        LocationLocalEntity(
+    fun Location.asDTO() = run {
+        LocationDTO(
             uid = uid,
             cityName = cityName,
             regionName = regionName,
-            countryName = countryName
+            countryName = countryName,
+            lon = 0.0,
+            lat = 0.0
         )
     }
 }

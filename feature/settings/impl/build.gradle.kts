@@ -1,6 +1,7 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    id("com.google.dagger.hilt.android")
     kotlin("kapt")
 }
 
@@ -36,6 +37,14 @@ android {
     }
 }
 
+kapt {
+    correctErrorTypes = true
+}
+
+hilt {
+    enableAggregatingTask = true
+}
+
 dependencies {
 
     implementation(project(":core:ui"))
@@ -45,11 +54,12 @@ dependencies {
 
     implementation(project(":feature:settings:api"))
 
-    //Dagger
-    implementation("com.google.dagger:dagger-android:2.48")
-    implementation("com.google.dagger:dagger-android-support:2.48")
-    kapt("com.google.dagger:dagger-android-processor:2.48")
-    kapt("com.google.dagger:dagger-compiler:2.48")
+    //Hilt
+    implementation("com.google.dagger:hilt-android:2.48.1")
+    kapt("com.google.dagger:hilt-compiler:2.48.1")
+
+    //DataStore
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")

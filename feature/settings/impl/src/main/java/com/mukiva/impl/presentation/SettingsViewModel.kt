@@ -1,22 +1,24 @@
 package com.mukiva.impl.presentation
 
 import androidx.lifecycle.viewModelScope
-import com.mukiva.api.ConfigStore
+import com.mukiva.impl.domain.repository.SettingsRepository
 import com.mukiva.api.Theme
 import com.mukiva.api.UnitsType
-import com.mukiva.api.navigation.AppConfig
+import com.mukiva.api.domain.AppConfig
 import com.mukiva.impl.domain.SettingItem
 import com.mukiva.impl.domain.SettingVariant
 import com.mukiva.impl.domain.config.Group
 import com.mukiva.openweather.presentation.SingleStateViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@HiltViewModel
 class SettingsViewModel @Inject constructor(
     initialState: SettingsState,
-    private val config: ConfigStore
+    private val config: SettingsRepository
 ) : SingleStateViewModel<SettingsState, Nothing>(initialState) {
 
     private val mAppConfig = config.asAppConfig()
@@ -44,13 +46,14 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    private fun withViewModelScope(block: suspend() -> Unit): Unit {
+    private fun withViewModelScope(block: suspend() -> Unit) {
         viewModelScope.launch {
             block()
         }
     }
 
     fun onToggleOption(item: SettingItem.Toggle) {
+        // TODO(Impl toggle)
     }
 
     private fun updateStruct(cfg: AppConfig) = modifyState {

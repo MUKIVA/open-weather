@@ -1,4 +1,4 @@
-package com.mukiva.api.navigation
+package com.mukiva.api.domain
 
 import com.mukiva.api.Theme
 import com.mukiva.api.UnitsType

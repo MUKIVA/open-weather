@@ -7,7 +7,7 @@ import androidx.core.os.bundleOf
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.mukiva.feature.settings_impl.R
 import com.mukiva.feature.settings_impl.databinding.BottomsheetVariantSelectorBinding
-import com.mukiva.impl.domain.SelectVariantState
+import com.mukiva.impl.domain.SettingVariantList
 import com.mukiva.impl.domain.SettingVariant
 import com.mukiva.openweather.ui.getComaptSerializable
 import com.mukiva.openweather.ui.uiLazy
@@ -30,7 +30,7 @@ class VariantSelectorBottomSheet : BottomSheetDialogFragment(R.layout.bottomshee
     private val mState by uiLazy {
         requireArguments().getComaptSerializable(
             ARG_SELECT_VARIANT_STATE,
-            SelectVariantState::class.java
+            SettingVariantList::class.java
         )!!
     }
     interface VariantSelectorCallbacks {
@@ -70,7 +70,7 @@ class VariantSelectorBottomSheet : BottomSheetDialogFragment(R.layout.bottomshee
 
         private const val ARG_SELECT_VARIANT_STATE = "ARG_SELECT_VARIANT_STATE"
 
-        fun newInstance(state: SelectVariantState) = VariantSelectorBottomSheet().apply {
+        fun newInstance(state: SettingVariantList) = VariantSelectorBottomSheet().apply {
             arguments = bundleOf(
                 ARG_SELECT_VARIANT_STATE to state
             )

@@ -12,6 +12,10 @@ data class LocationLocalEntity(
     val cityName: String?,
     @ColumnInfo(name = "region_name")
     val regionName: String?,
+    @ColumnInfo(name = "lon")
+    val lon: Double?,
+    @ColumnInfo(name = "lat")
+    val lat: Double?,
     @ColumnInfo(name = "country_name")
     val countryName: String?
 )

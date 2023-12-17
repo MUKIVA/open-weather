@@ -1,51 +1,39 @@
 package com.mukiva.feature.location_manager_impl.di
 
-import android.app.Application
+import android.content.Context
 import androidx.room.Room
 import com.mukiva.feature.location_manager_impl.data.LocationDataBase
-import com.mukiva.feature.location_manager_impl.data.LocationRepository
-import com.mukiva.feature.location_manager_impl.domain.ILocationRepository
 import com.mukiva.feature.location_manager_impl.domain.ILocationSearchGateway
 import com.mukiva.feature.location_manager_impl.presentation.LocationManagerState
-import com.mukiva.openweather.core.di.IApiKeyProvider
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 @Module
+@InstallIn(SingletonComponent::class)
 class LocationManagerModule {
 
-    @[Provides]
-    fun provideSearchLocationState() = LocationManagerState.default()
-
-    @[Provides]
-    fun provideSearchLocationGateway(): ILocationSearchGateway {
-        return Retrofit.Builder()
-            .baseUrl("https://api.weatherapi.com/v1/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(ILocationSearchGateway::class.java)
+    @Provides
+    fun provideLocationSearchGateway(
+        retrofit: Retrofit
+    ): ILocationSearchGateway {
+        return retrofit.create(ILocationSearchGateway::class.java)
     }
 
-    @[Provides]
-    fun provideLocationDataBase(application: Application): LocationDataBase {
+    @Provides
+    fun provideLocationStore(
+        @ApplicationContext context: Context
+    ): LocationDataBase {
         return Room.databaseBuilder(
-            application,
-            LocationDataBase::class.java,
-            LOCATION_DB_NAME
-            ).build()
+            context,
+            LocationDataBase::class.java, "location-db"
+        ).build()
     }
 
-    @[Provides]
-    fun provideLocationRepository(
-        gateway: ILocationSearchGateway,
-        store: LocationDataBase,
-        apiKeyProvider: IApiKeyProvider
-    ): ILocationRepository = LocationRepository(gateway, store, apiKeyProvider)
-
-    companion object {
-        private const val LOCATION_DB_NAME = "locationDb"
-    }
+    @Provides
+    fun provideLocationManagerState() = LocationManagerState.default()
 
 }

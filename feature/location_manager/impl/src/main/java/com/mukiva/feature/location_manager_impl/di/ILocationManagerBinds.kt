@@ -1,17 +1,24 @@
 package com.mukiva.feature.location_manager_impl.di
 
-import androidx.lifecycle.ViewModel
-import com.mukiva.feature.location_manager_impl.presentation.LocationManagerViewModel
-import com.mukiva.openweather.core.di.ViewModelKey
+import com.mukiva.feature.location_manager_api.navigation.ILocationManagerScreenProvider
+import com.mukiva.feature.location_manager_api.repository.ILocationRepository
+import com.mukiva.feature.location_manager_impl.data.LocationRepository
+import com.mukiva.feature.location_manager_impl.navigation.LocationManagerScreenProvider
 import dagger.Binds
 import dagger.Module
-import dagger.multibindings.IntoMap
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 
 @Module
+@InstallIn(SingletonComponent::class)
 interface ILocationManagerBinds {
 
     @Binds
-    @[IntoMap ViewModelKey(LocationManagerViewModel::class)]
-    fun bindSearchLocationViewModel(vm: LocationManagerViewModel): ViewModel
+    fun bindLocationRepository(repo: LocationRepository): ILocationRepository
+
+    @Binds
+    fun bindLocationScreenProvider(
+        provider: LocationManagerScreenProvider
+    ): ILocationManagerScreenProvider
 
 }

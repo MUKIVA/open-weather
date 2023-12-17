@@ -5,9 +5,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 import javax.inject.Inject
 
-class LocationMapper @Inject constructor(
-
-) {
+class LocationMapper @Inject constructor() {
 
     private val simpleDateFormat = SimpleDateFormat(DATE_PATTERN, Locale.getDefault())
 
