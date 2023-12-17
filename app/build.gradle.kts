@@ -1,4 +1,10 @@
 import com.android.build.api.variant.BuildConfigField
+import com.mukiva.buildsrc.Projects
+import com.mukiva.buildsrc.Versions
+import com.mukiva.buildsrc.addHilt
+import com.mukiva.buildsrc.addRetrofit
+import com.mukiva.buildsrc.coreScope
+import com.mukiva.buildsrc.featureScope
 
 plugins {
     id("com.android.application")
@@ -61,37 +67,27 @@ hilt {
 
 dependencies {
 
-    implementation(project(":core:navigation"))
-    implementation(project(":core:ui"))
-    implementation(project(":core:network"))
+    coreScope(
+        Projects.Core.navigation,
+        Projects.Core.ui,
+        Projects.Core.network
+    )
 
-    implementation(project(":feature:dashboard:api"))
-    implementation(project(":feature:dashboard:impl"))
+    featureScope(
+        Projects.Feature.dashboard,
+        Projects.Feature.locationManager,
+        Projects.Feature.settings
+    )
 
-    implementation(project(":feature:location_manager:api"))
-    implementation(project(":feature:location_manager:impl"))
+    addHilt()
+    addRetrofit()
 
-    implementation(project(":feature:settings:api"))
-    implementation(project(":feature:settings:impl"))
-
-    //Hilt
-    implementation("com.google.dagger:hilt-android:2.48.1")
-    kapt("com.google.dagger:hilt-compiler:2.48.1")
-
-    //Retrofit
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-
-    implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.compose.material3:material3:1.1.2")
+    implementation("androidx.core:core-ktx:${Versions.KOTLIN}")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.10.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.7.5")
-    implementation("androidx.navigation:navigation-ui-ktx:2.7.5")
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+
+    implementation("androidx.navigation:navigation-fragment-ktx:${Versions.NAVIGATION}")
+    implementation("androidx.navigation:navigation-ui-ktx:${Versions.NAVIGATION}")
 }
 
 secrets {

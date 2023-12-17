@@ -1,3 +1,11 @@
+import com.mukiva.buildsrc.AddFeatureMethod
+import com.mukiva.buildsrc.Projects
+import com.mukiva.buildsrc.addDataStore
+import com.mukiva.buildsrc.addDefaultImpl
+import com.mukiva.buildsrc.addHilt
+import com.mukiva.buildsrc.coreScope
+import com.mukiva.buildsrc.featureScope
+
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
@@ -47,24 +55,19 @@ hilt {
 
 dependencies {
 
-    implementation(project(":core:ui"))
-    implementation(project(":core:navigation"))
-    implementation(project(":core:presentation"))
-    implementation(project(":core:network"))
+    coreScope(
+        Projects.Core.ui,
+        Projects.Core.navigation,
+        Projects.Core.presentation,
+        Projects.Core.network
+    )
 
-    implementation(project(":feature:settings:api"))
+    featureScope(
+        Projects.Feature.settings,
+        addMethod = AddFeatureMethod.ONLY_API
+    )
 
-    //Hilt
-    implementation("com.google.dagger:hilt-android:2.48.1")
-    kapt("com.google.dagger:hilt-compiler:2.48.1")
-
-    //DataStore
-    implementation("androidx.datastore:datastore-preferences:1.0.0")
-
-    implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.10.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
-    implementation("androidx.fragment:fragment-ktx:1.6.2")
-
+    addHilt()
+    addDataStore()
+    addDefaultImpl()
 }

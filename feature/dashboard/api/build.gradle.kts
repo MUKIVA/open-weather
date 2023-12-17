@@ -1,3 +1,7 @@
+import com.mukiva.buildsrc.Projects
+import com.mukiva.buildsrc.Versions
+import com.mukiva.buildsrc.coreScope
+
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
@@ -33,13 +37,6 @@ android {
 }
 
 dependencies {
-
-    implementation(project(":core:navigation"))
-
-    implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.10.0")
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    coreScope(Projects.Core.navigation)
+    implementation("androidx.core:core-ktx:${Versions.KOTLIN}")
 }
