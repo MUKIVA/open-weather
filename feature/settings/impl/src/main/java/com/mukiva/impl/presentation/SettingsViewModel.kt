@@ -52,7 +52,7 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun onToggleOption(item: SettingItem.Toggle) {
+    fun onToggleOption() {
         // TODO(Impl toggle)
     }
 

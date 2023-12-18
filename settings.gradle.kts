@@ -6,7 +6,7 @@ pluginManagement {
     }
 }
 
-rootProject.name = "Open Weather"
+rootProject.name = "open-weather"
 
 include(":app")
 include(":core:presentation")

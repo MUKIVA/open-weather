@@ -1,68 +1,43 @@
-import com.android.build.api.variant.BuildConfigField
-import com.mukiva.buildsrc.Projects
-import com.mukiva.buildsrc.Versions
-import com.mukiva.buildsrc.addHilt
-import com.mukiva.buildsrc.addRetrofit
-import com.mukiva.buildsrc.coreScope
-import com.mukiva.buildsrc.featureScope
-
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
-    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
-    id("com.google.dagger.hilt.android")
-    kotlin("kapt")
+    GradlePlugins.run {
+        id(androidApplication.id)
+        id(sdk.id)
+        id(kotlinAndroid.id)
+        id(defaultFeature.id)
+        id(secrets.id)
+        id(hilt.id)
+        id(ksp.id)
+    }
 }
 
 android {
     namespace = "com.mukiva.openweather"
-    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.mukiva.openweather"
-        minSdk = 24
         versionCode = 1
         versionName = "1.0"
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        kapt {
-            arguments {
-                arg("room.schemaLocation", "$projectDir/schemas")
-            }
-        }
-
     }
 
     buildTypes {
-        debug {
-            BuildConfigField("String", "API_KEY", "1233a469bde749668bd95921230310")
+        getByName(BuildType.DEBUG) {
+            applicationIdSuffix = ".debug"
+            isShrinkResources = false
+
+            signingConfig = signingConfigs.findByName("debug")
         }
-        release {
-            isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            BuildConfigField("String", "API_KEY", "1233a469bde749668bd95921230310")
+        getByName(BuildType.RELEASE) {
+            applicationIdSuffix = ""
+            isShrinkResources = true
+
+            signingConfig = signingConfigs.findByName("release")
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
+
     buildFeatures {
         viewBinding = true
         buildConfig = true
     }
-}
-
-kapt {
-    correctErrorTypes = true
-}
-
-hilt {
-    enableAggregatingTask = true
 }
 
 dependencies {
@@ -79,15 +54,9 @@ dependencies {
         Projects.Feature.settings
     )
 
+    addDefaultImpl()
     addHilt()
     addRetrofit()
-
-    implementation("androidx.core:core-ktx:${Versions.KOTLIN}")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.10.0")
-
-    implementation("androidx.navigation:navigation-fragment-ktx:${Versions.NAVIGATION}")
-    implementation("androidx.navigation:navigation-ui-ktx:${Versions.NAVIGATION}")
 }
 
 secrets {

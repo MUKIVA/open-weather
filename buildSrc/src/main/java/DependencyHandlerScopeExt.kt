@@ -1,45 +1,37 @@
-package com.mukiva.buildsrc
-
 import org.gradle.kotlin.dsl.DependencyHandlerScope
 import org.gradle.kotlin.dsl.project
 
 fun DependencyHandlerScope.addDefaultImpl() {
-    add("implementation","androidx.core:core-ktx:${Versions.KOTLIN}")
-    add("implementation","com.google.android.material:material:1.10.0")
-    add("implementation","androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
-    add("implementation","androidx.fragment:fragment-ktx:1.6.2")
+    add("implementation", Deps.AndroidX.CORE_KTX)
+    add("implementation", Deps.Google.MATERIAL)
+    add("implementation", Deps.AndroidX.VM_LIFECYCLE)
+    add("implementation", Deps.AndroidX.FRAGMENT)
 }
 
 fun DependencyHandlerScope.addRoom() {
-    add("implementation", Deps.Room.runtime)
-    add("ksp", Deps.Room.compiler)
-    add("implementation", Deps.Room.ktx)
+    add("implementation", Deps.AndroidX.Room.RUNTIME)
+    add("implementation", Deps.AndroidX.Room.KTX)
+    add("ksp", Deps.AndroidX.Room.COMPILER)
 }
 
 fun DependencyHandlerScope.addRetrofit() {
-    add("implementation", Deps.Retrofit.retrofit)
-    add("implementation", Deps.Retrofit.converterGson)
+    add("implementation", Deps.Retrofit.RETROFIT)
+    add("implementation", Deps.Retrofit.CONVERTER_GSON)
 }
 
 fun DependencyHandlerScope.addHilt() {
-    add("implementation", Deps.Hilt.hiltAndroid)
-    add("kapt", Deps.Hilt.hiltCompiler)
+    add("implementation", Deps.Google.Hilt.HILT_ANDROID)
+    add("ksp", Deps.Google.Hilt.HILT_COMPILER)
 }
 
 fun DependencyHandlerScope.addDataStore() {
-    add("implementation", Deps.DataStore.dataStore)
+    add("implementation", Deps.AndroidX.DataStore.DATA_STORE)
 }
 
 fun DependencyHandlerScope.coreScope(vararg items: CoreModule) {
     items.forEach { item ->
         add("implementation", project(item.path))
     }
-}
-
-enum class AddFeatureMethod {
-    ALL,
-    ONLY_IMPL,
-    ONLY_API
 }
 
 fun DependencyHandlerScope.featureScope(

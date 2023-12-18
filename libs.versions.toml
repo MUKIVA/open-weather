@@ -1,0 +1,64 @@
+[versions]
+kotlin = "1.12.0"
+appcompat = "1.6.1"
+hilt = "2.49"
+retrofit = "2.9.0"
+navigation = "2.7.5"
+room = "2.6.1"
+data-store = "1.0.0"
+material = "1.10.0"
+vm-lifecycle = "2.6.2"
+fragment = "1.6.2"
+activity = "1.8.2"
+
+android-gradle = "8.2.0"
+secrets = "2.0.1"
+ksp = "1.9.21-1.0.16"
+
+[libraries]
+kotlin-android-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "kotlin" }
+android-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+android-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+android-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "vm-lifecycle" }
+android-fragment = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragment" }
+android-activity = { group = "androidx.activity", name = "activity-ktx", version.ref = "activity" }
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
+hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+retrofit-converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
+data-store-prefs = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "data-store" }
+navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigation" }
+navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigation" }
+
+[bundles]
+feature-deps = [
+    "kotlin-android-ktx",
+    "android-appcompat",
+    "android-material",
+    "android-viewmodel",
+    "android-fragment",
+    "android-activity"
+]
+room-deps-impl = [
+    "room-runtime",
+    "room-ktx"
+]
+retrofit-deps = [
+    "retrofit",
+    "retrofit-converter-gson"
+]
+navigation-deps = [
+    "navigation-fragment",
+    "navigation-ui-ktx"
+]
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "android-gradle" }
+android-lib = { id = "com.android.library" }
+hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secrets" }

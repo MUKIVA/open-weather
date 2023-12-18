@@ -56,7 +56,7 @@ class SettingsTemplateFragment : Fragment(R.layout.fragment_settings_template) {
                 )
             },
             onToggleOption = {
-                mViewModel.onToggleOption(it)
+                mViewModel.onToggleOption()
             }
         )
     }
