@@ -8,4 +8,8 @@
     <string name="search_empty">We didn\'t find anything</string>
     <string name="search_clear_field_description">Clear field</string>
     <string name="drag_handler_description">Drag handler</string>
+    <string name="remove_selected_locations_description">Remove locations</string>
+
+    <string name="selected_location_count">Selected: %1$d</string>
+    <string name="select_all_description">Select all</string>
 </resources>

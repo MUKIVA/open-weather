@@ -1,8 +1,6 @@
 package com.mukiva.feature.location_manager_impl.presentation
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
-import androidx.room.util.copy
 import com.mukiva.feature.location_manager_impl.domain.model.Location
 import com.mukiva.feature.location_manager_impl.domain.usecase.AddLocationUseCase
 import com.mukiva.feature.location_manager_impl.domain.usecase.GetAddedLocationsUseCase
@@ -43,14 +41,26 @@ class LocationManagerViewModel @Inject constructor(
            }
         }
     }
-    fun removeLocation(item: EditableLocation) {
-        modifyState {
-            copy(
-                savedListState = savedListState.copy(
-                    list = savedListState.list.filter { it.location.uid != item.location.uid }
-                )
+    fun removeSelectedLocations() {
+        with(state.value) {
+            val newSavedListSate = savedListState.copy(
+                list = savedListState.list.filter { !it.isSelected }
             )
+            modifyState { copy(savedListState = newSavedListSate) }
+            validateEditState(newSavedListSate)
         }
+    }
+    fun removeLocation(item: EditableLocation) {
+        with(state.value) {
+            val newSavedListState = savedListState.copy(
+                list = savedListState.list.filter { it.location.uid != item.location.uid }
+            )
+            modifyState {
+                copy(savedListState = newSavedListState)
+            }
+            validateEditState(newSavedListState)
+        }
+
     }
     fun moveLocation(from: Int, to: Int) {
         modifyState {
@@ -61,7 +71,6 @@ class LocationManagerViewModel @Inject constructor(
             )
         }
     }
-
     fun executeSearch(q: String) {
         setSearchListType(LocationManagerState.ListStateType.LOADING)
 
@@ -84,35 +93,66 @@ class LocationManagerViewModel @Inject constructor(
     }
     fun enterSearchMode() =
         setManagerType(LocationManagerState.Type.SEARCH)
-    fun enterNormalMode() =
+    fun enterNormalMode() {
         setManagerType(LocationManagerState.Type.NORMAL)
+        updateIsEditableForAllLocations(false)
+    }
     fun enterEditMode(item: EditableLocation) {
         setManagerType(LocationManagerState.Type.EDIT)
+        updateIsEditableForAllLocations(true, item)
+    }
+    fun selectAllEditable() {
         modifyState {
             copy(
                 savedListState = savedListState.copy(
-                    list = savedListState.list.map {
-                        it.copy(
-                            isEditable = true,
-                            isSelected = item.location.uid == it.location.uid
-                        )
-                    }
+                    list = savedListState.list.map { it.copy(isSelected = true) }
                 )
             )
         }
     }
     fun switchEditableSelect(item: EditableLocation) {
+        with(state.value) {
+            val newSavedListState = savedListState.copy(
+                list = savedListState.list.map {
+                    when (it.location.uid == item.location.uid) {
+                        true -> it.copy(isSelected = !it.isSelected)
+                        false -> it
+                    }
+                }
+            )
+            modifyState {
+                copy(savedListState = newSavedListState)
+            }
+            validateEditState(newSavedListState)
+        }
+    }
+    private fun updateIsEditableForAllLocations(isEditable: Boolean, item: EditableLocation? = null) {
         modifyState {
             copy(
                 savedListState = savedListState.copy(
                     list = savedListState.list.map {
-                        when (it.location.uid == item.location.uid) {
-                            true -> it.copy(isSelected = !it.isSelected)
-                            false -> it
-                        }
+                        it.copy(
+                            isEditable = isEditable,
+                            isSelected = item?.run {
+                                location.uid == it.location.uid
+                            } ?: false
+                        )
                     }
                 )
             )
+        }
+
+    }
+    private fun validateEditState(listState: ListState<EditableLocation>) = with(EditableLocation) {
+        if (listState.selectedCount == 0) {
+            enterNormalMode()
+        }
+        if (listState.list.isEmpty()) {
+            modifyState {
+                copy(savedListState = savedListState.copy(
+                    type = LocationManagerState.ListStateType.EMPTY
+                ))
+            }
         }
     }
     private fun setManagerType(type: LocationManagerState.Type) {

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/selectAll"
+        android:icon="@drawable/ic_select_all"
+        app:showAsAction="ifRoom"
+        app:iconTint="?attr/colorSecondary"
+        android:title="@string/select_all_description"
+        />
+
+    <item
+        android:id="@+id/remove"
+        android:icon="@drawable/ic_delete"
+        app:showAsAction="ifRoom"
+        app:iconTint="?attr/colorSecondary"
+        android:title="@string/remove_selected_locations_description"
+        />
+
+</menu>

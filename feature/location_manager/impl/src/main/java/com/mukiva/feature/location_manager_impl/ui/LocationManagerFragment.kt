@@ -1,7 +1,6 @@
 package com.mukiva.feature.location_manager_impl.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.ListAdapter
 import android.widget.Toast
@@ -20,6 +19,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mukiva.core.ui.databinding.LayListStatesBinding
 import com.mukiva.feature.location_manager_impl.R
 import com.mukiva.feature.location_manager_impl.databinding.FragmentLocationManagerBinding
+import com.mukiva.feature.location_manager_impl.presentation.EditableLocation
+import com.mukiva.feature.location_manager_impl.presentation.ListState
 import com.mukiva.feature.location_manager_impl.presentation.LocationManagerEvent
 import com.mukiva.feature.location_manager_impl.presentation.LocationManagerState
 import com.mukiva.feature.location_manager_impl.presentation.LocationManagerViewModel
@@ -69,7 +70,11 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
     }
 
     private val mSearchQueryFlow = MutableSharedFlow<String>()
-
+    private val mOnBackPressedDecorator = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            mViewModel.enterNormalMode()
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -84,6 +89,24 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
     private fun initActionBar() = with(mBinding) {
         (requireActivity() as AppCompatActivity)
             .setSupportActionBar(searchBar)
+
+        toolbar.setOnMenuItemClickListener { item ->
+            when(item.itemId) {
+                R.id.remove -> {
+                    mViewModel.removeSelectedLocations()
+                    true
+                }
+                R.id.selectAll -> {
+                    mViewModel.selectAllEditable()
+                    true
+                }
+                else -> false
+            }
+        }
+
+        toolbar.setNavigationOnClickListener {
+            mViewModel.enterNormalMode()
+        }
     }
 
     @OptIn(FlowPreview::class)
@@ -99,20 +122,11 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
 
         searchView.setOnShowListener {
             mViewModel.enterSearchMode()
-            Log.d("SET_BACK_PRESSED", "CHECK")
-            requireActivity().onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
-                init {
-                    searchView.setOnHideListener {
-                        remove()
-                    }
-                }
-
-                override fun handleOnBackPressed() {
-                    mViewModel.enterNormalMode()
-                }
-
-            })
         }
+        searchView.setOnHideListener {
+            mOnBackPressedDecorator.remove()
+        }
+
         mSearchQueryFlow
             .debounce(500)
             .onEach { mViewModel.executeSearch(it) }
@@ -211,8 +225,16 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
         )
         updateList(state.searchListState.list, mSearchAdapter)
         updateList(state.savedListState.list, mAddedAdapter)
+        updateEditTitle(state.savedListState)
     }
-
+    private fun updateEditTitle(state: ListState<EditableLocation>) {
+        with(EditableLocation) {
+            mBinding.toolbar.title = getString(
+                R.string.selected_location_count,
+                state.selectedCount
+            )
+        }
+    }
     private fun updateListState(
         state: LocationManagerState.ListStateType,
         list: RecyclerView,
@@ -244,12 +266,24 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
     private fun updateMode(mode: LocationManagerState.Type) {
         when(mode) {
             LocationManagerState.Type.NORMAL -> with(mBinding) {
+                mOnBackPressedDecorator.remove()
+                toolbar.gone()
                 searchView.hide()
+                searchBar.visible()
             }
             LocationManagerState.Type.EDIT -> with(mBinding) {
+                toolbar.visible()
+                searchBar.gone()
                 searchView.hide()
+                requireActivity().onBackPressedDispatcher
+                    .addCallback(mOnBackPressedDecorator)
+
+
             }
-            else -> {}
+            LocationManagerState.Type.SEARCH -> {
+                requireActivity().onBackPressedDispatcher
+                    .addCallback(mOnBackPressedDecorator)
+            }
         }
     }
 
