@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="?attr/colorSurfaceContainer"
+    android:layout_marginVertical="4dp"
+    android:animateLayoutChanges="false">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        android:background="?attr/selectableItemBackground">
+
+        <ImageView
+            android:id="@+id/dragHandleIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_drag_handle"
+            app:tint="?attr/colorSecondary"
+            android:contentDescription="@string/drag_handler_description"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/cityName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+            android:layout_marginHorizontal="8dp"
+            app:layout_goneMarginStart="0dp"
+            app:layout_goneMarginEnd="0dp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constraintEnd_toStartOf="@+id/selectCheckBox"
+            app:layout_constraintStart_toEndOf="@id/dragHandleIcon"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="МоскваМоскваМоскваМоскваМосква" />
+
+        <TextView
+            android:id="@+id/region"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
+            android:textColor="?attr/colorSecondary"
+            android:layout_marginHorizontal="8dp"
+            app:layout_goneMarginStart="0dp"
+            app:layout_goneMarginEnd="0dp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constraintEnd_toStartOf="@+id/selectCheckBox"
+            app:layout_constraintStart_toEndOf="@id/dragHandleIcon"
+            app:layout_constraintTop_toBottomOf="@id/cityName"
+            tools:text="Регион" />
+
+        <TextView
+            android:id="@+id/country"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
+            android:textColor="?attr/colorSecondary"
+            android:layout_marginHorizontal="8dp"
+            app:layout_goneMarginStart="0dp"
+            app:layout_goneMarginEnd="0dp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/selectCheckBox"
+            app:layout_constraintStart_toEndOf="@id/dragHandleIcon"
+            app:layout_constraintTop_toBottomOf="@id/region"
+            tools:text="Страна" />
+
+
+        <CheckBox
+            android:id="@+id/selectCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

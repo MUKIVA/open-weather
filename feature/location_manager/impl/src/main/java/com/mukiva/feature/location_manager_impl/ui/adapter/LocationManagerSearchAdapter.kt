@@ -6,20 +6,18 @@ import androidx.recyclerview.widget.ListAdapter
 import com.mukiva.feature.location_manager_impl.databinding.ItemLocationBinding
 import com.mukiva.feature.location_manager_impl.domain.model.Location
 
-class LocationManagerAdapter(
+class LocationManagerSearchAdapter(
     private val onAddCallback: (location: Location) -> Unit
-) : ListAdapter<Location, LocationManagerViewHolder>(
-    LocationManagerDiffUtil()
-) {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LocationManagerViewHolder {
+) : ListAdapter<Location, LocationViewHolder>(LocationDiffUtil) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LocationViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        return LocationManagerViewHolder(
+        return LocationViewHolder(
             binding = ItemLocationBinding.inflate(inflater, parent, false),
             onAddCallback = onAddCallback
         )
     }
 
-    override fun onBindViewHolder(holder: LocationManagerViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: LocationViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 }

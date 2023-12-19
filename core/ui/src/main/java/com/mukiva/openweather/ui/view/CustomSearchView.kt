@@ -22,8 +22,8 @@ class CustomSearchView @JvmOverloads constructor(
     }
 
     override fun show() {
-        mOnShowListener()
         super.show()
+        mOnShowListener()
     }
 
     override fun hide() {

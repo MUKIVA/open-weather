@@ -1,6 +1,8 @@
 package com.mukiva.feature.location_manager_impl.presentation
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
+import androidx.room.util.copy
 import com.mukiva.feature.location_manager_impl.domain.model.Location
 import com.mukiva.feature.location_manager_impl.domain.usecase.AddLocationUseCase
 import com.mukiva.feature.location_manager_impl.domain.usecase.GetAddedLocationsUseCase
@@ -9,6 +11,7 @@ import com.mukiva.openweather.presentation.SingleStateViewModel
 import com.mukiva.usecase.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.util.Collections
 import javax.inject.Inject
 
 @HiltViewModel
@@ -16,24 +19,11 @@ class LocationManagerViewModel @Inject constructor(
     initialState: LocationManagerState,
     private val searchUseCase: LocationSearchUseCase,
     private val addLocationUseCase: AddLocationUseCase,
-    private val getAddedLocationsUseCase: GetAddedLocationsUseCase
+    private val getAddedLocationsUseCase: GetAddedLocationsUseCase,
 ) : SingleStateViewModel<LocationManagerState, LocationManagerEvent>(initialState) {
 
     init {
         fetchAddedLocations()
-    }
-
-    private fun fetchAddedLocations() {
-        viewModelScope.launch {
-            when (val result = getAddedLocationsUseCase()) {
-                is ApiResult.Success -> {
-                    updateAddedListState(result.data)
-                }
-                is ApiResult.Error -> {
-                    event(LocationManagerEvent.Toast(result.err.name))
-                }
-            }
-        }
     }
 
     fun addLocation(location: Location) {
@@ -53,40 +43,20 @@ class LocationManagerViewModel @Inject constructor(
            }
         }
     }
-
-    private fun updateAddedListState(list: List<Location>) {
+    fun removeLocation(item: EditableLocation) {
         modifyState {
             copy(
-                addedListState = addedListState.copy(
-                    list = list,
-                    type = when(list.size) {
-                        0 -> LocationManagerState.ListStateType.EMPTY
-                        else -> LocationManagerState.ListStateType.CONTENT
-                    }
+                savedListState = savedListState.copy(
+                    list = savedListState.list.filter { it.location.uid != item.location.uid }
                 )
             )
         }
     }
-
-    private fun updateSearchListState(list: List<Location>) {
+    fun moveLocation(from: Int, to: Int) {
         modifyState {
             copy(
-                searchListState = searchListState.copy(
-                    list = list,
-                    type = when(list.size) {
-                        0 -> LocationManagerState.ListStateType.EMPTY
-                        else -> LocationManagerState.ListStateType.CONTENT
-                    }
-                )
-            )
-        }
-    }
-
-    private fun setSearchListType(type: LocationManagerState.ListStateType) {
-        modifyState {
-            copy(
-                searchListState = searchListState.copy(
-                    type = type
+                savedListState = savedListState.copy(
+                    list = savedListState.list.swapAll(from, to)
                 )
             )
         }
@@ -111,6 +81,108 @@ class LocationManagerViewModel @Inject constructor(
             }
         }
 
+    }
+    fun enterSearchMode() =
+        setManagerType(LocationManagerState.Type.SEARCH)
+    fun enterNormalMode() =
+        setManagerType(LocationManagerState.Type.NORMAL)
+    fun enterEditMode(item: EditableLocation) {
+        setManagerType(LocationManagerState.Type.EDIT)
+        modifyState {
+            copy(
+                savedListState = savedListState.copy(
+                    list = savedListState.list.map {
+                        it.copy(
+                            isEditable = true,
+                            isSelected = item.location.uid == it.location.uid
+                        )
+                    }
+                )
+            )
+        }
+    }
+    fun switchEditableSelect(item: EditableLocation) {
+        modifyState {
+            copy(
+                savedListState = savedListState.copy(
+                    list = savedListState.list.map {
+                        when (it.location.uid == item.location.uid) {
+                            true -> it.copy(isSelected = !it.isSelected)
+                            false -> it
+                        }
+                    }
+                )
+            )
+        }
+    }
+    private fun setManagerType(type: LocationManagerState.Type) {
+        modifyState {
+            copy(type = type)
+        }
+    }
+    private fun fetchAddedLocations() {
+        viewModelScope.launch {
+            when (val result = getAddedLocationsUseCase()) {
+                is ApiResult.Success -> {
+                    updateAddedListState(result.data.map { it.asEditable() })
+                }
+                is ApiResult.Error -> {
+                    event(LocationManagerEvent.Toast(result.err.name))
+                }
+            }
+        }
+    }
+    private fun updateAddedListState(list: List<EditableLocation>) {
+        modifyState {
+            copy(
+                savedListState = savedListState.copy(
+                    list = list,
+                    type = when(list.size) {
+                        0 -> LocationManagerState.ListStateType.EMPTY
+                        else -> LocationManagerState.ListStateType.CONTENT
+                    }
+                )
+            )
+        }
+    }
+    private fun updateSearchListState(list: List<Location>) {
+        modifyState {
+            copy(
+                searchListState = searchListState.copy(
+                    list = list,
+                    type = when(list.size) {
+                        0 -> LocationManagerState.ListStateType.EMPTY
+                        else -> LocationManagerState.ListStateType.CONTENT
+                    }
+                )
+            )
+        }
+    }
+    private fun setSearchListType(type: LocationManagerState.ListStateType) {
+        modifyState {
+            copy(
+                searchListState = searchListState.copy(
+                    type = type
+                )
+            )
+        }
+    }
+    private fun Location.asEditable() = EditableLocation(
+        location = this,
+        isSelected = false,
+        isEditable = state.value.type == LocationManagerState.Type.EDIT
+    )
+    private fun List<EditableLocation>.swapAll(from: Int, to: Int): List<EditableLocation> {
+        if (from < to) {
+            for (i in from until to) {
+                Collections.swap(this, i, i + 1)
+            }
+        } else {
+            for (i in from downTo to + 1) {
+                Collections.swap(this, i, i - 1)
+            }
+        }
+        return this
     }
 
 }

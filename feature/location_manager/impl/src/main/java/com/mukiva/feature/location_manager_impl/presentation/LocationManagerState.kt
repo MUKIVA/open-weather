@@ -3,10 +3,16 @@ package com.mukiva.feature.location_manager_impl.presentation
 import com.mukiva.feature.location_manager_impl.domain.model.Location
 
 data class LocationManagerState(
+    val type: Type,
     val searchListState: ListState<Location>,
-    val addedListState: ListState<Location>,
-    val query: String,
+    val savedListState: ListState<EditableLocation>,
+    val query: String
 ) {
+    enum class Type {
+        NORMAL,
+        SEARCH,
+        EDIT
+    }
 
     enum class ListStateType {
         ERROR,
@@ -17,12 +23,13 @@ data class LocationManagerState(
 
     companion object {
         fun default() = LocationManagerState(
+            type = Type.NORMAL,
             query = "",
             searchListState = ListState(
                 type = ListStateType.EMPTY,
                 list = emptyList()
             ),
-            addedListState = ListState(
+            savedListState = ListState(
                 type = ListStateType.EMPTY,
                 list = emptyList()
             )

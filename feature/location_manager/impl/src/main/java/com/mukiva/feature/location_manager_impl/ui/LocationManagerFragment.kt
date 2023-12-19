@@ -1,7 +1,9 @@
 package com.mukiva.feature.location_manager_impl.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import androidx.recyclerview.widget.ListAdapter
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -13,15 +15,17 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.mukiva.core.ui.databinding.LayListStatesBinding
 import com.mukiva.feature.location_manager_impl.R
 import com.mukiva.feature.location_manager_impl.databinding.FragmentLocationManagerBinding
-import com.mukiva.feature.location_manager_impl.domain.model.Location
 import com.mukiva.feature.location_manager_impl.presentation.LocationManagerEvent
 import com.mukiva.feature.location_manager_impl.presentation.LocationManagerState
 import com.mukiva.feature.location_manager_impl.presentation.LocationManagerViewModel
-import com.mukiva.feature.location_manager_impl.ui.adapter.LocationManagerAdapter
+import com.mukiva.feature.location_manager_impl.ui.adapter.DragDropItemTouchHelper
+import com.mukiva.feature.location_manager_impl.ui.adapter.LocationManagerSavedAdapter
+import com.mukiva.feature.location_manager_impl.ui.adapter.LocationManagerSearchAdapter
 import com.mukiva.openweather.ui.emptyView
 import com.mukiva.openweather.ui.error
 import com.mukiva.openweather.ui.gone
@@ -43,13 +47,21 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
 
     private val mViewModel by viewModels<LocationManagerViewModel>()
     private val mBinding by viewBindings(FragmentLocationManagerBinding::bind)
-    private val mAddedAdapter by uiLazy { LocationManagerAdapter(
-        onAddCallback = {
-            mViewModel.addLocation(it)
-        }
-    )}
+    private val mAddedAdapter by uiLazy {
+        LocationManagerSavedAdapter(
+            onEnterEditMode = { item -> mViewModel.enterEditMode(item) },
+            onSelectEditable = { item -> mViewModel.switchEditableSelect(item) },
+            onItemRemove =  { item -> mViewModel.removeLocation(item) },
+            onItemMoveCallback = { from, to -> mViewModel.moveLocation(from, to) }
+        )
+    }
+    private val mTouchHelper by uiLazy {
+        ItemTouchHelper(
+            DragDropItemTouchHelper(mAddedAdapter)
+        )
+    }
     private val mSearchAdapter by uiLazy {
-        LocationManagerAdapter(
+        LocationManagerSearchAdapter(
             onAddCallback = {
                 mViewModel.addLocation(it)
             }
@@ -72,8 +84,6 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
     private fun initActionBar() = with(mBinding) {
         (requireActivity() as AppCompatActivity)
             .setSupportActionBar(searchBar)
-
-        searchBar.contentInsetStartWithNavigation
     }
 
     @OptIn(FlowPreview::class)
@@ -88,8 +98,9 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
             }
 
         searchView.setOnShowListener {
+            mViewModel.enterSearchMode()
+            Log.d("SET_BACK_PRESSED", "CHECK")
             requireActivity().onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
-
                 init {
                     searchView.setOnHideListener {
                         remove()
@@ -97,12 +108,11 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
                 }
 
                 override fun handleOnBackPressed() {
-                    searchView.hide()
+                    mViewModel.enterNormalMode()
                 }
 
             })
         }
-
         mSearchQueryFlow
             .debounce(500)
             .onEach { mViewModel.executeSearch(it) }
@@ -112,6 +122,8 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
     private fun initList() = with(mBinding) {
         addedList.adapter = mAddedAdapter
         searchViewList.adapter = mSearchAdapter
+
+        mTouchHelper.attachToRecyclerView(addedList)
 
         ViewCompat.setOnApplyWindowInsetsListener(appbar) { v, insets ->
             val statusBars = insets.getInsets(WindowInsetsCompat.Type.statusBars())
@@ -171,8 +183,9 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
     }
 
     private fun updateState(state: LocationManagerState) = with(mBinding) {
+        updateMode(state.type)
         updateListState(
-            state = state.addedListState.type,
+            state = state.savedListState.type,
             list = addedList,
             emptyView = addedEmptyView,
             onFailBind = {
@@ -197,7 +210,7 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
             }
         )
         updateList(state.searchListState.list, mSearchAdapter)
-        updateList(state.addedListState.list, mAddedAdapter)
+        updateList(state.savedListState.list, mAddedAdapter)
     }
 
     private fun updateListState(
@@ -228,9 +241,21 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
         }
     }
 
-    private fun updateList(
-        list: List<Location>,
-        adapter: LocationManagerAdapter
+    private fun updateMode(mode: LocationManagerState.Type) {
+        when(mode) {
+            LocationManagerState.Type.NORMAL -> with(mBinding) {
+                searchView.hide()
+            }
+            LocationManagerState.Type.EDIT -> with(mBinding) {
+                searchView.hide()
+            }
+            else -> {}
+        }
+    }
+
+    private fun <T> updateList(
+        list: List<T>,
+        adapter: ListAdapter<T, *>
     ) {
         adapter.submitList(list)
     }

@@ -7,4 +7,5 @@
     <string name="search_error_refresh">Refresh</string>
     <string name="search_empty">We didn\'t find anything</string>
     <string name="search_clear_field_description">Clear field</string>
+    <string name="drag_handler_description">Drag handler</string>
 </resources>
