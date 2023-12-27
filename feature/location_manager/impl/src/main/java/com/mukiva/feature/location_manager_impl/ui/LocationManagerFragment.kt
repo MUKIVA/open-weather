@@ -1,13 +1,17 @@
 package com.mukiva.feature.location_manager_impl.ui
 
+import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
+import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.recyclerview.widget.ListAdapter
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
@@ -43,6 +47,48 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
+
+class VerticalVisibleAnimationWrapper(
+    private val viewGroup: ViewGroup
+) {
+    private val hiddenAnimator get() = ValueAnimator.ofInt(viewGroup.height, HIDDEN_HEIGHT).apply {
+        duration = DURATION
+        interpolator = AccelerateDecelerateInterpolator()
+        addUpdateListener {
+            viewGroup.updateLayoutParams {
+                height = it.animatedValue as Int
+            }
+        }
+    }
+
+    private val visibleAnimator get() = ValueAnimator.ofInt(viewGroup.height, VISIBLE_HEIGHT).apply {
+        duration = DURATION
+        interpolator = AccelerateDecelerateInterpolator()
+        addUpdateListener {
+            viewGroup.updateLayoutParams {
+                height = it.animatedValue as Int
+            }
+        }
+    }
+
+    fun visible() {
+        viewGroup.clearAnimation()
+        visibleAnimator.start()
+    }
+
+    fun hidden() {
+        viewGroup.clearAnimation()
+        hiddenAnimator.start()
+    }
+
+    companion object {
+        private const val DURATION = 250L
+        private const val HIDDEN_HEIGHT = 0
+        private const val VISIBLE_HEIGHT = 150
+    }
+
+}
+
 @AndroidEntryPoint
 class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
 
@@ -56,11 +102,12 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
             onItemMoveCallback = { from, to -> mViewModel.moveLocation(from, to) }
         )
     }
-    private val mTouchHelper by uiLazy {
-        ItemTouchHelper(
-            DragDropItemTouchHelper(mAddedAdapter)
-        )
-    }
+    private val mTouchHelperCallback by uiLazy { DragDropItemTouchHelper(mAddedAdapter).apply {
+        isEnabled = false
+        swipeIsEnabled = false
+        dragDropIsEnabled = true
+    } }
+    private val mTouchHelper by uiLazy { ItemTouchHelper(mTouchHelperCallback) }
     private val mSearchAdapter by uiLazy {
         LocationManagerSearchAdapter(
             onAddCallback = {
@@ -68,12 +115,17 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
             }
         )
     }
-
     private val mSearchQueryFlow = MutableSharedFlow<String>()
     private val mOnBackPressedDecorator = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             mViewModel.enterNormalMode()
         }
+    }
+    private val mSearchBarAnimator by uiLazy {
+        VerticalVisibleAnimationWrapper(mBinding.searchBar)
+    }
+    private val mToolBarAnimator by uiLazy {
+        VerticalVisibleAnimationWrapper(mBinding.toolbar)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -138,6 +190,7 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
         searchViewList.adapter = mSearchAdapter
 
         mTouchHelper.attachToRecyclerView(addedList)
+
 
         ViewCompat.setOnApplyWindowInsetsListener(appbar) { v, insets ->
             val statusBars = insets.getInsets(WindowInsetsCompat.Type.statusBars())
@@ -267,22 +320,28 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
         when(mode) {
             LocationManagerState.Type.NORMAL -> with(mBinding) {
                 mOnBackPressedDecorator.remove()
-                toolbar.gone()
+                mToolBarAnimator.hidden()
+                mSearchBarAnimator.visible()
                 searchView.hide()
-                searchBar.visible()
+                searchView.animate()
+                mTouchHelperCallback.isEnabled = false
             }
             LocationManagerState.Type.EDIT -> with(mBinding) {
-                toolbar.visible()
-                searchBar.gone()
+//                toolbar.visible()
+                mToolBarAnimator.visible()
+//                searchBar.gone()
+                mSearchBarAnimator.hidden()
                 searchView.hide()
                 requireActivity().onBackPressedDispatcher
                     .addCallback(mOnBackPressedDecorator)
+                mTouchHelperCallback.isEnabled = true
 
 
             }
             LocationManagerState.Type.SEARCH -> {
                 requireActivity().onBackPressedDispatcher
                     .addCallback(mOnBackPressedDecorator)
+                mTouchHelperCallback.isEnabled = false
             }
         }
     }

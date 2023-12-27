@@ -40,15 +40,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/search_hint"
-            app:navigationIcon="@drawable/ic_cancel"
-            android:layout_gravity="top"
-            app:elevation="0dp"/>
+            app:elevation="16dp"
+            android:layout_margin="0dp"
+            app:navigationIcon="@drawable/ic_cancel" />
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:menu="@menu/edit_locations_menu"
+            android:layout_marginTop="-24dp"
             app:navigationIcon="@drawable/ic_arrow_back"
             app:navigationIconTint="?attr/colorSecondary"
             tools:title="Selected elements: 10"

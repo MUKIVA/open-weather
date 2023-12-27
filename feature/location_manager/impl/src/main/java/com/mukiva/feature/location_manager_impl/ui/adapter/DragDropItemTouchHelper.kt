@@ -1,15 +1,18 @@
 package com.mukiva.feature.location_manager_impl.ui.adapter
 
 import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 
 class DragDropItemTouchHelper(
     private val adapter: ItemTouchHelperAdapter,
 ) : ItemTouchHelper.Callback() {
 
-    override fun isLongPressDragEnabled(): Boolean = true
-    override fun isItemViewSwipeEnabled(): Boolean = true
+    var isEnabled: Boolean = true
+    var swipeIsEnabled: Boolean = true
+    var dragDropIsEnabled: Boolean = true
+
+    override fun isLongPressDragEnabled(): Boolean = isEnabled && dragDropIsEnabled
+    override fun isItemViewSwipeEnabled(): Boolean = isEnabled && swipeIsEnabled
     override fun getMovementFlags(
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder,
