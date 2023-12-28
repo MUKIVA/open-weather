@@ -9,4 +9,5 @@ interface ILocationRepository {
     suspend fun getLocalById(locationId: Int): LocationDTO?
     suspend fun addLocalLocation(vararg location: LocationDTO)
     suspend fun removeLocalLocation(location: LocationDTO)
+    suspend fun removeAllLocalLocations()
 }

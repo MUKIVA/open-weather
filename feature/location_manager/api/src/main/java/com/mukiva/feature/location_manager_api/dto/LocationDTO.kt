@@ -2,6 +2,7 @@ package com.mukiva.feature.location_manager_api.dto
 
 data class LocationDTO(
     val uid: Int,
+    val position: Int?,
     val cityName: String?,
     val regionName: String?,
     val lon: Double?,

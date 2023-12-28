@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="def_h_padding">16dp</dimen>
+    <dimen name="def_h_list_item_padding">@dimen/def_h_padding</dimen>
+    <dimen name="def_v_list_item_padding">8dp</dimen>
+</resources>

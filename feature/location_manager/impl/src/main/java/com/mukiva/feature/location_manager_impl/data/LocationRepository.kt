@@ -15,7 +15,9 @@ class LocationRepository @Inject constructor(
         return gateway.searchLocations(
             key = apiKeyProvider.apiKey,
             q = q
-        ).map { it.asDTO() }
+        ).mapIndexed { index, locationRemoteEntity ->
+            locationRemoteEntity.asDTO(index)
+        }
     }
 
     override suspend fun getAllLocal(): List<LocationDTO> {
@@ -41,11 +43,18 @@ class LocationRepository @Inject constructor(
     }
 
     override suspend fun removeLocalLocation(location: LocationDTO) {
-        return store.locationDao().delete(location.asLocal())
+        return store.locationDao().delete(
+            location.asLocal()
+        )
+    }
+
+    override suspend fun removeAllLocalLocations() {
+        store.locationDao().deleteAll()
     }
 
     private fun LocationLocalEntity.asDTO() = LocationDTO(
         uid = uid,
+        position = position,
         cityName = cityName,
         regionName = regionName,
         lon = lon,
@@ -53,8 +62,11 @@ class LocationRepository @Inject constructor(
         countryName = countryName
     )
 
-    private fun LocationRemoteEntity.asDTO() = LocationDTO(
+    private fun LocationRemoteEntity.asDTO(
+        pos: Int
+    ) = LocationDTO(
         uid = id ?: 0,
+        position = pos,
         cityName = name,
         regionName = region,
         lon = lon,
@@ -64,6 +76,7 @@ class LocationRepository @Inject constructor(
 
     private fun LocationDTO.asLocal() = LocationLocalEntity(
         uid = uid,
+        position = position,
         cityName = cityName,
         regionName = regionName,
         lon = lon,

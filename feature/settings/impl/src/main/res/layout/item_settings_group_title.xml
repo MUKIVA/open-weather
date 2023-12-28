@@ -9,5 +9,5 @@
     android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
     android:textSize="24sp"
     android:textColor="?attr/colorPrimary"
-    android:paddingVertical="8dp"
-    android:paddingHorizontal="16dp"/>
+    android:paddingVertical="@dimen/def_v_list_item_padding"
+    android:paddingHorizontal="@dimen/def_h_list_item_padding"/>

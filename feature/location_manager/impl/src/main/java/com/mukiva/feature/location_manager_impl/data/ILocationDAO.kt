@@ -22,4 +22,7 @@ interface ILocationDAO {
 
     @Delete
     fun delete(location: LocationLocalEntity)
+
+    @Query("DELETE FROM LocationLocalEntity")
+    fun deleteAll()
 }

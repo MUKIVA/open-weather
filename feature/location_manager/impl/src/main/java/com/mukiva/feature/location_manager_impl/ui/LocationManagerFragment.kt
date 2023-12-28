@@ -1,24 +1,22 @@
 package com.mukiva.feature.location_manager_impl.ui
 
-import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
-import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.recyclerview.widget.ListAdapter
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mukiva.core.ui.databinding.LayListStatesBinding
 import com.mukiva.feature.location_manager_impl.R
@@ -36,6 +34,7 @@ import com.mukiva.openweather.ui.error
 import com.mukiva.openweather.ui.gone
 import com.mukiva.openweather.ui.hide
 import com.mukiva.openweather.ui.loading
+import com.mukiva.openweather.ui.recycler.PaddingItemDecorator
 import com.mukiva.openweather.ui.uiLazy
 import com.mukiva.openweather.ui.viewBindings
 import com.mukiva.openweather.ui.visible
@@ -46,48 +45,6 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-
-
-class VerticalVisibleAnimationWrapper(
-    private val viewGroup: ViewGroup
-) {
-    private val hiddenAnimator get() = ValueAnimator.ofInt(viewGroup.height, HIDDEN_HEIGHT).apply {
-        duration = DURATION
-        interpolator = AccelerateDecelerateInterpolator()
-        addUpdateListener {
-            viewGroup.updateLayoutParams {
-                height = it.animatedValue as Int
-            }
-        }
-    }
-
-    private val visibleAnimator get() = ValueAnimator.ofInt(viewGroup.height, VISIBLE_HEIGHT).apply {
-        duration = DURATION
-        interpolator = AccelerateDecelerateInterpolator()
-        addUpdateListener {
-            viewGroup.updateLayoutParams {
-                height = it.animatedValue as Int
-            }
-        }
-    }
-
-    fun visible() {
-        viewGroup.clearAnimation()
-        visibleAnimator.start()
-    }
-
-    fun hidden() {
-        viewGroup.clearAnimation()
-        hiddenAnimator.start()
-    }
-
-    companion object {
-        private const val DURATION = 250L
-        private const val HIDDEN_HEIGHT = 0
-        private const val VISIBLE_HEIGHT = 150
-    }
-
-}
 
 @AndroidEntryPoint
 class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
@@ -228,6 +185,16 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
 
             insets
         }
+
+        searchViewList.addItemDecoration(PaddingItemDecorator.byDirections(
+            h = resources.getDimensionPixelOffset(R.dimen.def_h_padding),
+            v = resources.getDimensionPixelOffset(R.dimen.def_v_padding)
+        ))
+        searchViewList.addItemDecoration(DividerItemDecoration(
+            requireContext(),
+            LinearLayoutManager.VERTICAL)
+        )
+
     }
 
     private fun subscribeOnViewModel() {

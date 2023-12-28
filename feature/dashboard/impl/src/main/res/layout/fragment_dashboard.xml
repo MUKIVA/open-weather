@@ -19,7 +19,7 @@
             app:expandedTitleTextColor="@android:color/transparent"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingHorizontal="16dp"
+            android:paddingHorizontal="@dimen/def_h_padding"
             android:paddingTop="200dp"
             app:collapsedTitleGravity="center"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">

@@ -42,7 +42,7 @@
         android:layout_height="match_parent"
         android:background="@android:color/transparent"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:paddingVertical="8dp"
+        android:paddingVertical="@dimen/def_v_list_item_padding"
         tools:listitem="@layout/item_selectable_item"/>
 
 </LinearLayout>

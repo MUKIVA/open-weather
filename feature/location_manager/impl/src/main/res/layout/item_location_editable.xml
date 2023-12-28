@@ -5,15 +5,15 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="?attr/colorSurfaceContainer"
-    android:layout_marginVertical="4dp"
-    android:animateLayoutChanges="false">
+    android:layout_marginVertical="2dp"
+    app:strokeColor="?attr/colorPrimary">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp"
-        android:background="?attr/selectableItemBackground">
+        android:padding="@dimen/def_h_padding"
+        android:foreground="?attr/selectableItemBackground"
+        android:background="@android:color/transparent">
 
         <ImageView
             android:id="@+id/dragHandleIcon"

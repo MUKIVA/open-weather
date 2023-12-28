@@ -20,7 +20,7 @@ class GetAddedLocationsUseCase @Inject constructor(
                 with(LocationMapper) {
                     repository.getAllLocal().map {
                         it.asDomain()
-                    }
+                    }.sortedBy { it.position }
                 }
             }
         }

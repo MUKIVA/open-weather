@@ -8,6 +8,8 @@ import androidx.room.PrimaryKey
 data class LocationLocalEntity(
     @PrimaryKey
     val uid: Int,
+    @ColumnInfo(name = "position")
+    val position: Int?,
     @ColumnInfo(name = "city_name")
     val cityName: String?,
     @ColumnInfo(name = "region_name")

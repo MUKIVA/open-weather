@@ -30,7 +30,7 @@ fun DependencyHandlerScope.addDataStore() {
 
 fun DependencyHandlerScope.coreScope(vararg items: CoreModule) {
     items.forEach { item ->
-        add("implementation", project(item.path))
+        add("api", project(item.path))
     }
 }
 

@@ -8,6 +8,7 @@ object LocationMapper {
     fun LocationDTO.asDomain() = run {
         Location(
             uid = uid,
+            position = position ?: 0,
             cityName = cityName ?: "Unknown",
             regionName = regionName ?: "Unknown",
             countryName = countryName ?: "Unknown",
@@ -18,6 +19,7 @@ object LocationMapper {
     fun Location.asDTO() = run {
         LocationDTO(
             uid = uid,
+            position = position,
             cityName = cityName,
             regionName = regionName,
             countryName = countryName,

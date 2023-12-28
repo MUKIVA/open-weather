@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:itemCount="10"
-        android:paddingHorizontal="16dp"
+        android:paddingHorizontal="@dimen/def_h_padding"
         tools:listitem="@layout/item_location"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
@@ -41,7 +41,6 @@
             android:layout_height="wrap_content"
             android:hint="@string/search_hint"
             app:elevation="16dp"
-            android:layout_margin="0dp"
             app:navigationIcon="@drawable/ic_cancel" />
 
         <com.google.android.material.appbar.MaterialToolbar
@@ -68,7 +67,6 @@
             android:id="@+id/searchViewList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingHorizontal="16dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
         <include

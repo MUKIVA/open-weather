@@ -2,6 +2,7 @@ package com.mukiva.feature.location_manager_impl.domain.model
 
 data class Location(
     val uid: Int = 0,
+    val position: Int,
     val cityName: String,
     val regionName: String,
     val countryName: String,

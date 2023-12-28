@@ -5,8 +5,8 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="?attr/selectableItemBackground"
-    android:paddingHorizontal="16dp"
-    android:paddingVertical="8dp">
+    android:paddingHorizontal="@dimen/def_h_list_item_padding"
+    android:paddingVertical="@dimen/def_v_list_item_padding">
 
     <TextView
         android:id="@+id/settingName"

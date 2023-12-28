@@ -5,9 +5,11 @@ import com.mukiva.feature.location_manager_impl.domain.model.Location
 import com.mukiva.feature.location_manager_impl.domain.usecase.AddLocationUseCase
 import com.mukiva.feature.location_manager_impl.domain.usecase.GetAddedLocationsUseCase
 import com.mukiva.feature.location_manager_impl.domain.usecase.LocationSearchUseCase
+import com.mukiva.feature.location_manager_impl.domain.usecase.UpdateStoredLocationsUseCase
 import com.mukiva.openweather.presentation.SingleStateViewModel
 import com.mukiva.usecase.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.util.Collections
 import javax.inject.Inject
@@ -18,6 +20,7 @@ class LocationManagerViewModel @Inject constructor(
     private val searchUseCase: LocationSearchUseCase,
     private val addLocationUseCase: AddLocationUseCase,
     private val getAddedLocationsUseCase: GetAddedLocationsUseCase,
+    private val updateStoredLocationsUseCase: UpdateStoredLocationsUseCase
 ) : SingleStateViewModel<LocationManagerState, LocationManagerEvent>(initialState) {
 
     init {
@@ -46,6 +49,9 @@ class LocationManagerViewModel @Inject constructor(
             val newSavedListSate = savedListState.copy(
                 list = savedListState.list.filter { !it.isSelected }
             )
+            viewModelScope.launch {
+                updateStoredLocationsUseCase(newSavedListSate.list)
+            }
             modifyState { copy(savedListState = newSavedListSate) }
             validateEditState(newSavedListSate)
         }
@@ -63,12 +69,20 @@ class LocationManagerViewModel @Inject constructor(
 
     }
     fun moveLocation(from: Int, to: Int) {
-        modifyState {
-            copy(
-                savedListState = savedListState.copy(
-                    list = savedListState.list.swapAll(from, to)
-                )
+        with(state.value) {
+            val newState = savedListState.copy(
+                list = savedListState.list.swapAll(from, to)
             )
+            viewModelScope.async {
+                updateStoredLocationsUseCase(newState.list)
+            }.invokeOnCompletion {
+                modifyState {
+                    copy(
+                        savedListState = newState
+                    )
+                }
+            }
+
         }
     }
     fun executeSearch(q: String) {
