@@ -10,7 +10,6 @@ plugins {
 
         id(root.id)
     }
-
 }
 
 buildConfiguration {
