@@ -5,11 +5,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.mukiva.feature.location_manager_impl.databinding.ItemLocationEditableBinding
 import com.mukiva.feature.location_manager_impl.presentation.EditableLocation
-import java.util.Collections
-
-
-
-
 
 class LocationManagerSavedAdapter(
     private val onEnterEditMode: (EditableLocation) -> Unit,

@@ -4,6 +4,7 @@ import android.animation.ValueAnimator
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.core.view.updateLayoutParams
+
 class VerticalVisibleAnimationWrapper(
     private val viewGroup: ViewGroup
 ) {

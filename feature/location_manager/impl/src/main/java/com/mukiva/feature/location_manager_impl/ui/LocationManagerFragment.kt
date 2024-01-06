@@ -294,9 +294,7 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
                 mTouchHelperCallback.isEnabled = false
             }
             LocationManagerState.Type.EDIT -> with(mBinding) {
-//                toolbar.visible()
                 mToolBarAnimator.visible()
-//                searchBar.gone()
                 mSearchBarAnimator.hidden()
                 searchView.hide()
                 requireActivity().onBackPressedDispatcher

@@ -10,11 +10,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import com.mukiva.core.navigation.INavigator
+import com.mukiva.feature.dashboard_impl.navigation.DashboardScreen
 import com.mukiva.openweather.R
-import com.mukiva.impl.domain.repository.SettingsRepository
-import com.mukiva.api.Theme
+import com.mukiva.feature.settings_impl.domain.repository.SettingsRepository
+import com.mukiva.feature.settings_api.Theme
 import com.mukiva.openweather.navigator.MainNavigator
-import com.navigation.DashboardScreen
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
