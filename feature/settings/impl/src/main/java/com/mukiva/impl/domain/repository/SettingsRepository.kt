@@ -6,9 +6,8 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.mukiva.api.SpeedUnitsType
+import com.mukiva.api.UnitsType
 import com.mukiva.api.Theme
-import com.mukiva.api.TempUnitsType
 import com.mukiva.api.domain.AppConfig
 import com.mukiva.api.repository.IGeneralSettingsSetter
 import com.mukiva.api.repository.ISettingsRepository
@@ -30,15 +29,9 @@ class SettingsRepository @Inject constructor(
         }
     }
 
-    override suspend fun setTempUnitsType(type: TempUnitsType) {
+    override suspend fun setUnitsType(type: UnitsType) {
         context.dataStore.edit { settings ->
-            settings[TEMP_UNITS_TYPE_KEY] = type.name
-        }
-    }
-
-    override suspend fun setSpeedUnitsType(type: SpeedUnitsType) {
-        context.dataStore.edit { settings ->
-            settings[SPEED_UNITS_TYPE_KEY] = type.name
+            settings[UNITS_TYPE_KEY] = type.name
         }
     }
 
@@ -46,12 +39,10 @@ class SettingsRepository @Inject constructor(
         return context.dataStore.data
             .map { settings ->
                 val theme = settings[DARK_THEME_MODE_KEY]
-                val tempUnitsType = settings[TEMP_UNITS_TYPE_KEY]
-                val speedUnitsType = settings[SPEED_UNITS_TYPE_KEY]
+                val unitsType = settings[UNITS_TYPE_KEY]
                 AppConfig(
                     theme = theme?.let { Theme.valueOf(theme) } ?: Theme.SYSTEM,
-                    tempUnits = tempUnitsType?.let { TempUnitsType.valueOf(tempUnitsType) } ?: TempUnitsType.CELSIUS,
-                    speedUnits = speedUnitsType?.let { SpeedUnitsType.valueOf(speedUnitsType) } ?: SpeedUnitsType.METRIC
+                    unitsType = unitsType?.let { UnitsType.valueOf(unitsType) } ?: UnitsType.METRIC
                 )
             }
     }
@@ -61,8 +52,7 @@ class SettingsRepository @Inject constructor(
         private const val DATA_STORE_NAME = "SETTINGS"
 
         val DARK_THEME_MODE_KEY = stringPreferencesKey("DARK_THEME_MODE")
-        val TEMP_UNITS_TYPE_KEY = stringPreferencesKey("UNITS_TYPE")
-        val SPEED_UNITS_TYPE_KEY = stringPreferencesKey("SPEED_UNITS_TYPE_KEY")
+        val UNITS_TYPE_KEY = stringPreferencesKey("UNITS_TYPE_KEY")
 
     }
 

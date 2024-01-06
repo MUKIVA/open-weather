@@ -1,6 +1,6 @@
 package com.mukiva.api
 
-enum class SpeedUnitsType {
+enum class UnitsType {
     METRIC,
     IMPERIAL
 }

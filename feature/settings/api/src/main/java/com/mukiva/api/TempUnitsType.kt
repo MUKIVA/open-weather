@@ -1,6 +1,6 @@
 package com.mukiva.api
 
-enum class TempUnitsType {
-    CELSIUS,
-    FAHRENHEIT
-}
+//enum class TempUnitsType {
+//    CELSIUS,
+//    FAHRENHEIT
+//}

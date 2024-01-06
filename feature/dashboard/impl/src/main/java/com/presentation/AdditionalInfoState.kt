@@ -1,15 +1,13 @@
 package com.presentation
 
 import com.domain.model.CurrentWeather
-import com.mukiva.api.SpeedUnitsType
-import com.mukiva.api.TempUnitsType
+import com.mukiva.api.UnitsType
 
 data class AdditionalInfoState(
     val type: Type,
     val position: Int,
     val currentWeather: CurrentWeather?,
-    val tempUnitsType: TempUnitsType,
-    val speedUnitsType: SpeedUnitsType
+    val unitsType: UnitsType
 ) {
     enum class Type {
         LOADING,
@@ -21,8 +19,7 @@ data class AdditionalInfoState(
             type = Type.LOADING,
             position = 0,
             currentWeather = null,
-            tempUnitsType = TempUnitsType.CELSIUS,
-            speedUnitsType = SpeedUnitsType.METRIC
+            unitsType = UnitsType.METRIC
         )
     }
 }

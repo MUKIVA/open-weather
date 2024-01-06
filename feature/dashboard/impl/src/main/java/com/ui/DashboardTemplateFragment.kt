@@ -15,8 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import com.domain.model.Condition
 import com.domain.model.CurrentWeather
 import com.domain.model.WindDirection
-import com.mukiva.api.SpeedUnitsType
-import com.mukiva.api.TempUnitsType
+import com.mukiva.api.UnitsType
 import com.mukiva.feature.dashboard_impl.R
 import com.mukiva.feature.dashboard_impl.databinding.FragmentDashboardTemplateBinding
 import com.mukiva.openweather.ui.gone
@@ -62,31 +61,31 @@ class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template)
         if (state.currentWeather == null) return
         with(state.currentWeather) {
             updateDayStatus(isDay)
-            updateFeelsLike(this, state.tempUnitsType)
+            updateFeelsLike(this, state.unitsType)
             updateConditionField(condition, cloud)
-            updateWindSpeed(this, state.speedUnitsType)
+            updateWindSpeed(this, state.unitsType)
             updateWindDirection(windDir, windDegree.toFloat())
             updateHumidity(humidity)
-            updatePressure(this, state.speedUnitsType)
+            updatePressure(this, state.unitsType)
         }
     }
 
     private fun updatePressure(
         currentWeather: CurrentWeather,
-        unitsType: SpeedUnitsType
+        unitsType: UnitsType
     ) = with(mBinding.pressureField) {
         subtitle.text = getString(R.string.field_pressure_subtitle)
 
         val pressureMmHg = currentWeather.pressureMb * FROM_MBAR_TO_MMHG
 
         when(unitsType) {
-            SpeedUnitsType.METRIC -> {
+            UnitsType.METRIC -> {
                 fieldValue.text = getString(
                     R.string.template_mmhg,
                     pressureMmHg.toInt().toString()
                 )
             }
-            SpeedUnitsType.IMPERIAL -> {
+            UnitsType.IMPERIAL -> {
                 fieldValue.text = getString(
                     R.string.template_mb,
                     currentWeather.pressureMb.toInt().toString()
@@ -117,14 +116,14 @@ class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template)
 
     private fun updateWindSpeed(
         currentWeather: CurrentWeather,
-        speedUnitsType: SpeedUnitsType
+        speedUnitsType: UnitsType
     ) = with(mBinding.windSpeedField) {
         subtitle.text = getString(R.string.field_wind_speed_subtitle)
         when(speedUnitsType) {
-            SpeedUnitsType.METRIC -> {
+            UnitsType.METRIC -> {
                 fieldValue.text = getString(R.string.template_kmh, currentWeather.windKph.toInt())
             }
-            SpeedUnitsType.IMPERIAL -> {
+            UnitsType.IMPERIAL -> {
                 fieldValue.text = getString(R.string.template_mph, currentWeather.windMph.toInt())
             }
         }
@@ -141,13 +140,13 @@ class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template)
         fieldValue.setDrawable(R.drawable.ic_condition)
     }
 
-    private fun updateFeelsLike(currentWeather: CurrentWeather, tempUnitsType: TempUnitsType) = with(mBinding.feelsLikeField) {
-        val value = when(tempUnitsType) {
-            TempUnitsType.CELSIUS -> getString(
+    private fun updateFeelsLike(currentWeather: CurrentWeather, unitsType: UnitsType) = with(mBinding.feelsLikeField) {
+        val value = when(unitsType) {
+            UnitsType.METRIC -> getString(
                 R.string.template_celsius_main_card,
                 currentWeather.feelsLikeC.toInt()
             )
-            TempUnitsType.FAHRENHEIT -> getString(
+            UnitsType.IMPERIAL -> getString(
                 R.string.template_fahrenheit_main_card,
                 currentWeather.feelsLikeF.toInt()
             )

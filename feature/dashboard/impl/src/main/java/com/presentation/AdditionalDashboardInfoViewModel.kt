@@ -22,8 +22,7 @@ class AdditionalDashboardInfoViewModel @Inject constructor(
             settingsRepository.asAppConfig()
                 .collect {
                     modifyState { copy(
-                        tempUnitsType = it.tempUnits,
-                        speedUnitsType = it.speedUnits
+                        unitsType = it.unitsType
                     ) }
                     updateState(dataSynchronizer.lastData)
                 }

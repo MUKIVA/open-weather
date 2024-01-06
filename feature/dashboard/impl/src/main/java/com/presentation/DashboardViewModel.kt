@@ -103,7 +103,7 @@ class DashboardViewModel @Inject constructor(
     private fun onAppConfigUpdate(cfg: AppConfig) {
         modifyState {
             copy(
-                tempUnitsType = cfg.tempUnits
+                unitsType = cfg.unitsType
             )
         }
     }

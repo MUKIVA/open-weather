@@ -10,7 +10,7 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.domain.model.CurrentWithLocation
-import com.mukiva.api.TempUnitsType
+import com.mukiva.api.UnitsType
 import com.mukiva.feature.dashboard_impl.R
 import com.mukiva.feature.dashboard_impl.databinding.FragmentDashboardBinding
 import com.mukiva.openweather.ui.dp
@@ -109,7 +109,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         if (state.locationCount == 0) return
         updateDashboard(state.locationCount, state.currentIndex)
         if (state.currentWeather == null) return
-        updateTitle(state.currentWeather, state.tempUnitsType)
+        updateTitle(state.currentWeather, state.unitsType)
     }
 
     private fun updateDashboard(
@@ -122,37 +122,37 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         mBinding.dashboard.setCurrentItem(index, lifecycle.currentState == Lifecycle.State.RESUMED)
     }
 
-    private fun updateTitle(currentWithLocation: CurrentWithLocation, tempUnitsType: TempUnitsType) = with(mBinding) {
+    private fun updateTitle(currentWithLocation: CurrentWithLocation, unitsType: UnitsType) = with(mBinding) {
 
-        val mainCardTemp: (TempUnitsType) -> String = {
-            when(it) {
-                TempUnitsType.CELSIUS -> getString(
+        val mainCardTemp: (UnitsType) -> String = { unitsType ->
+            when(unitsType) {
+                UnitsType.METRIC -> getString(
                     R.string.template_celsius_main_card, currentWithLocation.currentWeather?.tempC?.toInt()
                 )
-                TempUnitsType.FAHRENHEIT -> getString(
+                UnitsType.IMPERIAL -> getString(
                     R.string.template_fahrenheit_main_card, currentWithLocation.currentWeather?.tempF?.toInt()
                 )
             }
         }
 
-        val createTitle: (CurrentWithLocation) -> String = { state ->
-            when(tempUnitsType) {
-                TempUnitsType.CELSIUS -> getString(
+        val createTitle: (UnitsType) -> String = { unitsType ->
+            when(unitsType) {
+                UnitsType.METRIC -> getString(
                     R.string.template_celsius_main_title,
-                    state.currentWeather?.tempC?.toInt(), state.location.name
+                    currentWithLocation.currentWeather?.tempC?.toInt(), currentWithLocation.location.name
                 )
-                TempUnitsType.FAHRENHEIT -> getString(
+                UnitsType.IMPERIAL -> getString(
                     R.string.template_fahrenheit_main_title,
-                    state.currentWeather?.tempF?.toInt(), state.location.name
+                    currentWithLocation.currentWeather?.tempF?.toInt(), currentWithLocation.location.name
                 )
             }
         }
 
-        val title = createTitle(currentWithLocation)
+        val title = createTitle(unitsType)
 
         toolbar.title = title
         collapsingAppbarLayout.title = title
-        mainCard.mainTemp.text = mainCardTemp(tempUnitsType)
+        mainCard.mainTemp.text = mainCardTemp(unitsType)
         mainCard.cityName.text = currentWithLocation.location.name
     }
 

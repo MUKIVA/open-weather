@@ -1,14 +1,14 @@
 package com.presentation
 
 import com.domain.model.CurrentWithLocation
-import com.mukiva.api.TempUnitsType
+import com.mukiva.api.UnitsType
 
 data class DashboardState(
     val type: Type,
     val currentIndex: Int,
     val currentWeather: CurrentWithLocation?,
     val locationCount: Int,
-    val tempUnitsType: TempUnitsType
+    val unitsType: UnitsType
 ) {
 
     enum class Type {
@@ -25,7 +25,7 @@ data class DashboardState(
             currentIndex = 0,
             locationCount = 0,
             currentWeather = null,
-            tempUnitsType = TempUnitsType.CELSIUS
+            unitsType = UnitsType.METRIC
         )
     }
 }
