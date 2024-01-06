@@ -1,6 +1,7 @@
 package com.di
 
 import com.domain.gateway.ICurrentWeatherGateway
+import com.presentation.AdditionalInfoState
 import com.presentation.DashboardState
 import dagger.Module
 import dagger.Provides
@@ -14,6 +15,9 @@ class DashboardModule {
 
     @Provides
     fun provideDashboardState() = DashboardState.default()
+
+    @Provides
+    fun provideAdditionalInfoState() = AdditionalInfoState.default()
 
     @Provides
     fun provideCurrentWeatherGateway(

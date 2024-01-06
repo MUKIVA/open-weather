@@ -1,9 +1,10 @@
 package com.mukiva.impl.presentation
 
 import androidx.lifecycle.viewModelScope
+import com.mukiva.api.SpeedUnitsType
 import com.mukiva.impl.domain.repository.SettingsRepository
 import com.mukiva.api.Theme
-import com.mukiva.api.UnitsType
+import com.mukiva.api.TempUnitsType
 import com.mukiva.api.domain.AppConfig
 import com.mukiva.impl.domain.SettingItem
 import com.mukiva.impl.domain.SettingVariant
@@ -38,8 +39,11 @@ class SettingsViewModel @Inject constructor(
                 Group.General.Theme -> {
                     config.setTheme(Theme.valueOf(variant.name))
                 }
-                Group.General.UnitsType -> {
-                    config.setUnitsType(UnitsType.valueOf(variant.name))
+                Group.General.TempUnitsType -> {
+                    config.setTempUnitsType(TempUnitsType.valueOf(variant.name))
+                }
+                Group.General.SpeedUnitsType -> {
+                    config.setSpeedUnitsType(SpeedUnitsType.valueOf(variant.name))
                 }
                 else -> {}
             }
@@ -66,9 +70,14 @@ class SettingsViewModel @Inject constructor(
                     configPropName = { cfg.theme.name }
                 ))
                 add(generateVariantItem(
-                    group = Group.General.UnitsType,
-                    enum = UnitsType::class.java,
-                    configPropName = { cfg.units.name }
+                    group = Group.General.TempUnitsType,
+                    enum = TempUnitsType::class.java,
+                    configPropName = { cfg.tempUnits.name }
+                ))
+                add(generateVariantItem(
+                    group = Group.General.SpeedUnitsType,
+                    enum = SpeedUnitsType::class.java,
+                    configPropName = { cfg.speedUnits.name }
                 ))
             }
         )

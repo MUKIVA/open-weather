@@ -18,15 +18,14 @@ class GetCurrentWeatherUseCase @Inject constructor(
     private val connectionProvider: IConnectionProvider
 ) {
 
-    suspend operator fun invoke(): ApiResult<CurrentWithLocation> {
+    suspend operator fun invoke(location: String): ApiResult<CurrentWithLocation> {
         if (!connectionProvider.hasConnection()) {
             return ApiResult.Error(ApiError.NO_INTERNET)
         }
-
         return try {
             val data = gateway.getCurrentWeather(
                 key = apiKeyProvider.apiKey,
-                q = "London",
+                q = location,
                 aqi = "No"
             )
             ApiResult.Success(

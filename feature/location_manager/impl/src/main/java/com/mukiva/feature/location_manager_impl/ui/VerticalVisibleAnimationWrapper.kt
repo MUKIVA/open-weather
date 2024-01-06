@@ -38,7 +38,7 @@ class VerticalVisibleAnimationWrapper(
     }
 
     companion object {
-        private const val DURATION = 500L
+        private const val DURATION = 250L
         private const val HIDDEN_HEIGHT = 0
         private const val VISIBLE_HEIGHT = 150
     }

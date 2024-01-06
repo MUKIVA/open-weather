@@ -45,3 +45,24 @@ fun LayListStatesBinding.loading() {
     loadIndicator.visible()
     root.visible()
 }
+
+fun LayListStatesBinding.notify(
+    msg: String,
+    buttonMsg: String,
+    action: () -> Unit
+
+) {
+    message.apply {
+        text = msg
+        visible()
+
+    }
+    button.apply {
+        setOnClickListener { action() }
+        text = buttonMsg
+        visible()
+    }
+    image.gone()
+    loadIndicator.gone()
+    root.visible()
+}

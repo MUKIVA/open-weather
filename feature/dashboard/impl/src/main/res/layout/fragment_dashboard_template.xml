@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:columnCount="2"
+            android:padding="8dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:textStyle="bold"
+                android:layout_columnSpan="2"
+                android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
+                android:text="@string/dashboard_title_current" />
+
+            <include
+                android:id="@+id/isDayField"
+                android:layout_columnWeight="1"
+                layout="@layout/item_weather_field"
+                android:layout_width="0dp"
+                android:layout_height="match_parent" />
+
+            <include
+                android:id="@+id/feelsLikeField"
+                android:layout_columnWeight="1"
+                layout="@layout/item_weather_field"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"/>
+
+            <include
+                android:id="@+id/conditionField"
+                android:layout_columnSpan="2"
+                layout="@layout/item_weather_field_spanned"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+            <include
+                android:id="@+id/windSpeedField"
+                android:layout_columnWeight="1"
+                layout="@layout/item_weather_field"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"/>
+
+            <include
+                android:id="@+id/windDirField"
+                android:layout_columnWeight="1"
+                layout="@layout/item_weather_field"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"/>
+
+            <include
+                android:id="@+id/humidityField"
+                android:layout_columnWeight="1"
+                layout="@layout/item_weather_field"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"/>
+
+            <include
+                android:id="@+id/pressureField"
+                android:layout_columnWeight="1"
+                layout="@layout/item_weather_field"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"/>
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:textStyle="bold"
+                android:layout_columnSpan="2"
+                android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
+                android:text="@string/dashboard_title_forecast" />
+
+
+        </GridLayout>
+
+
+    </androidx.core.widget.NestedScrollView>
+
+    <include
+        android:id="@+id/emptyView"
+        layout="@layout/lay_list_states"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+
+</FrameLayout>

@@ -1,26 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    style="@style/Widget.Material3.CardView.Filled"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Widget.Material3.CardView.Elevated"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    app:contentPadding="@dimen/def_h_padding"
+    app:cardUseCompatPadding="true"
+    app:cardElevation="16dp"
+    app:cardPreventCornerOverlap="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="@dimen/def_h_padding">
+        android:layout_height="match_parent">
 
         <TextView
             android:id="@+id/mainTemp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            tools:text="7C"
             android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
             android:textSize="64sp"
-            android:text="@string/mock_current_temp"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/cityName"
@@ -28,11 +31,12 @@
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.Material3.ActionBar.Subtitle"
             android:textSize="32sp"
-            android:text="@string/mock_city_name"
+            tools:text="London"
             app:layout_constraintTop_toBottomOf="@id/mainTemp"
             app:layout_constraintStart_toStartOf="@id/mainTemp"
             app:layout_constraintEnd_toEndOf="@id/mainTemp"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </com.google.android.material.card.MaterialCardView>
