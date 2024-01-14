@@ -20,6 +20,7 @@ import com.mukiva.feature.dashboard_impl.domain.model.CurrentWeather
 import com.mukiva.feature.dashboard_impl.domain.model.WindDirection
 import com.mukiva.feature.dashboard_impl.presentation.AdditionalDashboardInfoViewModel
 import com.mukiva.feature.dashboard_impl.presentation.AdditionalInfoState
+import com.mukiva.feature.forecast_api.IForecastFragmentProvider
 import com.mukiva.openweather.ui.gone
 import com.mukiva.openweather.ui.hide
 import com.mukiva.openweather.ui.loading
@@ -28,9 +29,13 @@ import com.mukiva.openweather.ui.viewBindings
 import com.mukiva.openweather.ui.visible
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template) {
+
+    @Inject
+    lateinit var forecastFragmentProvider: IForecastFragmentProvider
 
     private val mBinding by viewBindings(FragmentDashboardTemplateBinding::bind)
     private val mViewModel by viewModels<AdditionalDashboardInfoViewModel>()
@@ -68,6 +73,20 @@ class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template)
             updateHumidity(humidity)
             updatePressure(this, state.unitsType)
         }
+        updateForecast(state.location)
+    }
+
+    private fun updateForecast(location: String) = with(mBinding) {
+        if (childFragmentManager.findFragmentByTag(TAG_FORECAST_FRAGMENT) != null)
+            return@with
+
+        val transaction = childFragmentManager.beginTransaction()
+        transaction.replace(
+            R.id.daysForecast,
+            forecastFragmentProvider.provideMinimalFragment(location),
+            TAG_FORECAST_FRAGMENT
+        )
+        transaction.commit()
     }
 
     private fun updatePressure(
@@ -193,6 +212,8 @@ class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template)
     }
 
     companion object {
+
+        private const val TAG_FORECAST_FRAGMENT = "TAG_FORECAST_FRAGMENT"
 
         private const val ARG_LOCATION_POSITION = "ARG_LOCATION_POSITION"
 

@@ -16,7 +16,6 @@ class AdditionalDashboardInfoViewModel @Inject constructor(
     private val dataSynchronizer: DataSynchronizer
 ) : SingleStateViewModel<AdditionalInfoState, Nothing>(initialState) {
 
-
     init {
         viewModelScope.launch {
             settingsRepository.asAppConfig()
@@ -38,13 +37,15 @@ class AdditionalDashboardInfoViewModel @Inject constructor(
 
     private fun updateState(locations: List<CurrentWithLocation>) {
         val currentWeather = locations[state.value.position].currentWeather
+        val currentLocation = locations[state.value.position].location
         modifyState {
             copy(
                 type = if (currentWeather == null)
                     AdditionalInfoState.Type.LOADING
                 else
                     AdditionalInfoState.Type.CONTENT,
-                currentWeather = currentWeather
+                currentWeather = currentWeather,
+                location = currentLocation.name
             )
         }
     }

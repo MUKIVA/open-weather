@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="get_forecast_error">Failed to get forecast</string>
+    <string name="refresh">Refresh</string>
+    <string name="day">Day</string>
+    <string name="night">Night</string>
+</resources>

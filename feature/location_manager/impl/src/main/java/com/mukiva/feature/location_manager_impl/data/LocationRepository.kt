@@ -1,5 +1,6 @@
 package com.mukiva.feature.location_manager_impl.data
 
+import com.mukiva.core.data.LocationRemote
 import com.mukiva.core.network.IApiKeyProvider
 import com.mukiva.feature.location_manager_api.dto.LocationDTO
 import com.mukiva.feature.location_manager_api.repository.ILocationRepository
@@ -62,10 +63,10 @@ class LocationRepository @Inject constructor(
         countryName = countryName
     )
 
-    private fun LocationRemoteEntity.asDTO(
+    private fun LocationRemote.asDTO(
         pos: Int
     ) = LocationDTO(
-        uid = id ?: 0,
+        uid = id,
         position = pos,
         cityName = name,
         regionName = region,

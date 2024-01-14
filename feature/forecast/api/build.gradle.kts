@@ -14,4 +14,6 @@ android {
 dependencies {
     coreScope(Projects.Core.navigation)
     implementation(Deps.AndroidX.CORE_KTX)
+
+    addDefaultImpl()
 }

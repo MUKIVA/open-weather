@@ -25,6 +25,7 @@ dependencies {
         Projects.Core.ui,
         Projects.Core.navigation,
         Projects.Core.network,
+        Projects.Core.data
     )
 
     featureScope(

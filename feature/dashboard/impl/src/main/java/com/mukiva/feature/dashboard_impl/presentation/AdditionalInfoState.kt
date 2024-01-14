@@ -6,6 +6,7 @@ import com.mukiva.feature.settings_api.UnitsType
 data class AdditionalInfoState(
     val type: Type,
     val position: Int,
+    val location: String,
     val currentWeather: CurrentWeather?,
     val unitsType: UnitsType
 ) {
@@ -19,7 +20,8 @@ data class AdditionalInfoState(
             type = Type.LOADING,
             position = 0,
             currentWeather = null,
-            unitsType = UnitsType.METRIC
+            unitsType = UnitsType.METRIC,
+            location = ""
         )
     }
 }

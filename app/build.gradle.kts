@@ -51,12 +51,16 @@ dependencies {
     featureScope(
         Projects.Feature.dashboard,
         Projects.Feature.locationManager,
-        Projects.Feature.settings
+        Projects.Feature.settings,
+        Projects.Feature.forecast
     )
 
     addDefaultImpl()
     addHilt()
     addRetrofit()
+
+    implementation("com.squareup.okhttp3:logging-interceptor:3.4.1")
+    implementation("com.squareup.okhttp3:logging-interceptor:3.4.1")
 }
 
 secrets {

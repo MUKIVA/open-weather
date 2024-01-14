@@ -1,6 +1,6 @@
 package com.mukiva.feature.dashboard_impl.domain.mapper
 
-import com.mukiva.feature.dashboard_impl.data.LocationRemote
+import com.mukiva.core.data.LocationRemote
 import com.mukiva.feature.dashboard_impl.domain.model.Location
 import javax.inject.Inject
 

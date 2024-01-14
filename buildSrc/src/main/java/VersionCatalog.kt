@@ -22,10 +22,6 @@ object Versions {
 }
 
 object Deps {
-
-    const val ANDROID_TOOLS = "com.android.tools.build:gradle:${Versions.ANDROID_GRADLE}"
-    const val JAVA_POET = "com.squareup:javapoet:${Versions.POET}"
-
     object AndroidX {
         const val CORE_KTX = "androidx.core:core-ktx:${Versions.KOTLIN}"
         const val FRAGMENT = "androidx.fragment:fragment-ktx:${Versions.FRAGMENT}"
@@ -115,11 +111,13 @@ object Projects {
         val presentation = CoreModule.create("presentation")
         val ui = CoreModule.create("ui")
         val usecase = CoreModule.create("usecase")
+        val data = CoreModule.create("data")
     }
 
     object Feature {
         val dashboard = FeatureModule.create("dashboard")
         val locationManager = FeatureModule.create("location_manager")
         val settings = FeatureModule.create("settings")
+        val forecast = FeatureModule.create("forecast")
     }
 }

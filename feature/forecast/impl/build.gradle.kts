@@ -4,8 +4,8 @@ plugins {
         id(sdk.id)
         id(kotlinAndroid.id)
         id(defaultFeature.id)
-//        id(hilt.id)
-//        id(ksp.id)
+        id(hilt.id)
+        id(ksp.id)
     }
 }
 
@@ -25,16 +25,18 @@ dependencies {
         Projects.Core.ui,
         Projects.Core.navigation,
         Projects.Core.network,
+        Projects.Core.data
     )
 
-//    featureScope(
-//        Projects.Feature.locationManager,
-//        addMethod = AddFeatureMethod.ONLY_API
-//    )
+    featureScope(
+        Projects.Feature.forecast,
+        addMethod = AddFeatureMethod.ONLY_API
+    )
 
     addDefaultImpl()
-//    addHilt()
-//    addRetrofit()
-//    addRoom()
+    addHilt()
+    addRetrofit()
+
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
 }

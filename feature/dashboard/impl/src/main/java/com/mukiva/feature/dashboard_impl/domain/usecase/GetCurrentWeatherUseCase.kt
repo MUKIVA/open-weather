@@ -26,7 +26,7 @@ class GetCurrentWeatherUseCase @Inject constructor(
             val data = gateway.getCurrentWeather(
                 key = apiKeyProvider.apiKey,
                 q = location,
-                aqi = "No"
+                aqi = "no"
             )
             ApiResult.Success(
                 with(mapper) { data.mapToDomain() }

@@ -83,6 +83,12 @@
                 android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
                 android:text="@string/dashboard_title_forecast" />
 
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/daysForecast"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_columnSpan="2" />
+
 
         </GridLayout>
 

@@ -26,3 +26,4 @@ include(":feature:location_manager:impl")
 
 include(":feature:forecast:api")
 include(":feature:forecast:impl")
+include(":core:data")

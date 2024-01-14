@@ -8,6 +8,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -30,11 +32,20 @@ interface NetworkBinds {
 @InstallIn(SingletonComponent::class)
 class NetworkModule {
 
+    private val mHttpLoggingInterceptor = HttpLoggingInterceptor().apply {
+        level = HttpLoggingInterceptor.Level.BODY
+    }
+
+    private val mHttpClient = OkHttpClient.Builder()
+        .addInterceptor(mHttpLoggingInterceptor)
+        .build()
+
     @Provides
     @Singleton
     fun provideRetrofit(): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BuildConfig.WEATHER_API_BASE_URL)
+            .client(mHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }

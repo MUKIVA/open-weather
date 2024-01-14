@@ -1,9 +1,10 @@
-package com.mukiva.feature.dashboard_impl.data
+package com.mukiva.core.data
 
 import com.google.gson.annotations.SerializedName
 
 data class LocationRemote (
-
+    @SerializedName("id")
+    val id: Int = 0,
     @SerializedName("name")
     val name: String? = null,
     @SerializedName("region")
@@ -20,5 +21,4 @@ data class LocationRemote (
     val localtimeEpoch: Int? = null,
     @SerializedName("localtime")
     val localtime: String? = null
-
 )

@@ -1,9 +1,8 @@
-package com.mukiva.feature.dashboard_impl.data
+package com.mukiva.core.data
 
 import com.google.gson.annotations.SerializedName
 
 data class CurrentRemote(
-
     @SerializedName("last_updated_epoch")
     var lastUpdatedEpoch: Int? = null,
     @SerializedName("last_updated")
@@ -50,5 +49,4 @@ data class CurrentRemote(
     var gustMph: Double? = null,
     @SerializedName("gust_kph")
     var gustKph: Double? = null
-
 )

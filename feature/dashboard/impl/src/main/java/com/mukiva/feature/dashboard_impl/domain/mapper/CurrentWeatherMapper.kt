@@ -1,6 +1,6 @@
 package com.mukiva.feature.dashboard_impl.domain.mapper
 
-import com.mukiva.feature.dashboard_impl.data.CurrentRemote
+import com.mukiva.core.data.CurrentRemote
 import com.mukiva.feature.dashboard_impl.domain.model.Condition
 import com.mukiva.feature.dashboard_impl.domain.model.CurrentWeather
 import com.mukiva.feature.dashboard_impl.domain.model.WindDirection

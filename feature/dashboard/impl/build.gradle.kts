@@ -24,13 +24,15 @@ dependencies {
         Projects.Core.navigation,
         Projects.Core.usecase,
         Projects.Core.ui,
-        Projects.Core.network
+        Projects.Core.network,
+        Projects.Core.data
     )
 
     featureScope(
         Projects.Feature.dashboard,
         Projects.Feature.locationManager,
         Projects.Feature.settings,
+        Projects.Feature.forecast,
         addMethod = AddFeatureMethod.ONLY_API
     )
 
