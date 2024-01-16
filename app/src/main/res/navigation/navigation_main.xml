@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/navigation_main"
+    app:startDestination="@id/dashboardFragment">
+
+    <fragment
+        android:id="@+id/dashboardFragment"
+        android:name="com.mukiva.feature.dashboard.ui.DashboardFragment"
+        android:label="DashboardFragment" />
+    <fragment
+        android:id="@+id/locationManagerFragment"
+        android:name="com.mukiva.feature.location_manager.ui.LocationManagerFragment"
+        android:label="LocationManagerFragment" />
+    <fragment
+        android:id="@+id/settingsTemplateFragment"
+        android:name="com.mukiva.feature.settings.ui.SettingsTemplateFragment"
+        android:label="SettingsTemplateFragment" />
+</navigation>

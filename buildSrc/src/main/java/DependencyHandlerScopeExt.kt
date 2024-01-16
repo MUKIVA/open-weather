@@ -35,13 +35,9 @@ fun DependencyHandlerScope.coreScope(vararg items: CoreModule) {
 }
 
 fun DependencyHandlerScope.featureScope(
-    vararg items: FeatureModule,
-    addMethod: AddFeatureMethod = AddFeatureMethod.ALL
+    vararg items: FeatureModule
 ) {
     items.forEach { item ->
-        if (addMethod == AddFeatureMethod.ALL || addMethod == AddFeatureMethod.ONLY_API)
-            add("implementation", project(item.api))
-        if (addMethod == AddFeatureMethod.ALL || addMethod == AddFeatureMethod.ONLY_IMPL)
-            add("implementation", project(item.impl))
+        add("implementation", project(item.name))
     }
 }

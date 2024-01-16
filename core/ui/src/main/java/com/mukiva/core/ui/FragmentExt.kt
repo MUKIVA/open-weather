@@ -1,4 +1,4 @@
-package com.mukiva.openweather.ui
+package com.mukiva.core.ui
 
 import android.view.View
 import androidx.annotation.MainThread
@@ -11,6 +11,9 @@ import androidx.viewbinding.ViewBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
+
+const val KEY_ARGS = "KEY_ARGS"
+
 
 class FragmentViewBindingDelegate<T : ViewBinding>(
     val fragment: Fragment,

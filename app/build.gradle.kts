@@ -50,17 +50,20 @@ dependencies {
 
     featureScope(
         Projects.Feature.dashboard,
+        Projects.Feature.forecast,
         Projects.Feature.locationManager,
-        Projects.Feature.settings,
-        Projects.Feature.forecast
+        Projects.Feature.settings
     )
+
+    implementation(project(":navigation"))
+
+    implementation(Deps.AndroidX.Navigation.FRAGMENT)
+    implementation(Deps.AndroidX.Navigation.UI)
+    implementation(Deps.OkHttp.LOGGING_INTERCEPTOR)
 
     addDefaultImpl()
     addHilt()
     addRetrofit()
-
-    implementation("com.squareup.okhttp3:logging-interceptor:3.4.1")
-    implementation("com.squareup.okhttp3:logging-interceptor:3.4.1")
 }
 
 secrets {

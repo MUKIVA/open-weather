@@ -4,6 +4,8 @@ plugins {
         id(sdk.id)
         id(kotlinAndroid.id)
         id(defaultFeature.id)
+        id(hilt.id)
+        id(ksp.id)
     }
 }
 
@@ -17,10 +19,17 @@ android {
 
 dependencies {
 
+    coreScope(
+        Projects.Core.presentation,
+        Projects.Core.usecase,
+        Projects.Core.ui,
+        Projects.Core.navigation,
+        Projects.Core.network
+    )
+
     addDefaultImpl()
-
-    implementation("com.google.code.gson:gson:2.10.1")
-
-//    implementation(Deps.AndroidX.CORE_KTX)
-//    implementation(Deps.Google.MATERIAL)
+    addHilt()
+    addRetrofit()
+    addRoom()
+    addDataStore()
 }

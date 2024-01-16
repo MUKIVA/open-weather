@@ -1,0 +1,107 @@
+package com.mukiva.feature.dashboard.presentation
+
+import androidx.lifecycle.viewModelScope
+import com.mukiva.feature.dashboard.navigation.IDashboardRouter
+import com.mukiva.feature.dashboard.domain.model.CurrentWithLocation
+import com.mukiva.feature.dashboard.domain.model.Location
+import com.mukiva.feature.dashboard.domain.model.UnitsType
+import com.mukiva.feature.dashboard.domain.repository.ISettingsRepository
+import com.mukiva.feature.dashboard.domain.usecase.GetAllLocationsUseCase
+import com.mukiva.feature.dashboard.domain.usecase.GetCurrentWeatherUseCase
+import com.mukiva.openweather.presentation.SingleStateViewModel
+import com.mukiva.usecase.ApiResult
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+@HiltViewModel
+class DashboardViewModel @Inject constructor(
+    initialState: DashboardState,
+    private val getAllLocationsUseCase: GetAllLocationsUseCase,
+    private val getCurrentWeatherUseCase: GetCurrentWeatherUseCase,
+    private val router: IDashboardRouter,
+    private val settingsRepository: ISettingsRepository,
+    private val dataSynchronizer: DataSynchronizer
+) : SingleStateViewModel<DashboardState, Nothing>(initialState) {
+
+    init {
+        viewModelScope.launch {
+            settingsRepository.getUnitsTypeFlow()
+                .collect { onUnitsTypeUpdate(it) }
+        }
+    }
+
+    fun load() {
+        modifyState { copy(type = DashboardState.Type.LOADING) }
+
+        viewModelScope.launch {
+            val locations = getAllLocations()
+            val currentWithLocationList = locations.map {
+                CurrentWithLocation(null, it)
+            }
+
+            if (locations.isEmpty()){
+                modifyState { copy(type = DashboardState.Type.EMPTY) }
+                return@launch
+            }
+
+            modifyState {
+                copy(
+                    locationCount = locations.size
+                )
+            }
+
+            dataSynchronizer.submit(currentWithLocationList)
+            onPageSelect(state.value.currentIndex)
+        }
+    }
+
+    fun onSelectLocations() {
+        router.goLocationManager()
+    }
+
+    fun onPageSelect(position: Int) {
+
+        val locations = dataSynchronizer.lastData
+        val location = locations[position].location
+
+        viewModelScope.launch {
+            when (val result = getCurrentWeatherUseCase(location.name)) {
+                is ApiResult.Error -> modifyState { copy(type = DashboardState.Type.ERROR) }
+                is ApiResult.Success -> {
+                    val newLocationList = locations.mapIndexed { i, it ->
+                        if (i == position) it.copy(currentWeather = result.data.currentWeather) else it
+                    }
+                    modifyState {
+                        copy(
+                            type = DashboardState.Type.CONTENT,
+                            currentWeather = result.data,
+                            currentIndex = position
+                        )
+                    }
+                    dataSynchronizer.submit(newLocationList)
+                }
+            }
+        }
+    }
+
+    fun onSettings() {
+        router.goSettings()
+    }
+
+    private suspend fun getAllLocations(): List<Location> {
+        return when (val result = getAllLocationsUseCase()) {
+                is ApiResult.Error -> emptyList()
+                is ApiResult.Success -> result.data
+        }
+    }
+
+    private fun onUnitsTypeUpdate(unitsType: UnitsType) {
+        modifyState {
+            copy(
+                unitsType = unitsType
+            )
+        }
+    }
+
+}

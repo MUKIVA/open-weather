@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="fragment_settings_title">Settings</string>
+    <string name="variant_unchecked">unchecked</string>
+
+    <string name="setting_group_general">General</string>
+
+    <string name="option_theme_name">Application theme</string>
+    <string name="option_theme_description">Change application theme</string>
+
+    <string name="option_units_type_name">Units type</string>
+    <string name="option_units_type_description">Choose units type</string>
+
+</resources>

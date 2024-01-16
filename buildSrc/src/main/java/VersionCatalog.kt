@@ -7,7 +7,7 @@ object Versions {
     const val HILT = "2.49"
     const val RETROFIT = "2.9.0"
     const val KOTLIN = "1.12.0"
-    const val NAVIGATION = "2.7.5"
+    const val NAVIGATION = "2.7.6"
     const val ROOM = "2.6.1"
     const val DATA_STORE = "1.0.0"
     const val KSP = "1.9.21-1.0.16"
@@ -16,9 +16,9 @@ object Versions {
     const val VM_LIFECYCLE = "2.6.2"
     const val MATERIAL = "1.10.0"
     const val COROUTINES = "1.7.3"
+    const val OK_HTTP = "3.4.1"
 
     const val ANDROID_GRADLE = "8.2.0"
-    const val POET = "1.13.0"
 }
 
 object Deps {
@@ -35,6 +35,11 @@ object Deps {
 
         object DataStore {
             const val DATA_STORE = "androidx.datastore:datastore-preferences:${Versions.DATA_STORE}"
+        }
+
+        object Navigation {
+            const val FRAGMENT = "androidx.navigation:navigation-fragment-ktx:${Versions.NAVIGATION}"
+            const val UI = "androidx.navigation:navigation-ui-ktx:${Versions.NAVIGATION}"
         }
 
     }
@@ -60,6 +65,9 @@ object Deps {
         const val CONVERTER_GSON = "com.squareup.retrofit2:converter-gson:${Versions.RETROFIT}"
     }
 
+    object OkHttp {
+        const val LOGGING_INTERCEPTOR = "com.squareup.okhttp3:logging-interceptor:${Versions.OK_HTTP}"
+    }
 }
 
 object GradlePlugins {
