@@ -97,7 +97,7 @@ class DashboardViewModel @Inject constructor(
     private suspend fun getAllLocations(): List<Location> {
         return when (val result = getAllLocationsUseCase()) {
                 is ApiResult.Error -> emptyList()
-                is ApiResult.Success -> result.data
+                is ApiResult.Success -> result.data.sortedBy { it.position }
         }
     }
 

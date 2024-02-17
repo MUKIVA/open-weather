@@ -12,7 +12,8 @@ object LocationMapper {
             region = region ?: "UNKNOWN",
             country = country ?: "UNKNOWN",
             lat = lat?.toFloat() ?: 0.0f,
-            lon = lon?.toFloat() ?: 0.0f
+            lon = lon?.toFloat() ?: 0.0f,
+            position = 0
         )
     }
 
@@ -22,7 +23,8 @@ object LocationMapper {
             region = regionName ?: "UNKNOWN",
             country = countryName ?: "UNKNOWN",
             lat = lat?.toFloat() ?: 0.0f,
-            lon = lon?.toFloat() ?: 0.0f
+            lon = lon?.toFloat() ?: 0.0f,
+            position = position ?: 0
         )
     }
 

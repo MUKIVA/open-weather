@@ -6,4 +6,5 @@ data class Location(
     val country: String,
     val lat: Float,
     val lon: Float,
+    val position: Int
 )
