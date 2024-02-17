@@ -1,5 +1,6 @@
 package com.mukiva.core.ui
 
+import android.util.TypedValue
 import android.view.View
 import androidx.annotation.MainThread
 import androidx.fragment.app.Fragment
@@ -9,11 +10,25 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.viewbinding.ViewBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.mukiva.openweather.ui.getComaptSerializable
+import java.io.Serializable
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
 const val KEY_ARGS = "KEY_ARGS"
 
+
+fun <T : Serializable> Fragment.getArgs(clazz: Class<T>): T {
+    return this.requireArguments().getComaptSerializable(KEY_ARGS, clazz) as T
+}
+
+fun Fragment.getAttrColor(res: Int): Int {
+    val typedValue = TypedValue()
+    val typedArray = requireContext().obtainStyledAttributes(typedValue.data, intArrayOf(res))
+    val color = typedArray.getColor(0, 0)
+    typedArray.recycle()
+    return color
+}
 
 class FragmentViewBindingDelegate<T : ViewBinding>(
     val fragment: Fragment,

@@ -2,25 +2,25 @@ package com.mukiva.feature.forecast.domain.usecase
 
 import android.util.Log
 import com.mukiva.core.network.IConnectionProvider
-import com.mukiva.feature.forecast.domain.Forecast
+import com.mukiva.feature.forecast.domain.IMinimalForecast
 import com.mukiva.feature.forecast.domain.repository.IForecastRepository
 import com.mukiva.usecase.ApiError
 import com.mukiva.usecase.ApiResult
 import javax.inject.Inject
 
-class GetForecastUseCase @Inject constructor(
+class GetMinimalForecastUseCase @Inject constructor(
     private val connectionProvider: IConnectionProvider,
     private val forecastRepository: IForecastRepository,
 ) {
 
-    suspend operator fun invoke(locationName: String): ApiResult<List<Forecast>> {
+    suspend operator fun invoke(locationName: String): ApiResult<List<IMinimalForecast>> {
         if (!connectionProvider.hasConnection()) {
             return ApiResult.Error(ApiError.NO_INTERNET)
         }
 
         return try {
 
-            val data = forecastRepository.getForecast(
+            val data = forecastRepository.getMinimalForecast(
                 locationName = locationName,
                 days = 3
             )

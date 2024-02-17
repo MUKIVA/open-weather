@@ -34,11 +34,11 @@ class SettingsRepositoryImpl @Inject constructor(
     override fun asAppConfig(): Flow<IntAppConfig> {
         return context.dataStore.data
             .map { settings ->
-                val theme = settings[DARK_THEME_MODE_KEY]
-                val unitsType = settings[UNITS_TYPE_KEY]
+                val theme = settings[DARK_THEME_MODE_KEY] ?: 0
+                val unitsType = settings[UNITS_TYPE_KEY] ?: 0
                 IntAppConfig(
-                    theme = theme ?: 0,         // Default SYSTEM
-                    unitsType = unitsType ?: 0  // Default METRIC
+                    theme = theme,         // Default SYSTEM
+                    unitsType = unitsType  // Default METRIC
                 )
             }
     }

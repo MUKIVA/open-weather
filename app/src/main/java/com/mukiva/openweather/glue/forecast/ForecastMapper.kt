@@ -3,10 +3,11 @@ package com.mukiva.openweather.glue.forecast
 import android.content.Context
 import com.mukiva.core.data.repository.forecast.entity.ForecastDayRemote
 import com.mukiva.core.data.repository.forecast.entity.ForecastRemote
-import com.mukiva.feature.forecast.domain.Forecast
+import com.mukiva.feature.forecast.domain.IMinimalForecast
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import javax.inject.Inject
 
 class ForecastMapper @Inject constructor(
@@ -24,21 +25,29 @@ class ForecastMapper @Inject constructor(
     )
     private val mCalendar = Calendar.getInstance()
 
-    fun asDomain(item: ForecastRemote): List<Forecast> = with(item) {
+    fun asDomain(item: ForecastRemote): List<IMinimalForecast> = with(item) {
         return forecastDay.mapIndexed { index, item ->
-            Forecast(
-                id = index,
-                dayAvgTempC = item.getDayAvgTempC(isMetricSystem = true),
-                dayAvgTempF = item.getDayAvgTempC(isMetricSystem = false),
-                nightAvgTempC = item.getNightAvgTempC(isMetricSystem = true),
-                nightAvgTempF = item.getNightAvgTempC(isMetricSystem = false),
-                date = item.date ?: throw Exception("PARSE FAIL")
-            )
+            object : IMinimalForecast {
+                override val id: Int
+                    get() = index
+                override val dayAvgTempC: Double
+                    get() = item.getDayAvgTemp(isMetricSystem = true)
+                override val dayAvgTempF: Double
+                    get() = item.getDayAvgTemp(isMetricSystem = false)
+                override val nightAvgTempC: Double
+                    get() = item.getNightAvgTemp(isMetricSystem = true)
+                override val nightAvgTempF: Double
+                    get() = item.getNightAvgTemp(isMetricSystem = false)
+                override val date: Date
+                    get() = item.date ?: throw Exception("Fail to get date")
+                override val conditionIconUrl: String
+                    get() = item.day?.condition?.icon ?: ""
+            }
         }
     }
 
-    private fun ForecastDayRemote.getDayAvgTempC(isMetricSystem: Boolean): Double {
-        val sunrise = mHourOfDayFormatter.parse(astro?.sunrise ?: throw Exception("PARSE FAIL"))
+    private fun ForecastDayRemote.getDayAvgTemp(isMetricSystem: Boolean): Double {
+        val sunrise = mHourOfDayFormatter.parse(astro?.sunrise ?: throw Exception("Fail to parse sunrise time"))
 
         mCalendar.time = sunrise!!
         val sunriseHour = mCalendar.get(Calendar.HOUR_OF_DAY)
@@ -54,8 +63,8 @@ class ForecastMapper @Inject constructor(
         }
     }
 
-    private fun ForecastDayRemote.getNightAvgTempC(isMetricSystem: Boolean): Double {
-        val moonrise = mHourOfDayFormatter.parse(astro?.moonrise ?: throw Exception("PARSE FAIL"))
+    private fun ForecastDayRemote.getNightAvgTemp(isMetricSystem: Boolean): Double {
+        val moonrise = mHourOfDayFormatter.parse(astro?.moonrise ?: throw Exception("Fail to parse moonrise time"))
 
         mCalendar.time = moonrise!!
         val moonriseHour = mCalendar.get(Calendar.HOUR_OF_DAY)

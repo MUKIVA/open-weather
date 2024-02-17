@@ -28,15 +28,11 @@ dependencies {
         Projects.Core.data
     )
 
-//    featureScope(
-//        Projects.Feature.forecast,
-//        addMethod = AddFeatureMethod.ONLY_API
-//    )
-
     addDefaultImpl()
     addHilt()
     addRetrofit()
 
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+    implementation("com.github.bumptech.glide:glide:4.16.0")
 
 }

@@ -28,9 +28,14 @@ import com.mukiva.core.ui.viewBindings
 import com.mukiva.openweather.ui.visible
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template) {
+
+    @Inject
+    lateinit var minimalForecastFragmentFactory: IMinimalForecastFragmentFactory
+
 
     private val mBinding by viewBindings(FragmentDashboardTemplateBinding::bind)
     private val mViewModel by viewModels<AdditionalDashboardInfoViewModel>()
@@ -40,8 +45,25 @@ class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        initNestedScroll()
         subscribeOnViewModel()
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) = with(mBinding) {
+        super.onViewStateRestored(savedInstanceState)
+        content.scrollY = ScrollSynchronizer.getLastScroll()
+    }
+
+    private fun initNestedScroll() = with(mBinding) {
+        content.setOnScrollChangeListener { _, _, scrollY, _, _ ->
+            ScrollSynchronizer.updateScroll(scrollY, lifecycleScope)
+        }
+
+        lifecycleScope.launch {
+            ScrollSynchronizer.getOffsetFlow()
+                .flowWithLifecycle(lifecycle)
+                .collect { content.scrollY = it }
+        }
     }
 
     private fun subscribeOnViewModel() {
@@ -76,11 +98,11 @@ class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template)
             return@with
 
         val transaction = childFragmentManager.beginTransaction()
-//        transaction.replace(
-//            R.id.daysForecast,
-//            forecastFragmentProvider.provideMinimalFragment(location),
-//            TAG_FORECAST_FRAGMENT
-//        )
+        transaction.replace(
+            R.id.daysForecast,
+            minimalForecastFragmentFactory.createFragment(location),
+            TAG_FORECAST_FRAGMENT
+        )
         transaction.commit()
     }
 

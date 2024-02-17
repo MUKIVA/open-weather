@@ -1,8 +1,10 @@
 package com.mukiva.feature.forecast.presentation
 
+import com.mukiva.feature.forecast.domain.IHourlyForecast
+
 data class ForecastState(
     val type: Type,
-    val dayForecastState: List<DayForecastState>
+    val hourlyForecast: Collection<IHourlyForecast>
 ) {
 
     enum class Type {
@@ -15,7 +17,7 @@ data class ForecastState(
     companion object {
         fun default() = ForecastState(
             type = Type.INIT,
-            dayForecastState = emptyList()
+            hourlyForecast = emptyList()
         )
     }
 }

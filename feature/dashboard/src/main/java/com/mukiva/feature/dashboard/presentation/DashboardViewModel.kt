@@ -24,6 +24,11 @@ class DashboardViewModel @Inject constructor(
     private val dataSynchronizer: DataSynchronizer
 ) : SingleStateViewModel<DashboardState, Nothing>(initialState) {
 
+    val position get() = mPosition
+    var toolbarIsCollapsed: Boolean = false
+
+    private var mPosition: Int = 0
+
     init {
         viewModelScope.launch {
             settingsRepository.getUnitsTypeFlow()
@@ -52,7 +57,7 @@ class DashboardViewModel @Inject constructor(
             }
 
             dataSynchronizer.submit(currentWithLocationList)
-            onPageSelect(state.value.currentIndex)
+            onPageSelect(mPosition)
         }
     }
 
@@ -64,6 +69,7 @@ class DashboardViewModel @Inject constructor(
 
         val locations = dataSynchronizer.lastData
         val location = locations[position].location
+        mPosition = position
 
         viewModelScope.launch {
             when (val result = getCurrentWeatherUseCase(location.name)) {
@@ -75,8 +81,7 @@ class DashboardViewModel @Inject constructor(
                     modifyState {
                         copy(
                             type = DashboardState.Type.CONTENT,
-                            currentWeather = result.data,
-                            currentIndex = position
+                            currentWeather = result.data
                         )
                     }
                     dataSynchronizer.submit(newLocationList)

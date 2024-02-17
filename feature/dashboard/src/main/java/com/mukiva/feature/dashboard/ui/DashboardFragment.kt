@@ -8,6 +8,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
 import com.mukiva.feature.dashboard.R
 import com.mukiva.feature.dashboard.databinding.FragmentDashboardBinding
@@ -56,10 +57,18 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
                 ifResumed { mViewModel.onPageSelect(position) }
             }
         })
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                dashboard.setCurrentItem(mViewModel.position, false)
+            }
+        }
+
     }
 
     private fun initAppbar() = with(mBinding) {
 
+        toolbarLayout.setExpanded(!mViewModel.toolbarIsCollapsed, false)
 
         toolbarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
             val maxOffset = appBarLayout.totalScrollRange
@@ -69,13 +78,12 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
 
             val padding = (MAIN_CARD_FADE_RATIO - offsetRatio) * defPadding
             mainCard.root.cardElevation = padding
-            dashboardContainer.radius = padding
+            dashboardContainer.radius = padding * 2f
             dashboard.updatePadding(top = padding.toInt() + dp(8))
             dragHandler.alpha = max(min(MAX_DRAG_HANDLER_ALPHA, MAX_DRAG_HANDLER_ALPHA - offsetRatio), MIN_DRAG_HANDLER_ALPHA)
 
+            mViewModel.toolbarIsCollapsed = maxOffset == abs(verticalOffset)
         }
-
-
     }
 
     private fun initTitle() = with(mBinding) {
@@ -107,19 +115,16 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
     private fun updateFragmentState(state: DashboardState) {
         updateType(state.type)
         if (state.locationCount == 0) return
-        updateDashboard(state.locationCount, state.currentIndex)
+        updateDashboard(state.locationCount)
         if (state.currentWeather == null) return
         updateTitle(state.currentWeather, state.unitsType)
     }
 
-    private fun updateDashboard(
-        count: Int,
-        index: Int,
-    ) {
+    private fun updateDashboard(count: Int) = with(mBinding) {
         mDashboardAdapter.submit(count)
         if (mBinding.dashboard.adapter == null)
             mBinding.dashboard.adapter = mDashboardAdapter
-        mBinding.dashboard.setCurrentItem(index, lifecycle.currentState == Lifecycle.State.RESUMED)
+//        dashboard.offscreenPageLimit = count - 1
     }
 
     private fun updateTitle(currentWithLocation: CurrentWithLocation, unitsType: UnitsType) = with(mBinding) {

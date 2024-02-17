@@ -40,9 +40,9 @@ data class CurrentRemote(
     @SerializedName("feelslike_f")
     var feelslikeF: Double? = null,
     @SerializedName("vis_km")
-    var visKm: Int? = null,
+    var visKm: Double? = null,
     @SerializedName("vis_miles")
-    var visMiles: Int? = null,
+    var visMiles: Double? = null,
     @SerializedName("uv")
     var uv: Int? = null,
     @SerializedName("gust_mph")

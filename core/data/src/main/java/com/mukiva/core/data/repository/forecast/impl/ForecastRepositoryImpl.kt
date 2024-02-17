@@ -28,6 +28,7 @@ class ForecastRepositoryImpl @Inject constructor(
         return gateway.getCurrentWeather(
             key = apiKeyProvider.apiKey,
             q = locationName,
+            days = days,
             aqi = if (aqi) "yes" else "no",
             alerts = if (alerts) "yes" else "no"
         )

@@ -5,7 +5,6 @@ import com.mukiva.feature.dashboard.domain.model.UnitsType
 
 data class DashboardState(
     val type: Type,
-    val currentIndex: Int,
     val currentWeather: CurrentWithLocation?,
     val locationCount: Int,
     val unitsType: UnitsType
@@ -22,7 +21,6 @@ data class DashboardState(
     companion object {
         fun default() = DashboardState(
             type = Type.INIT,
-            currentIndex = 0,
             locationCount = 0,
             currentWeather = null,
             unitsType = UnitsType.METRIC

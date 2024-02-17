@@ -9,7 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.mukiva.feature.forecast.R
 import com.mukiva.feature.forecast.databinding.FragmentDaysForecastMinimalBinding
-import com.mukiva.feature.forecast.domain.Forecast
+import com.mukiva.feature.forecast.domain.IMinimalForecast
 import com.mukiva.feature.forecast.presentation.ForecastMinimalViewModel
 import com.mukiva.feature.forecast.presentation.MinimalForecastState
 import com.mukiva.feature.forecast.ui.adapter.minimal_forecast.MinimalForecastAdapter
@@ -33,7 +33,7 @@ class DaysForecastMinimalFragment : Fragment(R.layout.fragment_days_forecast_min
     private val mViewModel by viewModels<ForecastMinimalViewModel>()
     private val mMinimalAdapter by uiLazy {
         MinimalForecastAdapter(
-            onItemClick = {mViewModel.onItemClick(0)}
+            onItemClick = { pos -> mViewModel.onItemClick(mLocation, pos) }
         )
     }
     private val mLocation by uiLazy {
@@ -64,7 +64,7 @@ class DaysForecastMinimalFragment : Fragment(R.layout.fragment_days_forecast_min
         updateList(state.forecastItems)
     }
 
-    private fun updateList(items: List<Forecast>) {
+    private fun updateList(items: List<IMinimalForecast>) {
         Log.d("DaysForecastMinimalFragment", "${items.size}")
         mMinimalAdapter.submitList(items)
     }

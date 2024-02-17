@@ -4,4 +4,16 @@
     <string name="refresh">Refresh</string>
     <string name="day">Day</string>
     <string name="night">Night</string>
+    <string name="forecast_title">Forecast</string>
+
+    <string name="group_temp_title">Temp</string>
+    <string name="group_pressure_title">Pressure</string>
+    <string name="group_humidity_title">Humidity</string>
+    <string name="group_wind_title">Wind</string>
+
+    <string name="temp_label">Temp:</string>
+    <string name="feels_like_label">Feels like:</string>
+    <string name="cloud_label">Cloud:</string>
+    <string name="wind_speed_label">Speed:</string>
+    <string name="wind_degree_label">Degree:</string>
 </resources>
