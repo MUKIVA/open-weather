@@ -8,7 +8,9 @@ import com.mukiva.core.data.repository.location.entity.LocationLocalEntity
 import com.mukiva.core.data.repository.location.gateway.ILocationSearchGateway
 import com.mukiva.core.network.IApiKeyProvider
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class LocationRepositoryImpl @Inject constructor(
     private val gateway: ILocationSearchGateway,
     private val dataBase: LocationDataBase,

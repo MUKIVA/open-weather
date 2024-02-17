@@ -5,6 +5,7 @@ import com.mukiva.feature.dashboard.navigation.IDashboardRouter
 import com.mukiva.feature.dashboard.domain.model.CurrentWithLocation
 import com.mukiva.feature.dashboard.domain.model.Location
 import com.mukiva.feature.dashboard.domain.model.UnitsType
+import com.mukiva.feature.dashboard.domain.repository.IForecastUpdater
 import com.mukiva.feature.dashboard.domain.repository.ISettingsRepository
 import com.mukiva.feature.dashboard.domain.usecase.GetAllLocationsUseCase
 import com.mukiva.feature.dashboard.domain.usecase.GetCurrentWeatherUseCase
@@ -21,7 +22,8 @@ class DashboardViewModel @Inject constructor(
     private val getCurrentWeatherUseCase: GetCurrentWeatherUseCase,
     private val router: IDashboardRouter,
     private val settingsRepository: ISettingsRepository,
-    private val dataSynchronizer: DataSynchronizer
+    private val dataSynchronizer: DataSynchronizer,
+    forecastUpdater: IForecastUpdater
 ) : SingleStateViewModel<DashboardState, Nothing>(initialState) {
 
     val position get() = mPosition
@@ -34,6 +36,9 @@ class DashboardViewModel @Inject constructor(
             settingsRepository.getUnitsTypeFlow()
                 .collect { onUnitsTypeUpdate(it) }
         }
+
+        forecastUpdater.observeUpdate { load() }
+
     }
 
     fun load() {

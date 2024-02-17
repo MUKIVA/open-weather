@@ -9,8 +9,14 @@ interface IForecastGateway {
     suspend fun getCurrentWeather(
         @Query("key") key: String,
         @Query("q") q: String,
-        @Query("days") days: Int = 0,
-        @Query("aqi") aqi: String = "no",
-        @Query("alerts") alerts: String = "no"
+        @Query("days") days: Int = DEFAULT_DAYS_COUNT,
+        @Query("aqi") aqi: String = DEFAULT_AQI,
+        @Query("alerts") alerts: String = DEFAULT_ALERTS
     ) : ForecastWithCurrentAndLocationRemote
+
+    companion object {
+        private const val DEFAULT_DAYS_COUNT = 3
+        private const val DEFAULT_AQI = "no"
+        private const val DEFAULT_ALERTS = "no"
+    }
 }

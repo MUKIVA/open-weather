@@ -3,6 +3,7 @@ package com.mukiva.feature.location_manager.presentation
 import androidx.lifecycle.viewModelScope
 import com.mukiva.feature.location_manager.navigation.ILocationManagerRouter
 import com.mukiva.feature.location_manager.domain.model.Location
+import com.mukiva.feature.location_manager.domain.repository.IForecastUpdater
 import com.mukiva.feature.location_manager.domain.usecase.AddLocationUseCase
 import com.mukiva.feature.location_manager.domain.usecase.GetAddedLocationsUseCase
 import com.mukiva.feature.location_manager.domain.usecase.LocationSearchUseCase
@@ -22,7 +23,8 @@ class LocationManagerViewModel @Inject constructor(
     private val addLocationUseCase: AddLocationUseCase,
     private val getAddedLocationsUseCase: GetAddedLocationsUseCase,
     private val updateStoredLocationsUseCase: UpdateStoredLocationsUseCase,
-    private val locationManagerRouter: ILocationManagerRouter
+    private val locationManagerRouter: ILocationManagerRouter,
+    private val forecastUpdater: IForecastUpdater
 ) : SingleStateViewModel<LocationManagerState, LocationManagerEvent>(initialState) {
 
     init {
@@ -42,6 +44,7 @@ class LocationManagerViewModel @Inject constructor(
                    })
                    fetchAddedLocations()
                    event(LocationManagerEvent.Toast("SUCCESS ADD"))
+                   forecastUpdater.markForUpdate()
                }
            }
         }
@@ -53,6 +56,7 @@ class LocationManagerViewModel @Inject constructor(
             )
             viewModelScope.launch {
                 updateStoredLocationsUseCase(newSavedListSate.list)
+                forecastUpdater.markForUpdate()
             }
             modifyState { copy(savedListState = newSavedListSate) }
             validateEditState(newSavedListSate)
@@ -77,6 +81,7 @@ class LocationManagerViewModel @Inject constructor(
             )
             viewModelScope.async {
                 updateStoredLocationsUseCase(newState.list)
+                forecastUpdater.markForUpdate()
             }.invokeOnCompletion {
                 modifyState {
                     copy(
