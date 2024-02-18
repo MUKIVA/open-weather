@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/content"
@@ -83,10 +84,12 @@
                 android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
                 android:text="@string/dashboard_title_forecast" />
 
-            <androidx.fragment.app.FragmentContainerView
-                android:id="@+id/daysForecast"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/daysForecastList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_min_forecast"
                 android:layout_columnSpan="2" />
 
 

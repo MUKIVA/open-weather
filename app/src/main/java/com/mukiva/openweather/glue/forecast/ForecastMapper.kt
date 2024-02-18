@@ -3,7 +3,7 @@ package com.mukiva.openweather.glue.forecast
 import android.content.Context
 import com.mukiva.core.data.repository.forecast.entity.ForecastDayRemote
 import com.mukiva.core.data.repository.forecast.entity.ForecastRemote
-import com.mukiva.feature.forecast.domain.IMinimalForecast
+import com.mukiva.feature.dashboard.domain.model.IMinimalForecast
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -28,7 +28,7 @@ class ForecastMapper @Inject constructor(
     fun asDomain(item: ForecastRemote): List<IMinimalForecast> = with(item) {
         return forecastDay.mapIndexed { index, item ->
             object : IMinimalForecast {
-                override val id: Int
+                override val index: Int
                     get() = index
                 override val dayAvgTempC: Double
                     get() = item.getDayAvgTemp(isMetricSystem = true)

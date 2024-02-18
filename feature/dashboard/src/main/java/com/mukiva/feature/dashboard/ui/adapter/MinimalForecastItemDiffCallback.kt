@@ -1,12 +1,12 @@
-package com.mukiva.feature.forecast.ui.adapter.minimal_forecast
+package com.mukiva.feature.dashboard.ui.adapter
 
 import android.annotation.SuppressLint
 import androidx.recyclerview.widget.DiffUtil
-import com.mukiva.feature.forecast.domain.IMinimalForecast
+import com.mukiva.feature.dashboard.domain.model.IMinimalForecast
 
 object MinimalForecastItemDiffCallback : DiffUtil.ItemCallback<IMinimalForecast>() {
     override fun areItemsTheSame(oldItem: IMinimalForecast, newItem: IMinimalForecast): Boolean {
-        return oldItem.id == newItem.id
+        return oldItem.index == newItem.index
     }
 
     @SuppressLint("DiffUtilEquals")

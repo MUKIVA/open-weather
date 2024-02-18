@@ -3,7 +3,6 @@ package com.mukiva.core.data.repository.forecast.impl
 import com.mukiva.core.data.repository.IForecastUpdater
 import com.mukiva.core.data.repository.forecast.IForecastRepository
 import com.mukiva.core.data.repository.forecast.entity.ForecastWithCurrentAndLocationRemote
-import com.mukiva.core.data.repository.forecast.entity.ICurrentWeatherRemote
 import com.mukiva.core.data.repository.forecast.gateway.IForecastGateway
 import com.mukiva.core.network.IApiKeyProvider
 import javax.inject.Inject
@@ -18,9 +17,9 @@ class ForecastRepositoryImpl @Inject constructor(
     private val updater: IForecastUpdater
 ) : IForecastRepository {
 
-    private val mLocationCache = HashMap<LocationName, ICurrentWeatherRemote>()
+    private val mLocationCache = HashMap<LocationName, ForecastWithCurrentAndLocationRemote>()
 
-    override suspend fun getCurrent(locationName: String): ICurrentWeatherRemote {
+    override suspend fun getCurrent(locationName: String): ForecastWithCurrentAndLocationRemote {
 
         if (updater.isTimeForUpdate || mLocationCache[locationName] == null) {
             mLocationCache[locationName] = gateway.getCurrentWeather(
@@ -33,7 +32,7 @@ class ForecastRepositoryImpl @Inject constructor(
         if (mLocationCache[locationName] == null)
             error("Failed to get forecast")
 
-        return object : ICurrentWeatherRemote by mLocationCache[locationName]!! {}
+        return mLocationCache[locationName]!!
     }
 
     override suspend fun getForecast(
@@ -54,7 +53,7 @@ class ForecastRepositoryImpl @Inject constructor(
             updater.commitUpdate()
         }
 
-        return mLocationCache[locationName] as ForecastWithCurrentAndLocationRemote
+        return mLocationCache[locationName]!!
     }
 
 }

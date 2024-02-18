@@ -34,4 +34,7 @@
     <string name="dashboard_title_current">Current</string>
     <string name="dashboard_title_forecast">Forecast</string>
 
+    <string name="day">Day</string>
+    <string name="night">Night</string>
+
 </resources>

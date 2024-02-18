@@ -1,10 +1,10 @@
-package com.mukiva.feature.forecast.ui.adapter.minimal_forecast
+package com.mukiva.feature.dashboard.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
-import com.mukiva.feature.forecast.databinding.ItemMinForecastBinding
-import com.mukiva.feature.forecast.domain.IMinimalForecast
+import com.mukiva.feature.dashboard.databinding.ItemMinForecastBinding
+import com.mukiva.feature.dashboard.domain.model.IMinimalForecast
 
 class MinimalForecastAdapter(
     private val onItemClick: (Int) -> Unit

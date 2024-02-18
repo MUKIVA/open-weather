@@ -124,7 +124,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         mDashboardAdapter.submit(count)
         if (mBinding.dashboard.adapter == null)
             mBinding.dashboard.adapter = mDashboardAdapter
-//        dashboard.offscreenPageLimit = count - 1
+        dashboard.offscreenPageLimit = max(count - 1, 0)
     }
 
     private fun updateTitle(currentWithLocation: CurrentWithLocation, unitsType: UnitsType) = with(mBinding) {

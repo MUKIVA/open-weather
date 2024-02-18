@@ -1,9 +1,9 @@
-package com.mukiva.feature.forecast.ui.adapter.minimal_forecast
+package com.mukiva.feature.dashboard.ui.adapter
 
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.mukiva.feature.forecast.databinding.ItemMinForecastBinding
-import com.mukiva.feature.forecast.domain.IMinimalForecast
+import com.mukiva.feature.dashboard.databinding.ItemMinForecastBinding
+import com.mukiva.feature.dashboard.domain.model.IMinimalForecast
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -29,7 +29,7 @@ class MinimalForecastItemViewHolder(
         updateTempInfo(item.dayAvgTempC, item.nightAvgTempC)
 
         root.setOnClickListener {
-            onItemClick(item.id)
+            onItemClick(item.index)
         }
     }
 

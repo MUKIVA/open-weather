@@ -25,33 +25,45 @@ import com.mukiva.openweather.ui.hide
 import com.mukiva.openweather.ui.loading
 import com.mukiva.core.ui.uiLazy
 import com.mukiva.core.ui.viewBindings
+import com.mukiva.feature.dashboard.domain.model.IMinimalForecast
+import com.mukiva.feature.dashboard.ui.adapter.MinimalForecastAdapter
 import com.mukiva.openweather.ui.visible
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template) {
-
-    @Inject
-    lateinit var minimalForecastFragmentFactory: IMinimalForecastFragmentFactory
-
 
     private val mBinding by viewBindings(FragmentDashboardTemplateBinding::bind)
     private val mViewModel by viewModels<AdditionalDashboardInfoViewModel>()
     private val mLocationPosition by uiLazy {
         requireArguments().getInt(ARG_LOCATION_POSITION)
     }
+    private val mMinimalForecastAdapter by uiLazy {
+        MinimalForecastAdapter(
+            onItemClick = { pos -> mViewModel.goForecast(pos) }
+        )
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        mBinding.emptyView.root
+            .layoutTransition
+            .setAnimateParentHierarchy(false)
+
         initNestedScroll()
+        initForecastList()
         subscribeOnViewModel()
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) = with(mBinding) {
         super.onViewStateRestored(savedInstanceState)
         content.scrollY = ScrollSynchronizer.getLastScroll()
+    }
+
+    private fun initForecastList() = with(mBinding) {
+        daysForecastList.adapter = mMinimalForecastAdapter
     }
 
     private fun initNestedScroll() = with(mBinding) {
@@ -90,20 +102,11 @@ class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template)
             updateHumidity(humidity)
             updatePressure(this, state.unitsType)
         }
-        updateForecast(state.location)
+        updateForecast(state.forecastListState)
     }
 
-    private fun updateForecast(location: String) = with(mBinding) {
-        if (childFragmentManager.findFragmentByTag(TAG_FORECAST_FRAGMENT) != null)
-            return@with
-
-        val transaction = childFragmentManager.beginTransaction()
-        transaction.replace(
-            R.id.daysForecast,
-            minimalForecastFragmentFactory.createFragment(location),
-            TAG_FORECAST_FRAGMENT
-        )
-        transaction.commit()
+    private fun updateForecast(state: Collection<IMinimalForecast>) {
+        mMinimalForecastAdapter.submitList(state.toList())
     }
 
     private fun updatePressure(
@@ -229,9 +232,6 @@ class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template)
     }
 
     companion object {
-
-        private const val TAG_FORECAST_FRAGMENT = "TAG_FORECAST_FRAGMENT"
-
         private const val ARG_LOCATION_POSITION = "ARG_LOCATION_POSITION"
 
         private const val FROM_MBAR_TO_MMHG = 0.750062f

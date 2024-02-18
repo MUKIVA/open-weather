@@ -47,7 +47,7 @@ class DashboardViewModel @Inject constructor(
         viewModelScope.launch {
             val locations = getAllLocations()
             val currentWithLocationList = locations.map {
-                CurrentWithLocation(null, it)
+                CurrentWithLocation(null, emptyList(), it)
             }
 
             if (locations.isEmpty()){
@@ -81,7 +81,13 @@ class DashboardViewModel @Inject constructor(
                 is ApiResult.Error -> modifyState { copy(type = DashboardState.Type.ERROR) }
                 is ApiResult.Success -> {
                     val newLocationList = locations.mapIndexed { i, it ->
-                        if (i == position) it.copy(currentWeather = result.data.currentWeather) else it
+                        if (i == position)
+                            it.copy(
+                                currentWeather = result.data.currentWeather,
+                                forecastState = result.data.forecastState
+                            )
+                        else
+                            it
                     }
                     modifyState {
                         copy(

@@ -2,8 +2,6 @@
 <resources>
     <string name="get_forecast_error">Failed to get forecast</string>
     <string name="refresh">Refresh</string>
-    <string name="day">Day</string>
-    <string name="night">Night</string>
     <string name="forecast_title">Forecast</string>
 
     <string name="group_temp_title">Temp</string>
