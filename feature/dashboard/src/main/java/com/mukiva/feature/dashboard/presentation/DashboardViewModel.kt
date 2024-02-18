@@ -3,7 +3,7 @@ package com.mukiva.feature.dashboard.presentation
 import androidx.lifecycle.viewModelScope
 import com.mukiva.feature.dashboard.navigation.IDashboardRouter
 import com.mukiva.feature.dashboard.domain.model.CurrentWithLocation
-import com.mukiva.feature.dashboard.domain.model.Location
+import com.mukiva.feature.dashboard.domain.model.ILocation
 import com.mukiva.feature.dashboard.domain.model.UnitsType
 import com.mukiva.feature.dashboard.domain.repository.IForecastUpdater
 import com.mukiva.feature.dashboard.domain.repository.ISettingsRepository
@@ -105,7 +105,7 @@ class DashboardViewModel @Inject constructor(
         router.goSettings()
     }
 
-    private suspend fun getAllLocations(): List<Location> {
+    private suspend fun getAllLocations(): List<ILocation> {
         return when (val result = getAllLocationsUseCase()) {
                 is ApiResult.Error -> emptyList()
                 is ApiResult.Success -> result.data.sortedBy { it.position }

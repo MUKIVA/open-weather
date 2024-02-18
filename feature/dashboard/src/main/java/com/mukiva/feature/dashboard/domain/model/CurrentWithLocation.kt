@@ -1,7 +1,7 @@
 package com.mukiva.feature.dashboard.domain.model
 
 data class CurrentWithLocation(
-    val currentWeather: CurrentWeather?,
+    val currentWeather: ICurrentWeather?,
     val forecastState: Collection<IMinimalForecast>,
-    val location: Location
+    val location: ILocation
 )

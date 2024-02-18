@@ -14,8 +14,8 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.mukiva.feature.dashboard.R
 import com.mukiva.feature.dashboard.databinding.FragmentDashboardTemplateBinding
-import com.mukiva.feature.dashboard.domain.model.Condition
-import com.mukiva.feature.dashboard.domain.model.CurrentWeather
+import com.mukiva.feature.dashboard.domain.model.ICondition
+import com.mukiva.feature.dashboard.domain.model.ICurrentWeather
 import com.mukiva.feature.dashboard.domain.model.UnitsType
 import com.mukiva.feature.dashboard.domain.model.WindDirection
 import com.mukiva.feature.dashboard.presentation.AdditionalDashboardInfoViewModel
@@ -110,7 +110,7 @@ class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template)
     }
 
     private fun updatePressure(
-        currentWeather: CurrentWeather,
+        currentWeather: ICurrentWeather,
         unitsType: UnitsType
     ) = with(mBinding.pressureField) {
         subtitle.text = getString(R.string.field_pressure_subtitle)
@@ -154,7 +154,7 @@ class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template)
     }
 
     private fun updateWindSpeed(
-        currentWeather: CurrentWeather,
+        currentWeather: ICurrentWeather,
         speedUnitsType: UnitsType
     ) = with(mBinding.windSpeedField) {
         subtitle.text = getString(R.string.field_wind_speed_subtitle)
@@ -171,7 +171,7 @@ class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template)
     }
 
     private fun updateConditionField(
-        condition: Condition,
+        condition: ICondition,
         cloudPercent: Int
     ) = with(mBinding.conditionField) {
         subtitle.text = getString(R.string.field_condition_subtitle)
@@ -179,7 +179,7 @@ class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template)
         fieldValue.setDrawable(R.drawable.ic_condition)
     }
 
-    private fun updateFeelsLike(currentWeather: CurrentWeather, unitsType: UnitsType) = with(mBinding.feelsLikeField) {
+    private fun updateFeelsLike(currentWeather: ICurrentWeather, unitsType: UnitsType) = with(mBinding.feelsLikeField) {
         val value = when(unitsType) {
             UnitsType.METRIC -> getString(
                 R.string.template_celsius_main_card,
