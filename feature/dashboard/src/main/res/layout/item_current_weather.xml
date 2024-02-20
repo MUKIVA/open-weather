@@ -12,18 +12,20 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="150dp">
 
         <TextView
             android:id="@+id/mainTemp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="7C"
             android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
             android:textSize="64sp"
+            app:layout_constraintBottom_toTopOf="@+id/cityName"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="7C" />
 
         <TextView
             android:id="@+id/cityName"
@@ -31,10 +33,19 @@
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.Material3.ActionBar.Subtitle"
             android:textSize="32sp"
-            tools:text="London"
-            app:layout_constraintTop_toBottomOf="@id/mainTemp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/mainTemp"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="@id/mainTemp"
-            app:layout_constraintEnd_toEndOf="@id/mainTemp"/>
+            app:layout_constraintTop_toBottomOf="@+id/mainTemp"
+            tools:text="London" />
+
+        <include
+            android:id="@+id/emptyView"
+            layout="@layout/lay_list_states"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:visibility="gone" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

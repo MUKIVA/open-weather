@@ -27,6 +27,12 @@ open class SingleStateViewModel<TState, TEvent>(
         modifyState(mState.value.initializer())
     }
 
+    protected fun modifyStateAsync(initializer: suspend TState.() -> TState) {
+        viewModelScope.launch {
+            modifyState(mState.value.initializer())
+        }
+    }
+
     protected suspend fun event(evt: TEvent) {
         viewModelScope.launch {
             mEvent.emit(evt)

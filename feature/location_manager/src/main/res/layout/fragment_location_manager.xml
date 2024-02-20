@@ -15,6 +15,7 @@
         tools:itemCount="10"
         android:paddingHorizontal="@dimen/def_h_padding"
         tools:listitem="@layout/item_location"
+        android:clipToPadding="false"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
     <include

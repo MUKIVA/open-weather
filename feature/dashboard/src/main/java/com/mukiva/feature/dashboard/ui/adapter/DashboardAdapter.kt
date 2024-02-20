@@ -17,7 +17,8 @@ class DashboardAdapter(
     override fun getItemCount(): Int = mLocationCount
 
     override fun createFragment(position: Int): Fragment {
-        return DashboardTemplateFragment.newInstance(position)
+        return DashboardTemplateFragment
+            .newInstance(DashboardTemplateFragment.Args(position))
     }
 
     override fun onBindViewHolder(

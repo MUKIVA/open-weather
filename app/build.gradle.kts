@@ -8,6 +8,7 @@ plugins {
         id(hilt.id)
         id(ksp.id)
     }
+
 }
 
 android {

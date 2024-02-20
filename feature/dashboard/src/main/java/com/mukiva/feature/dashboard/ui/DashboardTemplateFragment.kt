@@ -8,37 +8,49 @@ import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.withCreated
+import com.mukiva.core.ui.KEY_ARGS
+import com.mukiva.core.ui.getArgs
 import com.mukiva.feature.dashboard.R
 import com.mukiva.feature.dashboard.databinding.FragmentDashboardTemplateBinding
 import com.mukiva.feature.dashboard.domain.model.ICondition
 import com.mukiva.feature.dashboard.domain.model.ICurrentWeather
 import com.mukiva.feature.dashboard.domain.model.UnitsType
 import com.mukiva.feature.dashboard.domain.model.WindDirection
-import com.mukiva.feature.dashboard.presentation.AdditionalDashboardInfoViewModel
-import com.mukiva.feature.dashboard.presentation.AdditionalInfoState
 import com.mukiva.openweather.ui.gone
 import com.mukiva.openweather.ui.hide
 import com.mukiva.openweather.ui.loading
 import com.mukiva.core.ui.uiLazy
 import com.mukiva.core.ui.viewBindings
 import com.mukiva.feature.dashboard.domain.model.IMinimalForecast
+import com.mukiva.feature.dashboard.presentation.DashboardViewModel
+import com.mukiva.feature.dashboard.presentation.IDashboardState
+import com.mukiva.feature.dashboard.presentation.MinorWeatherState
 import com.mukiva.feature.dashboard.ui.adapter.MinimalForecastAdapter
 import com.mukiva.openweather.ui.visible
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import java.io.Serializable
 
 @AndroidEntryPoint
 class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template) {
 
+    data class Args(
+        val position: Int
+    ): Serializable
+
     private val mBinding by viewBindings(FragmentDashboardTemplateBinding::bind)
-    private val mViewModel by viewModels<AdditionalDashboardInfoViewModel>()
-    private val mLocationPosition by uiLazy {
-        requireArguments().getInt(ARG_LOCATION_POSITION)
-    }
+    private val mViewModel by viewModels<DashboardViewModel>(
+        ownerProducer = { requireParentFragment() }
+    )
     private val mMinimalForecastAdapter by uiLazy {
         MinimalForecastAdapter(
             onItemClick = { pos -> mViewModel.goForecast(pos) }
@@ -71,6 +83,17 @@ class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template)
             ScrollSynchronizer.updateScroll(scrollY, lifecycleScope)
         }
 
+        ViewCompat.setOnApplyWindowInsetsListener(grid) { v, insets ->
+
+            val navInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+
+            v.updatePadding(
+                bottom = navInsets.bottom
+            )
+
+            WindowInsetsCompat.CONSUMED
+        }
+
         lifecycleScope.launch {
             ScrollSynchronizer.getOffsetFlow()
                 .flowWithLifecycle(lifecycle)
@@ -79,30 +102,27 @@ class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template)
     }
 
     private fun subscribeOnViewModel() {
-        mViewModel.loadPosition(mLocationPosition)
         lifecycleScope.launch {
-            mViewModel.state
-                .flowWithLifecycle(lifecycle)
-                .collect { state ->
-                    updateState(state)
+            lifecycle.withCreated {
+                mViewModel.observeState(IDashboardState.MinorState::class) {
+                    val pos = getArgs(Args::class.java).position
+                    val state = it.list.elementAt(pos)
+                    updateFragmentType(state.type)
+                    if (state.currentWeather == null) return@observeState
+                    with(state.currentWeather) {
+                        updateDayStatus(isDay)
+                        updateFeelsLike(this, UnitsType.METRIC)
+                        updateConditionField(condition, cloud)
+                        updateWindSpeed(this, UnitsType.METRIC)
+                        updateWindDirection(windDir, windDegree.toFloat())
+                        updateHumidity(humidity)
+                        updatePressure(this, UnitsType.METRIC)
+                    }
+                    updateForecast(state.minimalForecastState)
                 }
-        }
 
-    }
-
-    private fun updateState(state: AdditionalInfoState) {
-        updateFragmentType(state.type)
-        if (state.currentWeather == null) return
-        with(state.currentWeather) {
-            updateDayStatus(isDay)
-            updateFeelsLike(this, state.unitsType)
-            updateConditionField(condition, cloud)
-            updateWindSpeed(this, state.unitsType)
-            updateWindDirection(windDir, windDegree.toFloat())
-            updateHumidity(humidity)
-            updatePressure(this, state.unitsType)
+            }
         }
-        updateForecast(state.forecastListState)
     }
 
     private fun updateForecast(state: Collection<IMinimalForecast>) {
@@ -196,13 +216,13 @@ class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template)
         fieldValue.setDrawable(R.drawable.ic_feels_like)
     }
 
-    private fun updateFragmentType(type: AdditionalInfoState.Type) = with(mBinding) {
+    private fun updateFragmentType(type: MinorWeatherState.Type) = with(mBinding) {
         when(type) {
-            AdditionalInfoState.Type.LOADING -> {
+            MinorWeatherState.Type.LOADING -> {
                 content.gone()
                 emptyView.loading()
             }
-            AdditionalInfoState.Type.CONTENT -> {
+            MinorWeatherState.Type.CONTENT -> {
                 content.visible()
                 emptyView.hide()
             }
@@ -232,13 +252,11 @@ class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template)
     }
 
     companion object {
-        private const val ARG_LOCATION_POSITION = "ARG_LOCATION_POSITION"
-
         private const val FROM_MBAR_TO_MMHG = 0.750062f
 
-        fun newInstance(position: Int) = DashboardTemplateFragment().apply {
+        fun newInstance(args: Args) = DashboardTemplateFragment().apply {
             arguments = bundleOf(
-                ARG_LOCATION_POSITION to position
+                KEY_ARGS to args
             )
         }
     }

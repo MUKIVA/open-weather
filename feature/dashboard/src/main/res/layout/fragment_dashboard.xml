@@ -5,12 +5,13 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="false">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/toolbarLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/collapsingAppbarLayout"
@@ -47,6 +48,7 @@
         android:layout_height="match_parent"
         app:strokeWidth="0dp"
         app:cardPreventCornerOverlap="true"
+        android:clipToPadding="false"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <View
@@ -68,7 +70,7 @@
 
 
     <include
-        android:id="@+id/emptyView"
+        android:id="@+id/mainEmptyView"
         layout="@layout/lay_list_states"
         android:layout_height="match_parent"
         android:layout_width="match_parent" />
