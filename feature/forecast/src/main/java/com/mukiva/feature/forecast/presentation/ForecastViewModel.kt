@@ -1,7 +1,9 @@
 package com.mukiva.feature.forecast.presentation
 
 import androidx.lifecycle.viewModelScope
+import com.mukiva.feature.forecast.domain.UnitsType
 import com.mukiva.feature.forecast.domain.repository.IForecastUpdater
+import com.mukiva.feature.forecast.domain.repository.ISettingsRepository
 import com.mukiva.feature.forecast.domain.usecase.GetFullForecastUseCase
 import com.mukiva.openweather.presentation.SingleStateViewModel
 import com.mukiva.usecase.ApiResult
@@ -12,8 +14,9 @@ import javax.inject.Inject
 @HiltViewModel
 class ForecastViewModel @Inject constructor(
     initialState: ForecastState,
+    forecastUpdater: IForecastUpdater,
+    settings: ISettingsRepository,
     private val getFullForecastUseCase: GetFullForecastUseCase,
-    forecastUpdater: IForecastUpdater
 ) : SingleStateViewModel<ForecastState, Nothing>(initialState) {
 
     private var mLastLocation = ""
@@ -23,6 +26,12 @@ class ForecastViewModel @Inject constructor(
             if (mLastLocation.isNotBlank())
                 loadForecast(mLastLocation)
         }
+
+        viewModelScope.launch {
+            settings.getUnitsTypeFlow()
+                .collect { onUnitsTypeUpdate(it) }
+        }
+
     }
 
     fun loadForecast(locationName: String) {
@@ -42,6 +51,14 @@ class ForecastViewModel @Inject constructor(
             }
         }
 
+    }
+
+    private fun onUnitsTypeUpdate(unitsType: UnitsType) {
+        modifyState {
+            copy(
+                unitsType = unitsType
+            )
+        }
     }
 
     companion object {

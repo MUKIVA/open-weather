@@ -24,8 +24,7 @@ dependencies {
         Projects.Core.navigation,
         Projects.Core.usecase,
         Projects.Core.ui,
-        Projects.Core.network,
-        Projects.Core.data
+        Projects.Core.network
     )
 
     addDefaultImpl()

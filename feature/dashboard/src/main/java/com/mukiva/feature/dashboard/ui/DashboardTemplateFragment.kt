@@ -19,6 +19,7 @@ import androidx.lifecycle.lifecycleScope
 import com.mukiva.core.ui.KEY_ARGS
 import com.mukiva.core.ui.getArgs
 import com.mukiva.feature.dashboard.R
+import com.mukiva.core.ui.R as CoreUiRes
 import com.mukiva.feature.dashboard.databinding.FragmentDashboardTemplateBinding
 import com.mukiva.feature.dashboard.domain.model.ICondition
 import com.mukiva.feature.dashboard.domain.model.ICurrentWeather
@@ -135,13 +136,13 @@ class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template)
         when(unitsType) {
             UnitsType.METRIC -> {
                 fieldValue.text = getString(
-                    R.string.template_mmhg,
+                    CoreUiRes.string.template_mmhg,
                     pressureMmHg.toInt().toString()
                 )
             }
             UnitsType.IMPERIAL -> {
                 fieldValue.text = getString(
-                    R.string.template_mb,
+                    CoreUiRes.string.template_mb,
                     currentWeather.pressureMb.toInt().toString()
                 )
             }
@@ -175,10 +176,16 @@ class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template)
         subtitle.text = getString(R.string.field_wind_speed_subtitle)
         when(speedUnitsType) {
             UnitsType.METRIC -> {
-                fieldValue.text = getString(R.string.template_kmh, currentWeather.windKph.toInt())
+                fieldValue.text = getString(
+                    CoreUiRes.string.template_kmh,
+                    currentWeather.windKph.toInt()
+                )
             }
             UnitsType.IMPERIAL -> {
-                fieldValue.text = getString(R.string.template_mph, currentWeather.windMph.toInt())
+                fieldValue.text = getString(
+                    CoreUiRes.string.template_mph,
+                    currentWeather.windMph.toInt()
+                )
             }
         }
         fieldValue.setDrawable(R.drawable.ic_wind_speed)
@@ -197,11 +204,11 @@ class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template)
     private fun updateFeelsLike(currentWeather: ICurrentWeather, unitsType: UnitsType) = with(mBinding.feelsLikeField) {
         val value = when(unitsType) {
             UnitsType.METRIC -> getString(
-                R.string.template_celsius_main_card,
+                CoreUiRes.string.template_celsius,
                 currentWeather.feelsLikeC.toInt()
             )
             UnitsType.IMPERIAL -> getString(
-                R.string.template_fahrenheit_main_card,
+                CoreUiRes.string.template_fahrenheit,
                 currentWeather.feelsLikeF.toInt()
             )
         }

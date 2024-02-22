@@ -9,11 +9,13 @@ import com.mukiva.feature.forecast.databinding.ItemPressureBinding
 import com.mukiva.feature.forecast.databinding.ItemTempBinding
 import com.mukiva.feature.forecast.databinding.ItemWindBinding
 import com.mukiva.feature.forecast.domain.IForecastItem
+import com.mukiva.feature.forecast.domain.UnitsType
 import kotlin.math.max
 import kotlin.math.min
 
-class ForecastItemAdapter :
-    ListAdapter<IForecastItem, ForecastItemViewHolder>(ForecastItemDiffUtil)
+class ForecastItemAdapter(
+    private val unitsType: UnitsType
+) : ListAdapter<IForecastItem, ForecastItemViewHolder>(ForecastItemDiffUtil)
     , IValueProvider
 {
     private var mMaxValue: Float = Float.MAX_VALUE
@@ -31,17 +33,21 @@ class ForecastItemAdapter :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ForecastItemViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
-            HUMIDITY_VIEW_TYPE -> ForecastItemViewHolder.HumidityItemViewHolder(ItemHumidityBinding
-                .inflate(inflater, parent, false)
+            HUMIDITY_VIEW_TYPE -> ForecastItemViewHolder.HumidityItemViewHolder(
+                ItemHumidityBinding.inflate(inflater, parent, false),
+                unitsType
             )
-            PRESSURE_VIEW_TYPE -> ForecastItemViewHolder.PressureItemViewHolder(ItemPressureBinding
-                .inflate(inflater, parent, false)
+            PRESSURE_VIEW_TYPE -> ForecastItemViewHolder.PressureItemViewHolder(
+                ItemPressureBinding.inflate(inflater, parent, false),
+                unitsType
             )
-            TEMP_VIEW_TYPE -> ForecastItemViewHolder.TempItemViewHolder(ItemTempBinding
-                .inflate(inflater, parent, false)
+            TEMP_VIEW_TYPE -> ForecastItemViewHolder.TempItemViewHolder(
+                ItemTempBinding.inflate(inflater, parent, false),
+                unitsType
             )
-            WIND_VIEW_TYPE -> ForecastItemViewHolder.WindItemViewHolder(ItemWindBinding
-                .inflate(inflater, parent, false)
+            WIND_VIEW_TYPE -> ForecastItemViewHolder.WindItemViewHolder(
+                ItemWindBinding.inflate(inflater, parent, false),
+                unitsType
             )
             else -> throw IllegalStateException("Fail to get ViewType")
         }

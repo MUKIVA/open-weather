@@ -4,10 +4,12 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DiffUtil
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.mukiva.feature.forecast.domain.IHourlyForecast
+import com.mukiva.feature.forecast.domain.UnitsType
 import com.mukiva.feature.forecast.ui.GroupsTemplateFragment
 
 class HourlyForecastAdapter(
-    fragment: Fragment
+    fragment: Fragment,
+    private val unitsTypeProvider: () -> UnitsType
 ) : FragmentStateAdapter(fragment) {
 
     private var mDayForecastStateList: Collection<IHourlyForecast> = emptyList()
@@ -17,7 +19,10 @@ class HourlyForecastAdapter(
     override fun createFragment(position: Int): Fragment {
         return GroupsTemplateFragment.newInstance(
             args = GroupsTemplateFragment
-                .Args(mDayForecastStateList.elementAt(position).groups)
+                .Args(
+                    groups = mDayForecastStateList.elementAt(position).groups,
+                    unitsType = unitsTypeProvider()
+                )
         )
     }
 

@@ -6,16 +6,22 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.mukiva.feature.forecast.R
+import com.mukiva.core.ui.R as CoreUiRes
 import com.mukiva.feature.forecast.databinding.ItemHumidityBinding
 import com.mukiva.feature.forecast.databinding.ItemPressureBinding
 import com.mukiva.feature.forecast.databinding.ItemTempBinding
 import com.mukiva.feature.forecast.databinding.ItemWindBinding
 import com.mukiva.feature.forecast.domain.IForecastItem
+import com.mukiva.feature.forecast.domain.UnitsType
 import com.mukiva.feature.forecast.domain.WindDirection
 import java.util.Date
 import java.text.SimpleDateFormat
+import kotlin.math.roundToInt
 
-sealed class ForecastItemViewHolder(root: View) : RecyclerView.ViewHolder(root) {
+sealed class ForecastItemViewHolder(
+    root: View,
+    protected val unitsType: UnitsType
+) : RecyclerView.ViewHolder(root) {
 
     protected val mTimeFormatter = SimpleDateFormat(
         "HH:mm",
@@ -25,27 +31,40 @@ sealed class ForecastItemViewHolder(root: View) : RecyclerView.ViewHolder(root) 
     abstract fun bind(item: IForecastItem)
 
     class TempItemViewHolder(
-        private val bind: ItemTempBinding
-    ) : ForecastItemViewHolder(bind.root) {
+        private val bind: ItemTempBinding,
+        unitsType: UnitsType
+    ) : ForecastItemViewHolder(bind.root, unitsType) {
         override fun bind(item: IForecastItem) {
             if (item !is IForecastItem.IHourlyTemp) return
-            updateTemp(item.tempC, item.tempF)
-            updateFeelsLike(item.feelsLikeC, item.feelsLikeF)
+            updateTemp(item.tempC, item.tempF, unitsType)
+            updateFeelsLike(item.feelsLikeC, item.feelsLikeF, unitsType)
             updateCloud(item.cloud)
             updateCloudIcon(item.iconUrl)
             updateTime(item.date)
         }
 
-        private fun updateTemp(tempC: Double, tempF: Double) = with(bind) {
-            tempValue.text = "${tempC.toInt()}"
+        private fun updateTemp(
+            tempC: Double,
+            tempF: Double,
+            unitsType: UnitsType
+        ) = with(bind) {
+            val (strRes, temp) = asLocaleTempTuple(tempC, tempF, unitsType)
+            tempValue.text = itemView.context.getString(strRes, temp)
+
         }
 
-        private fun updateFeelsLike(tempC: Double, tempF: Double) = with(bind) {
-            feelsLikeValue.text = "${tempC.toInt()}"
+        private fun updateFeelsLike(
+            tempC: Double,
+            tempF: Double,
+            unitsType: UnitsType
+        ) = with(bind) {
+            val (strRes, temp) = asLocaleTempTuple(tempC, tempF, unitsType)
+            feelsLikeValue.text = itemView.context.getString(strRes, temp)
         }
 
         private fun updateCloud(cloud: Double) = with(bind) {
-            cloudValue.text = "${cloud.toInt()}"
+            cloudValue.text = itemView.context
+                .getString(CoreUiRes.string.template_percent, cloud.roundToInt())
         }
 
         private fun updateCloudIcon(iconUrl: String) = with(bind) {
@@ -57,28 +76,56 @@ sealed class ForecastItemViewHolder(root: View) : RecyclerView.ViewHolder(root) 
         private fun updateTime(date: Date) = with(bind) {
             time.text = mTimeFormatter.format(date)
         }
+
+        private fun asLocaleTempTuple(
+            tempC: Double,
+            tempF: Double,
+            unitsType: UnitsType
+        ) = when(unitsType) {
+            UnitsType.METRIC -> Pair(
+                CoreUiRes.string.template_celsius,
+                tempC.roundToInt()
+            )
+            UnitsType.IMPERIAL -> Pair(
+                CoreUiRes.string.template_fahrenheit,
+                tempF.roundToInt()
+            )
+        }
     }
 
     class WindItemViewHolder(
-        private val bind: ItemWindBinding
-    ) : ForecastItemViewHolder(bind.root) {
+        private val bind: ItemWindBinding,
+        unitsType: UnitsType
+    ) : ForecastItemViewHolder(bind.root, unitsType) {
 
         override fun bind(item: IForecastItem) {
             if (item !is IForecastItem.IHourlyWind) return
 
             updateWindDegree(item.windDegree)
-            updateWindSpeed(item.windMph, item.windKph)
+            updateWindSpeed(item.windMph, item.windKph, unitsType)
             updateTime(item.date)
             updateIcon(item.windDegree, item.windDirection)
 
         }
 
-        private fun updateWindSpeed(speedMph: Double, speedKph: Double) = with(bind) {
-            windSpeedValue.text = "${speedKph.toInt()}"
+        private fun updateWindSpeed(
+            speedMph: Double,
+            speedKph: Double,
+            unitsType: UnitsType
+        ) = with(bind) {
+
+            val (strRes, speed) = when(unitsType) {
+                UnitsType.METRIC -> Pair(CoreUiRes.string.template_kmh, speedKph)
+                UnitsType.IMPERIAL -> Pair(CoreUiRes.string.template_mph, speedMph)
+            }
+
+            windSpeedValue.text = itemView.context
+                .getString(strRes, speed.roundToInt())
         }
 
         private fun updateWindDegree(degree: Int) = with(bind) {
-            degreeValue.text = "$degree"
+            degreeValue.text = itemView.context
+                .getString(CoreUiRes.string.template_degree, degree)
         }
 
         private fun updateTime(time: Date) = with(bind) {
@@ -99,8 +146,9 @@ sealed class ForecastItemViewHolder(root: View) : RecyclerView.ViewHolder(root) 
     }
 
     class HumidityItemViewHolder(
-        private val bind: ItemHumidityBinding
-    ) : ForecastItemViewHolder(bind.root) {
+        private val bind: ItemHumidityBinding,
+        unitsType: UnitsType
+    ) : ForecastItemViewHolder(bind.root, unitsType) {
         override fun bind(item: IForecastItem) {
             if (item !is IForecastItem.IHourlyHumidity) return
             updateValue(item.humidity)
@@ -108,7 +156,8 @@ sealed class ForecastItemViewHolder(root: View) : RecyclerView.ViewHolder(root) 
         }
 
         private fun updateValue(value: Int) = with(bind) {
-            this.value.text = "$value"
+            this.value.text = itemView.context
+                .getString(CoreUiRes.string.template_percent, value)
         }
 
         private fun updateTime(time: Date) = with(bind) {
@@ -117,19 +166,38 @@ sealed class ForecastItemViewHolder(root: View) : RecyclerView.ViewHolder(root) 
     }
 
     class PressureItemViewHolder(
-        private val bind: ItemPressureBinding
-    ) : ForecastItemViewHolder(bind.root) {
+        private val bind: ItemPressureBinding,
+        unitsType: UnitsType
+    ) : ForecastItemViewHolder(bind.root, unitsType) {
         override fun bind(item: IForecastItem) {
             if (item !is IForecastItem.IHourlyPressure) return
-            updateValue(item.pressureMb, item.pressureIn)
+            updateValue(
+                item.pressureMb,
+                item.pressureIn,
+                unitsType
+            )
             updateTime(item.date)
         }
 
         private fun updateValue(
             pressureMb: Double,
-            pressureIn: Double
+            pressureIn: Double,
+            unitsType: UnitsType
         ) = with(bind) {
-            this.value.text = "${pressureMb.toInt()}"
+
+            val (strRes, pressure) = when(unitsType) {
+                UnitsType.METRIC -> Pair(
+                    CoreUiRes.string.template_mmhg,
+                    pressureMb.roundToInt()
+                )
+                UnitsType.IMPERIAL -> Pair(
+                    CoreUiRes.string.template_mb,
+                    pressureIn.roundToInt()
+                )
+            }
+
+            this.value.text = itemView.context
+                .getString(strRes, pressure)
         }
 
         private fun updateTime(time: Date) = with(bind) {

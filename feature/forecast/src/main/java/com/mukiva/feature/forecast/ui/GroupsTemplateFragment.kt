@@ -12,17 +12,23 @@ import com.mukiva.feature.forecast.R
 import com.mukiva.feature.forecast.databinding.FragmentGroupsTemplateBinding
 import com.mukiva.feature.forecast.domain.IForecastGroup
 import com.mukiva.feature.forecast.domain.IForecastItem
+import com.mukiva.feature.forecast.domain.UnitsType
 import com.mukiva.feature.forecast.ui.adapter.forecast.GroupsForecastAdapter
 import java.io.Serializable
 
 class GroupsTemplateFragment : Fragment(R.layout.fragment_groups_template) {
 
     data class Args(
-        val groups: Collection<IForecastGroup<IForecastItem>>
+        val groups: Collection<IForecastGroup<IForecastItem>>,
+        val unitsType: UnitsType
     ): Serializable
 
     private val mBinding by viewBindings(FragmentGroupsTemplateBinding::bind)
-    private val mGroupsAdapter by uiLazy { GroupsForecastAdapter() }
+    private val mGroupsAdapter by uiLazy {
+        GroupsForecastAdapter(
+            unitsType = getArgs(Args::class.java).unitsType
+        )
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initList(getArgs(Args::class.java).groups)

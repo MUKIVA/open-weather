@@ -2,7 +2,7 @@ package com.mukiva.feature.dashboard.ui.adapter
 
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.mukiva.feature.dashboard.R
+import com.mukiva.core.ui.R as CoreUiRes
 import com.mukiva.feature.dashboard.databinding.ItemMinForecastBinding
 import com.mukiva.feature.dashboard.domain.model.IMinimalForecast
 import com.mukiva.feature.dashboard.domain.model.UnitsType
@@ -52,12 +52,12 @@ class MinimalForecastItemViewHolder(
     ) = with(bindings) {
         val (strRes, night, day) = when(unitsType) {
             UnitsType.METRIC -> Triple(
-                R.string.template_celsius_main_card,
+                CoreUiRes.string.template_celsius,
                 nightTempC.roundToInt(),
                 dayTempC.roundToInt()
             )
             UnitsType.IMPERIAL -> Triple(
-                R.string.template_fahrenheit_main_card,
+                CoreUiRes.string.template_fahrenheit,
                 nightTempF.roundToInt(),
                 dayTempF.roundToInt()
             )

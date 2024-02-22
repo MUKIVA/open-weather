@@ -6,9 +6,6 @@
     <string name="template_celsius_main_title">%1$d℃ %2$s</string>
     <string name="template_fahrenheit_main_title">%1$d℉ %2$s</string>
 
-    <string name="template_celsius_main_card">%1$d℃</string>
-    <string name="template_fahrenheit_main_card">%1$d℉</string>
-
     <string name="field_is_day_subtitle">Times of day</string>
     <string name="is_day_true">Day</string>
     <string name="is_day_false">Night</string>
@@ -19,18 +16,12 @@
     <string name="template_cloud">%1$d%% %2$s</string>
 
     <string name="field_wind_speed_subtitle">Wind speed</string>
-    <string name="template_kmh">%1$d Km/h</string>
-    <string name="template_mph">%1$d mph</string>
-
     <string name="field_wind_dir_subtitle">Wind Direction</string>
 
     <string name="field_humidity_subtitle">Humidity</string>
     <string name="template_percent">%1$s%%</string>
 
     <string name="field_pressure_subtitle">Pressure</string>
-    <string name="template_mmhg">%1$s mmHg</string>
-    <string name="template_mb">%1$s mb</string>
-
     <string name="dashboard_title_current">Current</string>
     <string name="dashboard_title_forecast">Forecast</string>
 

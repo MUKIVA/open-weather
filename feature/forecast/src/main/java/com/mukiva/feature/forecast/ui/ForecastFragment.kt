@@ -29,6 +29,7 @@ import com.mukiva.core.ui.uiLazy
 import com.mukiva.core.ui.viewBindings
 import com.mukiva.feature.forecast.databinding.ItemDayTabBinding
 import com.mukiva.feature.forecast.domain.IHourlyForecast
+import com.mukiva.feature.forecast.domain.UnitsType
 import com.mukiva.openweather.ui.visible
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -44,10 +45,17 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast) {
         val dayPosition: Int
     ) : Serializable
 
+    private var mUnitsTypeProvider: () -> UnitsType = { UnitsType.METRIC }
     private val mBinding by viewBindings(FragmentForecastBinding::bind)
     private val mViewModel by viewModels<ForecastViewModel>()
-    private val mHourlyForecastAdapter by uiLazy { HourlyForecastAdapter(this) }
+    private val mHourlyForecastAdapter by uiLazy {
+        HourlyForecastAdapter(
+            fragment = this,
+            unitsTypeProvider = { mUnitsTypeProvider() }
+        )
+    }
     private var mDayIsInit: Boolean = false
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -129,6 +137,7 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast) {
     }
 
     private fun updateState(state: ForecastState) {
+        mUnitsTypeProvider = { state.unitsType }
         updateViewPager(state.hourlyForecast)
         updateType(state.type)
     }

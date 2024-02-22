@@ -127,8 +127,8 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
 
         val mainCardTemp: (UnitsType) -> String = { unitsType ->
             when(unitsType) {
-                UnitsType.METRIC -> getString(R.string.template_celsius_main_card, state.tempC)
-                UnitsType.IMPERIAL -> getString(R.string.template_fahrenheit_main_card, state.tempF)
+                UnitsType.METRIC -> getString(CoreUiRes.string.template_celsius, state.tempC)
+                UnitsType.IMPERIAL -> getString(CoreUiRes.string.template_fahrenheit, state.tempF)
             }
         }
 

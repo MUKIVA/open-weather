@@ -6,14 +6,18 @@ import com.mukiva.feature.forecast.R
 import com.mukiva.feature.forecast.databinding.ItemForecastGroupTemplateBinding
 import com.mukiva.feature.forecast.domain.IForecastGroup
 import com.mukiva.feature.forecast.domain.IForecastItem
+import com.mukiva.feature.forecast.domain.UnitsType
 import com.mukiva.feature.forecast.presentation.ForecastGroup
 import com.mukiva.openweather.ui.gone
 
 class GroupViewHolder(
-    private val bind: ItemForecastGroupTemplateBinding
+    private val bind: ItemForecastGroupTemplateBinding,
+    private val unitsType: UnitsType
 ) : RecyclerView.ViewHolder(bind.root) {
 
-    private val mItemAdapter by uiLazy { ForecastItemAdapter() }
+    private val mItemAdapter by uiLazy {
+        ForecastItemAdapter(unitsType)
+    }
 
     fun bind(item: IForecastGroup<IForecastItem>) = with(bind) {
         updateItems(item.items)
