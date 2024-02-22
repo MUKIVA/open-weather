@@ -62,6 +62,12 @@ class DashboardViewModel @Inject constructor(
                 copy(type = IDashboardState.ScreenType.Type.LOADING)
             }
             val locations = getAllLocations()
+            if (locations.isEmpty()) {
+                modifyState(IDashboardState.ScreenType::class) {
+                    copy(type = IDashboardState.ScreenType.Type.EMPTY)
+                }
+                return@launch
+            }
             val stateWrappedLocations = wrapAsState(locations)
             modifyState(IDashboardState.ScreenType::class) {
                 copy(

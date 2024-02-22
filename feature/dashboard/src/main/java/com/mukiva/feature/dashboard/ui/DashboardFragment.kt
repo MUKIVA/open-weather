@@ -6,10 +6,8 @@ import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.lifecycle.withCreated
 import androidx.viewpager2.widget.ViewPager2
 import com.mukiva.feature.dashboard.R
 import com.mukiva.feature.dashboard.databinding.FragmentDashboardBinding
@@ -103,17 +101,16 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
     }
 
     private fun observeViewModel() {
-        lifecycleScope.launch {
-            lifecycle.withCreated {
-                with(mViewModel) {
-                    observeState(IDashboardState.ScreenType::class) { updateType(it.type) }
-                    observeState(IDashboardState.MinorState::class) { updateDashboard(it.list.size) }
-                    observeState(IDashboardState.MainCardState::class) {
-                        updateMainCard(it, unitsType = UnitsType.METRIC)
-                    }
-                }
+        with(mViewModel) {
+            observeState(IDashboardState.ScreenType::class, viewLifecycleOwner) {
+                updateType(it.type)
             }
-
+            observeState(IDashboardState.MinorState::class, viewLifecycleOwner) {
+                updateDashboard(it.list.size)
+            }
+            observeState(IDashboardState.MainCardState::class, viewLifecycleOwner) {
+                updateMainCard(it, unitsType = UnitsType.METRIC)
+            }
         }
     }
 

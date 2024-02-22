@@ -15,7 +15,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.withCreated
 import com.mukiva.core.ui.KEY_ARGS
 import com.mukiva.core.ui.getArgs
 import com.mukiva.feature.dashboard.R
@@ -36,7 +35,6 @@ import com.mukiva.feature.dashboard.presentation.MinorWeatherState
 import com.mukiva.feature.dashboard.ui.adapter.MinimalForecastAdapter
 import com.mukiva.openweather.ui.visible
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.io.Serializable
 
@@ -102,26 +100,21 @@ class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template)
     }
 
     private fun subscribeOnViewModel() {
-        lifecycleScope.launch {
-            lifecycle.withCreated {
-                mViewModel.observeState(IDashboardState.MinorState::class) {
-                    val pos = getArgs(Args::class.java).position
-                    val state = it.list.elementAt(pos)
-                    updateFragmentType(state.type)
-                    if (state.currentWeather == null) return@observeState
-                    with(state.currentWeather) {
-                        updateDayStatus(isDay)
-                        updateFeelsLike(this, UnitsType.METRIC)
-                        updateConditionField(condition, cloud)
-                        updateWindSpeed(this, UnitsType.METRIC)
-                        updateWindDirection(windDir, windDegree.toFloat())
-                        updateHumidity(humidity)
-                        updatePressure(this, UnitsType.METRIC)
-                    }
-                    updateForecast(state.minimalForecastState)
-                }
-
+        mViewModel.observeState(IDashboardState.MinorState::class, viewLifecycleOwner) {
+            val pos = getArgs(Args::class.java).position
+            val state = it.list.elementAt(pos)
+            updateFragmentType(state.type)
+            if (state.currentWeather == null) return@observeState
+            with(state.currentWeather) {
+                updateDayStatus(isDay)
+                updateFeelsLike(this, UnitsType.METRIC)
+                updateConditionField(condition, cloud)
+                updateWindSpeed(this, UnitsType.METRIC)
+                updateWindDirection(windDir, windDegree.toFloat())
+                updateHumidity(humidity)
+                updatePressure(this, UnitsType.METRIC)
             }
+            updateForecast(state.minimalForecastState)
         }
     }
 

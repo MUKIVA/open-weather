@@ -1,8 +1,11 @@
 package com.mukiva.core.presentation
 
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
@@ -11,10 +14,14 @@ abstract class MultiStateViewModel<T : Any> : ViewModel() {
 
     private val mStates = HashMap<KClass<*>, MutableStateFlow<T>>()
 
-    fun <R : T> observeState(clazz: KClass<R>, observer: (R) -> Unit) {
+    fun <R : T> observeState(clazz: KClass<R>, lifecycleOwner: LifecycleOwner, observer: (R) -> Unit) {
         viewModelScope.launch {
             mStates[clazz]!!
-                .collect { observer(it as R) }
+                .asStateFlow()
+                .collect {
+                    if (lifecycleOwner.lifecycle.currentState != Lifecycle.State.DESTROYED)
+                        observer(it as R)
+                }
         }
     }
     protected fun <R : T> getState(clazz: KClass<R>): R {
