@@ -33,6 +33,7 @@ import com.mukiva.feature.dashboard.domain.model.IMinimalForecast
 import com.mukiva.feature.dashboard.presentation.DashboardViewModel
 import com.mukiva.feature.dashboard.presentation.IDashboardState
 import com.mukiva.feature.dashboard.presentation.MinorWeatherState
+import com.mukiva.feature.dashboard.presentation.UnitsTypeProvider
 import com.mukiva.feature.dashboard.ui.adapter.MinimalForecastAdapter
 import com.mukiva.openweather.ui.visible
 import dagger.hilt.android.AndroidEntryPoint
@@ -52,7 +53,8 @@ class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template)
     )
     private val mMinimalForecastAdapter by uiLazy {
         MinimalForecastAdapter(
-            onItemClick = { pos -> mViewModel.goForecast(pos) }
+            onItemClick = { pos -> mViewModel.goForecast(pos) },
+            unitsTypeProvider = UnitsTypeProvider
         )
     }
 
@@ -107,12 +109,12 @@ class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template)
             if (state.currentWeather == null) return@observeState
             with(state.currentWeather) {
                 updateDayStatus(isDay)
-                updateFeelsLike(this, UnitsType.METRIC)
+                updateFeelsLike(this, it.unitsType)
                 updateConditionField(condition, cloud)
-                updateWindSpeed(this, UnitsType.METRIC)
+                updateWindSpeed(this, it.unitsType)
                 updateWindDirection(windDir, windDegree.toFloat())
                 updateHumidity(humidity)
-                updatePressure(this, UnitsType.METRIC)
+                updatePressure(this, it.unitsType)
             }
             updateForecast(state.minimalForecastState)
         }

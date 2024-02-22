@@ -40,6 +40,11 @@ abstract class MultiStateViewModel<T : Any> : ViewModel() {
             modifyState(clazz, (mStates[clazz]!!.value as R).transform())
         }
     }
+    protected fun <R : T> forceDraw(clazz: KClass<R>) {
+        viewModelScope.launch {
+            mStates[clazz]?.value = mStates[clazz]?.value as T
+        }
+    }
     private fun <R : T> modifyState(clazz: KClass<R>, state: R) {
         mStates[clazz]!!.value = state
     }

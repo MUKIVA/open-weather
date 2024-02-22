@@ -4,10 +4,11 @@ import com.mukiva.feature.dashboard.domain.model.UnitsType
 
 sealed interface IDashboardState {
 
+    val unitsType: UnitsType
+
     data class ScreenType(
-        val type: Type,
-        val unitsType: UnitsType
-    ) : IDashboardState {
+        val type: Type
+    ) : IDashboardState by UnitsTypeProvider {
         enum class Type {
             INIT,
             LOADING,
@@ -18,8 +19,7 @@ sealed interface IDashboardState {
 
         companion object {
             fun default() = ScreenType(
-                type = Type.INIT,
-                unitsType = UnitsType.METRIC
+                type = Type.INIT
             )
         }
     }
@@ -30,7 +30,7 @@ sealed interface IDashboardState {
         val tempF: Int,
         val cityName: String,
         val iconUrl: String
-    ) : IDashboardState {
+    ) : IDashboardState by UnitsTypeProvider {
         enum class Type {
             LOADING,
             CONTENT
@@ -49,6 +49,5 @@ sealed interface IDashboardState {
 
     data class MinorState(
         val list: Collection<MinorWeatherState>
-    ) : IDashboardState
-
+    ) : IDashboardState by UnitsTypeProvider
 }

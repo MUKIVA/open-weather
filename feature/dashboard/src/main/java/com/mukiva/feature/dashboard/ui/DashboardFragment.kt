@@ -46,11 +46,6 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         observeViewModel()
     }
 
-//    override fun onResume() = with(mBinding) {
-//        super.onResume()
-//        dashboard.
-//    }
-
     private fun initDashboard() = with(mBinding) {
         dashboard.adapter = mDashboardAdapter
 
@@ -114,7 +109,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
                 updateDashboard(it.list.size)
             }
             observeState(IDashboardState.MainCardState::class, viewLifecycleOwner) {
-                updateMainCard(it, unitsType = UnitsType.METRIC)
+                updateMainCard(it, it.unitsType)
             }
         }
     }

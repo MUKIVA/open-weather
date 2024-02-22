@@ -201,9 +201,9 @@ class DashboardViewModel @Inject constructor(
     }
 
     private fun onUnitsTypeUpdate(unitsType: UnitsType) {
-        modifyState(IDashboardState.ScreenType::class) {
-            copy(unitsType = unitsType)
-        }
+        UnitsTypeProvider.updateValue(unitsType)
+        forceDraw(IDashboardState.MinorState::class)
+        forceDraw(IDashboardState.MainCardState::class)
     }
 
     companion object {
