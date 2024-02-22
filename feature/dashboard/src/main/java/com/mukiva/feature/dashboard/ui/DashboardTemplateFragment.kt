@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.doOnNextLayout
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -67,11 +68,6 @@ class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template)
         subscribeOnViewModel()
     }
 
-    override fun onViewStateRestored(savedInstanceState: Bundle?) = with(mBinding) {
-        super.onViewStateRestored(savedInstanceState)
-        content.scrollY = ScrollSynchronizer.getLastScroll()
-    }
-
     private fun initForecastList() = with(mBinding) {
         daysForecastList.adapter = mMinimalForecastAdapter
     }
@@ -79,6 +75,10 @@ class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template)
     private fun initNestedScroll() = with(mBinding) {
         content.setOnScrollChangeListener { _, _, scrollY, _, _ ->
             ScrollSynchronizer.updateScroll(scrollY, lifecycleScope)
+        }
+
+        content.doOnNextLayout {
+            it.scrollY = ScrollSynchronizer.getLastScroll()
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(grid) { v, insets ->

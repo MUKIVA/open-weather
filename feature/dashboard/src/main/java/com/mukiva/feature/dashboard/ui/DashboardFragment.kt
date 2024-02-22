@@ -46,6 +46,11 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         observeViewModel()
     }
 
+//    override fun onResume() = with(mBinding) {
+//        super.onResume()
+//        dashboard.
+//    }
+
     private fun initDashboard() = with(mBinding) {
         dashboard.adapter = mDashboardAdapter
 
@@ -66,7 +71,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
 
     private fun initAppbar() = with(mBinding) {
 
-//        toolbarLayout.setExpanded(!mViewModel.toolbarIsCollapsed, false)
+        toolbarLayout.setExpanded(mViewModel.toolbarIsExpanded, false)
 
         toolbarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
             val maxOffset = appBarLayout.totalScrollRange
@@ -80,7 +85,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
             dashboard.updatePadding(top = padding.toInt() + dp(8))
             dragHandler.alpha = max(min(MAX_DRAG_HANDLER_ALPHA, MAX_DRAG_HANDLER_ALPHA - offsetRatio), MIN_DRAG_HANDLER_ALPHA)
 
-//            mViewModel.toolbarIsCollapsed = maxOffset == abs(verticalOffset)
+            mViewModel.toolbarIsExpanded = maxOffset != abs(verticalOffset)
         }
     }
 
@@ -118,6 +123,9 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         mDashboardAdapter.submit(count)
         if (mBinding.dashboard.adapter == null)
             mBinding.dashboard.adapter = mDashboardAdapter
+
+        if (count != 0)
+            dashboard.offscreenPageLimit = count.coerceIn(1, count)
     }
 
     private fun updateMainCard(state: IDashboardState.MainCardState, unitsType: UnitsType) = with(mBinding) {

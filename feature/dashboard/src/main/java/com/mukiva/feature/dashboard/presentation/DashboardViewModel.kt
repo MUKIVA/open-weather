@@ -25,8 +25,14 @@ class DashboardViewModel @Inject constructor(
 ) : MultiStateViewModel<IDashboardState>() {
 
     val position get() = mPosition
+    var toolbarIsExpanded: Boolean
+        get() = mToolbarIsExpanded
+        set(value) {
+            mToolbarIsExpanded = value
+        }
 
     private var mPosition = 0
+    private var mToolbarIsExpanded = true
 
     private val mMinorList
         get() = getState(IDashboardState.MinorState::class).list.toList()
