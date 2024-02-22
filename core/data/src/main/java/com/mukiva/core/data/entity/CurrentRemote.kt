@@ -14,7 +14,7 @@ data class CurrentRemote(
     @SerializedName("is_day")
     var isDay: Int? = null,
     @SerializedName("condition")
-    var condition: ConditionRemote? = ConditionRemote(),
+    var condition: ConditionRemote? = null,
     @SerializedName("wind_mph")
     var windMph: Double? = null,
     @SerializedName("wind_kph")

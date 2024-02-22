@@ -25,13 +25,19 @@ android {
             applicationIdSuffix = ".debug"
             isShrinkResources = false
 
-            signingConfig = signingConfigs.findByName("debug")
+            signingConfig = signingConfigs.findByName(BuildType.DEBUG)
         }
         getByName(BuildType.RELEASE) {
-            applicationIdSuffix = ""
-            isShrinkResources = true
+            applicationIdSuffix = ".release"
+            isShrinkResources = false
 
-            signingConfig = signingConfigs.findByName("release")
+            signingConfig = signingConfigs.findByName(BuildType.RELEASE)
+        }
+        getByName(BuildType.PROFILE) {
+            applicationIdSuffix = ".profile"
+            isShrinkResources = false
+
+            signingConfig = signingConfigs.findByName(BuildType.DEBUG)
         }
     }
 

@@ -16,7 +16,9 @@ class DefaultProjectPlugin : Plugin<Project> {
         defaultConfig {
             val proguardFiles = rootProject.fileTree("proguard").files +
                     getDefaultProguardFile("proguard-android-optimize.txt")
-            proguardFiles(*proguardFiles.toTypedArray())
+
+            proguardFiles(*(proguardFiles.toTypedArray()))
+
         }
 
         buildTypes {
@@ -28,6 +30,12 @@ class DefaultProjectPlugin : Plugin<Project> {
             getByName(BuildType.RELEASE) {
                 isMinifyEnabled = true
                 isDebuggable = false
+            }
+            create(BuildType.PROFILE) {
+                initWith(getByName(BuildType.DEBUG))
+                isDebuggable = false
+                isProfileable = true
+                isMinifyEnabled = true
             }
         }
 
