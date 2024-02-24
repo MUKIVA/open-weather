@@ -6,15 +6,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     style="@style/Widget.Material3.CardView.Outlined"
-    app:contentPadding="16dp"
-    app:strokeWidth="1.5dp"
+    app:contentPadding="@dimen/def_cardview_padding"
+    app:cardElevation="@dimen/def_max_elevation"
+    app:cardCornerRadius="@dimen/def_radius"
+    app:strokeWidth="@dimen/def_cardview_stroke_width"
     app:strokeColor="?attr/colorPrimary"
-    android:layout_margin="8dp">
+    android:layout_margin="@dimen/def_v_padding">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
 
         <TextView
             android:id="@+id/date"

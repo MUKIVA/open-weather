@@ -14,8 +14,8 @@
         android:textAppearance="@style/TextAppearance.Material3.LabelLarge"
         android:background="?attr/selectableItemBackground"
         android:drawablePadding="8dp"
-        android:paddingHorizontal="@dimen/def_h_list_item_padding"
-        android:paddingVertical="@dimen/def_v_list_item_padding"
+        android:paddingHorizontal="@dimen/def_h_padding"
+        android:paddingVertical="@dimen/def_v_padding"
         tools:text="Variant"/>
 
 </FrameLayout>

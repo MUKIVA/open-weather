@@ -9,7 +9,8 @@ import com.mukiva.feature.forecast.ui.GroupsTemplateFragment
 
 class HourlyForecastAdapter(
     fragment: Fragment,
-    private val unitsTypeProvider: () -> UnitsType
+    private val unitsTypeProvider: () -> UnitsType,
+    private val locationName: String
 ) : FragmentStateAdapter(fragment) {
 
     private var mDayForecastStateList: Collection<IHourlyForecast> = emptyList()
@@ -20,6 +21,7 @@ class HourlyForecastAdapter(
         return GroupsTemplateFragment.newInstance(
             args = GroupsTemplateFragment
                 .Args(
+                    locationName = locationName,
                     groups = mDayForecastStateList.elementAt(position).groups,
                     unitsType = unitsTypeProvider()
                 )

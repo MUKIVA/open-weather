@@ -12,6 +12,8 @@ import com.mukiva.feature.dashboard.domain.usecase.GetCurrentWeatherUseCase
 import com.mukiva.usecase.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,13 +28,15 @@ class DashboardViewModel @Inject constructor(
 
     val position get() = mPosition
     var toolbarIsExpanded: Boolean
-        get() = mToolbarIsExpanded
+        get() = mToolbarIsExpandedFlow.value
         set(value) {
-            mToolbarIsExpanded = value
+            mToolbarIsExpandedFlow.value = value
         }
+    val toolbarIsExpandedFlow: Flow<Boolean>
+        get() = mToolbarIsExpandedFlow
 
     private var mPosition = 0
-    private var mToolbarIsExpanded = true
+    private var mToolbarIsExpandedFlow = MutableStateFlow<Boolean>(true)
 
     private val mMinorList
         get() = getState(IDashboardState.MinorState::class).list.toList()

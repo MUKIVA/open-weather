@@ -1,6 +1,11 @@
 package com.mukiva.feature.location_manager.ui
 
+import android.animation.ArgbEvaluator
+import android.animation.ValueAnimator
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.ListAdapter
 import android.widget.Toast
@@ -17,7 +22,9 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.mukiva.core.ui.collectWithScope
 import com.mukiva.core.ui.databinding.LayListStatesBinding
+import com.mukiva.core.ui.getInteger
 import com.mukiva.feature.location_manager.R
 import com.mukiva.feature.location_manager.databinding.FragmentLocationManagerBinding
 import com.mukiva.feature.location_manager.presentation.EditableLocation
@@ -44,6 +51,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import com.mukiva.core.ui.R as CoreUiRes
 
 @AndroidEntryPoint
 class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
@@ -63,6 +71,15 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
         swipeIsEnabled = false
         dragDropIsEnabled = true
     } }
+    private val mSearchViewBackgroundColorAnimator by uiLazy {
+        ValueAnimator.ofObject(ArgbEvaluator(), Color.TRANSPARENT, Color.BLACK).apply {
+            duration = getInteger(CoreUiRes.integer.def_animation_duration).toLong()
+            addUpdateListener {
+                val color = it.animatedValue as Int
+                mBinding.searchView.setBackgroundColor(color)
+            }
+        }
+    }
     private val mTouchHelper by uiLazy { ItemTouchHelper(mTouchHelperCallback) }
     private val mSearchAdapter by uiLazy {
         LocationManagerSearchAdapter(
@@ -125,11 +142,12 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
             mViewModel.enterSearchMode()
         }
         searchView.setOnHideListener {
+            mViewModel.enterNormalMode()
             mOnBackPressedDecorator.remove()
         }
 
         mSearchQueryFlow
-            .debounce(500)
+            .debounce(DEBOUNCE_EDIT_TEXT)
             .onEach { mViewModel.executeSearch(it) }
             .launchIn(lifecycleScope)
     }
@@ -139,20 +157,6 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
         searchViewList.adapter = mSearchAdapter
 
         mTouchHelper.attachToRecyclerView(addedList)
-
-
-        ViewCompat.setOnApplyWindowInsetsListener(appbar) { v, insets ->
-            val statusBars = insets.getInsets(WindowInsetsCompat.Type.statusBars())
-
-            v.updatePadding(
-                bottom = statusBars.bottom,
-                top = statusBars.top,
-                right = statusBars.right,
-                left = statusBars.left
-            )
-
-            insets
-        }
 
         ViewCompat.setOnApplyWindowInsetsListener(searchView) { v, insets ->
             val ime = insets.getInsets(WindowInsetsCompat.Type.ime())
@@ -190,11 +194,10 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
     }
 
     private fun subscribeOnViewModel() {
-        lifecycleScope.launch {
-            mViewModel.state
-                .flowWithLifecycle(lifecycle)
-                .collect(::updateState)
-        }
+        mViewModel.state
+            .flowWithLifecycle(lifecycle)
+            .collectWithScope(lifecycleScope, ::updateState)
+
         mViewModel.subscribeOnEvent(::handleEvent)
     }
 
@@ -276,29 +279,60 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
     }
 
     private fun updateMode(mode: LocationManagerState.Type) {
+        Log.d("LocationManager", "$mode")
         when(mode) {
             LocationManagerState.Type.NORMAL -> with(mBinding) {
                 mOnBackPressedDecorator.remove()
-                mBinding.toolbar.gone()
-                mBinding.searchBar.visible()
+                animateToolbarMode(mode)
                 searchView.hide()
                 searchView.animate()
                 mTouchHelperCallback.isEnabled = false
+                if ((searchView.background as? ColorDrawable)?.color != Color.TRANSPARENT)
+                    mSearchViewBackgroundColorAnimator.reverse()
             }
-            LocationManagerState.Type.EDIT -> with(mBinding) {
-                mBinding.toolbar.visible()
-                mBinding.searchBar.gone()
-                searchView.hide()
+            LocationManagerState.Type.EDIT -> {
+                animateToolbarMode(mode)
                 requireActivity().onBackPressedDispatcher
                     .addCallback(mOnBackPressedDecorator)
                 mTouchHelperCallback.isEnabled = true
-
-
             }
-            LocationManagerState.Type.SEARCH -> {
+            LocationManagerState.Type.SEARCH -> with(mBinding) {
                 requireActivity().onBackPressedDispatcher
                     .addCallback(mOnBackPressedDecorator)
                 mTouchHelperCallback.isEnabled = false
+                if ((searchView.background as? ColorDrawable)?.color != Color.BLACK)
+                    mSearchViewBackgroundColorAnimator.start()
+            }
+        }
+    }
+
+    private fun animateToolbarMode(mode: LocationManagerState.Type) {
+        val duration = getInteger(CoreUiRes.integer.def_animation_duration).toLong()
+        when(mode) {
+            LocationManagerState.Type.NORMAL -> {
+                mBinding.toolbar.animate()
+                    .withStartAction { mBinding.toolbar.isEnabled = false }
+                    .setDuration(duration)
+                    .alpha(HIDDEN_ALPHA)
+                    .withEndAction { mBinding.toolbar.gone() }
+                mBinding.searchBar.animate()
+                    .withStartAction { mBinding.searchBar.visible() }
+                    .setDuration(duration)
+                    .alpha(VISIBLE_ALPHA)
+                    .withEndAction { mBinding.searchBar.isEnabled = true }
+            }
+            LocationManagerState.Type.SEARCH -> {}
+            LocationManagerState.Type.EDIT -> {
+                mBinding.toolbar.animate()
+                    .withStartAction { mBinding.toolbar.visible() }
+                    .setDuration(duration)
+                    .alpha(VISIBLE_ALPHA)
+                    .withEndAction { mBinding.toolbar.isEnabled = true }
+                mBinding.searchBar.animate()
+                    .withStartAction { mBinding.searchBar.isEnabled = false }
+                    .setDuration(duration)
+                    .alpha(HIDDEN_ALPHA)
+                    .withEndAction { mBinding.searchBar.gone() }
             }
         }
     }
@@ -311,6 +345,10 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
     }
 
     companion object {
+        private const val HIDDEN_ALPHA = 0.0f
+        private const val VISIBLE_ALPHA = 1.0f
+        private const val DEBOUNCE_EDIT_TEXT = 500L
+
         fun newInstance() = LocationManagerFragment()
     }
 

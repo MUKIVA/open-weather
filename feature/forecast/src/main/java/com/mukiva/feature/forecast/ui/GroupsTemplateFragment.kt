@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.mukiva.core.ui.KEY_ARGS
 import com.mukiva.core.ui.getArgs
 import com.mukiva.core.ui.uiLazy
@@ -13,16 +14,21 @@ import com.mukiva.feature.forecast.databinding.FragmentGroupsTemplateBinding
 import com.mukiva.feature.forecast.domain.IForecastGroup
 import com.mukiva.feature.forecast.domain.IForecastItem
 import com.mukiva.feature.forecast.domain.UnitsType
+import com.mukiva.feature.forecast.presentation.ForecastViewModel
 import com.mukiva.feature.forecast.ui.adapter.forecast.GroupsForecastAdapter
 import java.io.Serializable
 
 class GroupsTemplateFragment : Fragment(R.layout.fragment_groups_template) {
 
     data class Args(
+        val locationName: String,
         val groups: Collection<IForecastGroup<IForecastItem>>,
         val unitsType: UnitsType
     ): Serializable
 
+    private val mViewModel by viewModels<ForecastViewModel>(ownerProducer = {
+        requireParentFragment()
+    })
     private val mBinding by viewBindings(FragmentGroupsTemplateBinding::bind)
     private val mGroupsAdapter by uiLazy {
         GroupsForecastAdapter(
@@ -32,6 +38,13 @@ class GroupsTemplateFragment : Fragment(R.layout.fragment_groups_template) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initList(getArgs(Args::class.java).groups)
+        initSwipeRefreshLayout()
+    }
+
+    private fun initSwipeRefreshLayout() = with(mBinding) {
+        swipeRefreshLayout.setOnRefreshListener {
+            mViewModel.loadForecast(getArgs(Args::class.java).locationName)
+        }
     }
 
     private fun initList(groups: Collection<IForecastGroup<IForecastItem>>) = with(mBinding) {

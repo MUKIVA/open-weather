@@ -8,12 +8,12 @@
     android:orientation="vertical">
 
     <View
-        android:layout_width="30dp"
-        android:layout_height="5dp"
+        android:layout_width="@dimen/def_sheet_handle_w"
+        android:layout_height="@dimen/def_sheet_handle_h"
         android:layout_gravity="center"
-        android:layout_marginVertical="8dp"
+        android:layout_marginVertical="@dimen/def_v_padding"
         android:background="@drawable/background_bottom_sheet_handle"
-        android:alpha="0.5"/>
+        android:alpha="@dimen/def_sheet_handle_alpha"/>
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -30,7 +30,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="@dimen/def_separator_h"
             android:background="?attr/colorOutline"
             android:alpha="0.5"/>
 
@@ -40,9 +40,8 @@
         android:id="@+id/variantList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/transparent"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:paddingVertical="@dimen/def_v_list_item_padding"
+        android:paddingVertical="@dimen/def_v_padding"
         tools:listitem="@layout/item_selectable_item"/>
 
 </LinearLayout>

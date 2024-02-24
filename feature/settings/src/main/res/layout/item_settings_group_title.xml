@@ -7,7 +7,6 @@
     android:layout_height="wrap_content"
     tools:text="Some Group"
     android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
-    android:textSize="24sp"
     android:textColor="?attr/colorPrimary"
-    android:paddingVertical="@dimen/def_v_list_item_padding"
-    android:paddingHorizontal="@dimen/def_h_list_item_padding"/>
+    android:paddingVertical="@dimen/def_v_padding"
+    android:paddingHorizontal="@dimen/def_h_padding"/>

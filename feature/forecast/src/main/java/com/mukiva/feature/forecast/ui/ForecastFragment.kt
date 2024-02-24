@@ -51,7 +51,8 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast) {
     private val mHourlyForecastAdapter by uiLazy {
         HourlyForecastAdapter(
             fragment = this,
-            unitsTypeProvider = { mUnitsTypeProvider() }
+            unitsTypeProvider = { mUnitsTypeProvider() },
+            locationName = getArgs(Args::class.java).locationName
         )
     }
     private var mDayIsInit: Boolean = false
@@ -62,7 +63,6 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast) {
 
         initAppbar()
         initViewPager()
-        initSwipeRefreshLayout()
 
         subscribeOnViewModel()
 
@@ -71,12 +71,6 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast) {
     private fun initAppbar() = with(mBinding) {
         (requireActivity() as AppCompatActivity)
             .setSupportActionBar(toolbar)
-    }
-
-    private fun initSwipeRefreshLayout() = with(mBinding) {
-        swipeRefreshLayout.setOnRefreshListener {
-            mViewModel.loadForecast(getArgs(Args::class.java).locationName)
-        }
     }
 
     private fun initViewPager() = with(mBinding) {
@@ -150,13 +144,11 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast) {
         when(type) {
             ForecastState.Type.INIT -> {
                 content.gone()
-                swipeRefreshLayout.isEnabled = false
                 emptyView.loading()
                 mViewModel.loadForecast(getArgs(Args::class.java).locationName)
             }
             ForecastState.Type.ERROR -> {
                 content.gone()
-                swipeRefreshLayout.isEnabled = false
                 emptyView.error(
                     getString(R.string.get_forecast_error),
                     getString(R.string.refresh)
@@ -170,13 +162,10 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast) {
                     mDayIsInit = true
                 }
                 emptyView.hide()
-                swipeRefreshLayout.isEnabled = true
                 content.visible()
-                swipeRefreshLayout.isRefreshing = false
             }
             ForecastState.Type.LOADING -> {
                 emptyView.loading()
-                swipeRefreshLayout.isEnabled = false
                 content.gone()
             }
         }

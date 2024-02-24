@@ -9,14 +9,16 @@
     <androidx.core.widget.NestedScrollView
         android:id="@+id/content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        tools:visibility="visible">
 
         <GridLayout
             android:id="@+id/grid"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:columnCount="2"
-            android:padding="8dp"
+            android:paddingHorizontal="@dimen/def_v_padding"
             android:clipToPadding="false">
 
             <TextView
@@ -105,9 +107,10 @@
     <include
         android:id="@+id/emptyView"
         layout="@layout/lay_list_states"
-        android:visibility="gone"
-        android:layout_width="match_parent"
+        tools:visibility="gone"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         />
 
 </FrameLayout>

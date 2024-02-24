@@ -17,7 +17,9 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.mukiva.core.ui.KEY_ARGS
+import com.mukiva.core.ui.collectWithScope
 import com.mukiva.core.ui.getArgs
+import com.mukiva.core.ui.getInteger
 import com.mukiva.feature.dashboard.R
 import com.mukiva.core.ui.R as CoreUiRes
 import com.mukiva.feature.dashboard.databinding.FragmentDashboardTemplateBinding
@@ -26,7 +28,6 @@ import com.mukiva.feature.dashboard.domain.model.ICurrentWeather
 import com.mukiva.feature.dashboard.domain.model.UnitsType
 import com.mukiva.feature.dashboard.domain.model.WindDirection
 import com.mukiva.openweather.ui.gone
-import com.mukiva.openweather.ui.hide
 import com.mukiva.openweather.ui.loading
 import com.mukiva.core.ui.uiLazy
 import com.mukiva.core.ui.viewBindings
@@ -36,6 +37,7 @@ import com.mukiva.feature.dashboard.presentation.IDashboardState
 import com.mukiva.feature.dashboard.presentation.MinorWeatherState
 import com.mukiva.feature.dashboard.presentation.UnitsTypeProvider
 import com.mukiva.feature.dashboard.ui.adapter.MinimalForecastAdapter
+import com.mukiva.openweather.ui.hide
 import com.mukiva.openweather.ui.visible
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -58,6 +60,7 @@ class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template)
             unitsTypeProvider = UnitsTypeProvider
         )
     }
+    private val rootHeight get() = mBinding.root.height
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -69,6 +72,10 @@ class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template)
         initNestedScroll()
         initForecastList()
         subscribeOnViewModel()
+
+        mBinding.emptyView.root.doOnNextLayout {
+            onCollapsingToolbarStateChanged(mViewModel.toolbarIsExpanded)
+        }
     }
 
     private fun initForecastList() = with(mBinding) {
@@ -105,6 +112,7 @@ class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template)
     private fun subscribeOnViewModel() {
         mViewModel.observeState(IDashboardState.MinorState::class, viewLifecycleOwner) {
             val pos = getArgs(Args::class.java).position
+            if (pos >= it.list.size) return@observeState
             val state = it.list.elementAt(pos)
             updateFragmentType(state.type)
             if (state.currentWeather == null) return@observeState
@@ -118,6 +126,25 @@ class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template)
                 updatePressure(this, it.unitsType)
             }
             updateForecast(state.minimalForecastState)
+        }
+        mViewModel.toolbarIsExpandedFlow
+            .flowWithLifecycle(lifecycle)
+            .collectWithScope(lifecycleScope, ::onCollapsingToolbarStateChanged)
+    }
+
+    private fun onCollapsingToolbarStateChanged(isExpanded: Boolean) = with(mBinding) {
+        val duration = getInteger(CoreUiRes.integer.def_animation_duration).toLong()
+        when(isExpanded) {
+            true -> {
+                emptyView.root.animate()
+                    .setDuration(duration)
+                    .translationY(-(rootHeight * 0.25f))
+            }
+            false -> {
+                emptyView.root.animate()
+                    .setDuration(duration)
+                    .translationY(0.0f)
+            }
         }
     }
 

@@ -2,6 +2,8 @@ package com.mukiva.core.ui
 
 import android.util.TypedValue
 import android.view.View
+import androidx.annotation.DimenRes
+import androidx.annotation.IntegerRes
 import androidx.annotation.MainThread
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.DefaultLifecycleObserver
@@ -20,6 +22,14 @@ const val KEY_ARGS = "KEY_ARGS"
 
 fun <T : Serializable> Fragment.getArgs(clazz: Class<T>): T {
     return this.requireArguments().getComaptSerializable(KEY_ARGS, clazz) as T
+}
+
+fun Fragment.getInteger(@IntegerRes res: Int): Int {
+    return this.requireContext().resources.getInteger(res)
+}
+
+fun Fragment.getDimen(@DimenRes res: Int): Int {
+    return this.requireContext().resources.getDimensionPixelOffset(res)
 }
 
 fun Fragment.getAttrColor(res: Int): Int {
