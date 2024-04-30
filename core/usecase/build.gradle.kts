@@ -1,18 +1,25 @@
 plugins {
-    GradlePlugins.run {
-        id(androidLib.id)
-        id(sdk.id)
-        id(kotlinAndroid.id)
-        id(defaultFeature.id)
-    }
+    alias(libs.plugins.androidLib)
+    alias(libs.plugins.kotlinAndroid)
 }
 
 android {
     namespace = "com.mukiva.core.usecase"
+    compileSdk = 34
+    defaultConfig {
+        minSdk = 26
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17.toString()
+    }
 }
 
 dependencies {
-    implementation(Deps.AndroidX.CORE_KTX)
-    implementation(Deps.Kotlin.COROUTINES_CORE)
-    implementation(Deps.Kotlin.COROUTINES_ANDROID)
+    implementation(libs.androidx.core)
+    implementation(libs.koltinx.coroutines)
+    implementation(libs.koltinx.coroutines.android)
 }

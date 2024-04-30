@@ -1,36 +1,49 @@
 plugins {
-    GradlePlugins.run {
-        id(androidLib.id)
-        id(sdk.id)
-        id(kotlinAndroid.id)
-        id(defaultFeature.id)
-        id(hilt.id)
-        id(ksp.id)
-    }
+    alias(libs.plugins.androidLib)
+    alias(libs.plugins.kotlinAndroid)
+    alias(libs.plugins.hiltAndroid)
+    alias(libs.plugins.ksp)
 }
 
 android {
     namespace = "com.mukiva.feature.dashboard"
-
+    compileSdk = 34
+    defaultConfig {
+        minSdk = 26
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17.toString()
+    }
     buildFeatures {
         viewBinding = true
     }
 }
 
 dependencies {
+    implementation(project(":core:presentation"))
+    implementation(project(":core:navigation"))
+    implementation(project(":core:usecase"))
+    implementation(project(":core:ui"))
+    implementation(project(":core:network"))
 
-    coreScope(
-        Projects.Core.presentation,
-        Projects.Core.navigation,
-        Projects.Core.usecase,
-        Projects.Core.ui,
-        Projects.Core.network
-    )
+    implementation(libs.androidx.core)
+    implementation(libs.android.material)
+    implementation(libs.androidx.lifecycle)
+    implementation(libs.androidx.fragment)
 
-    addDefaultImpl()
-    addHilt()
-    addRetrofit()
-    addRoom()
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
 
-    implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.gson)
+
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room)
+    ksp(libs.androidx.room.compiler)
+
+    implementation(libs.glide)
 }

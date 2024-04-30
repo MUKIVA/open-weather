@@ -1,43 +1,40 @@
 plugins {
-    GradlePlugins.run {
-        id(androidApplication.id)
-        id(sdk.id)
-        id(kotlinAndroid.id)
-        id(defaultFeature.id)
-        id(secrets.id)
-        id(hilt.id)
-        id(ksp.id)
-    }
-
+    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.kotlinAndroid)
+    alias(libs.plugins.secrets)
+    alias(libs.plugins.hiltAndroid)
+    alias(libs.plugins.ksp)
 }
 
 android {
     namespace = "com.mukiva.openweather"
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.mukiva.openweather"
         versionCode = 1
         versionName = "1.0"
+        minSdk = 26
     }
-
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17.toString()
+    }
     buildTypes {
-        getByName(BuildType.DEBUG) {
+        getByName("debug") {
             applicationIdSuffix = ".debug"
             isShrinkResources = false
 
-            signingConfig = signingConfigs.findByName(BuildType.DEBUG)
+            signingConfig = signingConfigs.findByName("debug")
         }
-        getByName(BuildType.RELEASE) {
+        getByName("release") {
             applicationIdSuffix = ".release"
             isShrinkResources = false
 
-            signingConfig = signingConfigs.findByName(BuildType.RELEASE)
-        }
-        getByName(BuildType.PROFILE) {
-            applicationIdSuffix = ".profile"
-            isShrinkResources = false
-
-            signingConfig = signingConfigs.findByName(BuildType.DEBUG)
+            signingConfig = signingConfigs.findByName("release")
         }
     }
 
@@ -48,29 +45,32 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:navigation"))
+    implementation(project(":core:ui"))
+    implementation(project(":core:network"))
+    implementation(project(":core:data"))
 
-    coreScope(
-        Projects.Core.navigation,
-        Projects.Core.ui,
-        Projects.Core.network
-    )
-
-    featureScope(
-        Projects.Feature.dashboard,
-        Projects.Feature.forecast,
-        Projects.Feature.locationManager,
-        Projects.Feature.settings
-    )
+    implementation(project(":feature:dashboard"))
+    implementation(project(":feature:forecast"))
+    implementation(project(":feature:location_manager"))
+    implementation(project(":feature:settings"))
 
     implementation(project(":navigation"))
 
-    implementation(Deps.AndroidX.Navigation.FRAGMENT)
-    implementation(Deps.AndroidX.Navigation.UI)
-    implementation(Deps.OkHttp.LOGGING_INTERCEPTOR)
+    implementation(libs.androidx.navigation.fragment)
+    implementation(libs.androidx.navigation.ui)
+    implementation(libs.okhttp.logging)
 
-    addDefaultImpl()
-    addHilt()
-    addRetrofit()
+    implementation(libs.androidx.core)
+    implementation(libs.android.material)
+    implementation(libs.androidx.lifecycle)
+    implementation(libs.androidx.fragment)
+
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.gson)
 }
 
 secrets {

@@ -1,17 +1,23 @@
 plugins {
-    GradlePlugins.run {
-        id(androidLib.id)
-        id(sdk.id)
-        id(kotlinAndroid.id)
-        id(defaultFeature.id)
-        id(hilt.id)
-        id(ksp.id)
-    }
+    alias(libs.plugins.androidLib)
+    alias(libs.plugins.kotlinAndroid)
+    alias(libs.plugins.hiltAndroid)
+    alias(libs.plugins.ksp)
 }
 
 android {
     namespace = "com.mukiva.feature.settings"
-
+    compileSdk = 34
+    defaultConfig {
+        minSdk = 26
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17.toString()
+    }
     buildFeatures {
         viewBinding = true
     }
@@ -19,14 +25,18 @@ android {
 
 dependencies {
 
-    coreScope(
-        Projects.Core.ui,
-        Projects.Core.navigation,
-        Projects.Core.presentation,
-        Projects.Core.network
-    )
+    implementation(project(":core:presentation"))
+    implementation(project(":core:navigation"))
+    implementation(project(":core:ui"))
+    implementation(project(":core:network"))
 
-    addDefaultImpl()
-    addHilt()
-    addDataStore()
+    implementation(libs.androidx.core)
+    implementation(libs.android.material)
+    implementation(libs.androidx.lifecycle)
+    implementation(libs.androidx.fragment)
+
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+
+    implementation(libs.androidx.datastore)
 }

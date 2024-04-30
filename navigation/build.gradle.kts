@@ -1,17 +1,23 @@
 plugins {
-    GradlePlugins.run {
-        id(androidLib.id)
-        id(sdk.id)
-        id(kotlinAndroid.id)
-        id(defaultFeature.id)
-        id(hilt.id)
-        id(ksp.id)
-    }
+    alias(libs.plugins.androidLib)
+    alias(libs.plugins.kotlinAndroid)
+    alias(libs.plugins.hiltAndroid)
+    alias(libs.plugins.ksp)
 }
 
 android {
     namespace = "com.mukiva.navigation"
-
+    compileSdk = 34
+    defaultConfig {
+        minSdk = 26
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17.toString()
+    }
     buildFeatures {
         viewBinding = true
     }
@@ -19,13 +25,18 @@ android {
 
 dependencies {
 
-    coreScope(
-        Projects.Core.ui
-    )
+    implementation(project(":core:ui"))
 
-    implementation(Deps.AndroidX.Navigation.FRAGMENT)
-    implementation(Deps.AndroidX.Navigation.UI)
+    implementation(libs.androidx.navigation.fragment)
+    implementation(libs.androidx.navigation.ui)
 
-    addDefaultImpl()
-    addHilt()
+    implementation(libs.androidx.core)
+    implementation(libs.android.material)
+    implementation(libs.androidx.lifecycle)
+    implementation(libs.androidx.fragment)
+
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+
+
 }

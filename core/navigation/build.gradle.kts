@@ -1,17 +1,24 @@
 plugins {
-    GradlePlugins.run {
-        id(androidLib.id)
-        id(sdk.id)
-        id(kotlinAndroid.id)
-        id(defaultFeature.id)
-    }
+    alias(libs.plugins.androidLib)
+    alias(libs.plugins.kotlinAndroid)
 }
 
 android {
     namespace = "com.mukiva.core.navigation"
+    compileSdk = 34
+    defaultConfig {
+        minSdk = 26
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17.toString()
+    }
 }
 
 dependencies {
-    implementation(Deps.AndroidX.CORE_KTX)
-    implementation(Deps.AndroidX.FRAGMENT)
+    implementation(libs.androidx.core)
+    implementation(libs.androidx.fragment)
 }
