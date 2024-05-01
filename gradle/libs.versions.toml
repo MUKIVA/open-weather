@@ -13,12 +13,20 @@ androidx-datastore = "1.1.0"
 androidx-navigation = "2.7.7"
 androidx-swipe = "1.1.0"
 koltinx-coroutines = "1.8.0"
+koltinx-serialization = "1.9.23"
+koltinx-serialization-json = "1.6.3"
+koltinx-datetime = "0.6.0-RC.2"
 android-material = "1.11.0"
 retrofit = "2.11.0"
+retrofit-adapter-result = "1.0.9"
 okhttp = "4.12.0"
 glide = "4.16.0"
 
 detekt = "1.23.3"
+junit = "4.13.2"
+junitVersion = "1.1.5"
+espressoCore = "3.5.1"
+appcompat = "1.6.1"
 
 [libraries]
 androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
@@ -32,8 +40,10 @@ androidx-navigation-fragment = { module = "androidx.navigation:navigation-fragme
 androidx-navigation-ui = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "androidx-navigation" }
 androidx-swipe = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "androidx-swipe" }
 
-koltinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "koltinx-coroutines" }
-koltinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "koltinx-coroutines" }
+kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "koltinx-coroutines" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "koltinx-coroutines" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "koltinx-serialization-json" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "koltinx-datetime" }
 
 android-material = { module = "com.google.android.material:material", version.ref = "android-material" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
@@ -41,11 +51,13 @@ hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hil
 
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 retrofit-converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
+retrofit-adapter-result = { module = "com.github.skydoves:retrofit-adapters-result", version.ref = "retrofit-adapter-result" }
+retrofit-converter-json = { module = "com.squareup.retrofit2:converter-kotlinx-serialization", version.ref = "retrofit" }
+
+okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 okhttp-logging = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp" }
 
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
-
-
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -56,3 +68,4 @@ jetbrainsKotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrains
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secrets" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+kotlinxSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "koltinx-serialization" }

@@ -1,5 +1,8 @@
 @file:Suppress("UnstableApiUsage")
 
+include(":database")
+
+
 include(":weather-api")
 
 
