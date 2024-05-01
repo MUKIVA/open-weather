@@ -4,7 +4,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.mukiva.core.ui.R as CoreUiRes
 import com.mukiva.feature.dashboard.databinding.ItemMinForecastBinding
-import com.mukiva.feature.dashboard.domain.model.IMinimalForecast
+import com.mukiva.feature.dashboard.domain.model.MinimalForecast
 import com.mukiva.feature.dashboard.domain.model.UnitsType
 import com.mukiva.feature.dashboard.presentation.IDashboardState
 import java.text.SimpleDateFormat
@@ -27,7 +27,7 @@ class MinimalForecastItemViewHolder(
         itemView.context.resources.configuration.locales[0]
     )
 
-    fun bind(item: IMinimalForecast) = with(bindings) {
+    fun bind(item: MinimalForecast) = with(bindings) {
         updateCondition(item.conditionIconUrl)
         updateDate(item.date)
         updateTempInfo(

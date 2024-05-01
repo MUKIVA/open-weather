@@ -2,13 +2,12 @@ package com.mukiva.openweather.glue.dashboard.mapper
 
 import android.content.Context
 import com.mukiva.core.data.entity.CurrentRemote
-import com.mukiva.feature.dashboard.domain.model.ICondition
-import com.mukiva.feature.dashboard.domain.model.ICurrentWeather
+import com.mukiva.feature.dashboard.domain.model.Condition
+import com.mukiva.feature.dashboard.domain.model.CurrentWeather
 import com.mukiva.feature.dashboard.domain.model.WindDirection
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Date
 import javax.inject.Inject
 
 class CurrentWeatherMapper @Inject constructor(
@@ -20,38 +19,38 @@ class CurrentWeatherMapper @Inject constructor(
         context.resources.configuration.locales[0]
     )
 
-    fun mapToDomain(item: CurrentRemote): ICurrentWeather {
-        return object : ICurrentWeather {
-            override val lastUpdatedEpoch: Int = item.lastUpdatedEpoch ?: 0
-            override val lastUpdated: Date = simpleDateFormat
-                .parse(item.lastUpdated ?: "") ?: Calendar.getInstance().time
-            override val tempC: Float = item.tempC?.toFloat() ?: 0.0f
-            override val tempF: Float = item.tempF?.toFloat() ?: 0.0f
-            override val isDay: Boolean = item.isDay != 0
-            override val condition: ICondition = object : ICondition {
-                override val text: String = item.condition?.text ?: ""
-                override val icon: String = item.condition?.icon ?: ""
-                override val code: Int = item.condition?.code ?: 0
-            }
-            override val windMph: Float = item.windMph?.toFloat() ?: 0.0f
-            override val windKph: Float = item.windKph?.toFloat() ?: 0.0f
-            override val windDegree: Int = item.windDegree ?: 0
-            override val windDir: WindDirection = WindDirection
-                .valueOf(item.windDir ?: "UNKNOWN")
-            override val pressureMb: Float = item.pressureMb?.toFloat() ?: 0.0f
-            override val pressureIn: Float = item.pressureIn?.toFloat() ?: 0.0f
-            override val precipMm: Float = item.precipMm?.toFloat() ?: 0.0f
-            override val precipIn: Float = item.precipIn?.toFloat() ?: 0.0f
-            override val humidity: Int = item.humidity ?: 0
-            override val cloud: Int = item.cloud ?: 0
-            override val feelsLikeC: Float = item.feelslikeC?.toFloat() ?: 0.0f
-            override val feelsLikeF: Float = item.feelslikeF?.toFloat() ?: 0.0f
-            override val visKm: Float = item.visKm?.toFloat() ?: 0.0f
-            override val visMiles: Float = item.visMiles?.toFloat() ?: 0.0f
-            override val uv: Float = item.uv?.toFloat() ?: 0.0f
-            override val gustMph: Float = item.gustMph?.toFloat() ?: 0.0f
-            override val gustKph: Float = item.gustMph?.toFloat() ?: 0.0f
-        }
+    fun mapToDomain(item: CurrentRemote): CurrentWeather {
+        return CurrentWeather(
+            lastUpdatedEpoch = item.lastUpdatedEpoch ?: 0,
+            lastUpdated = simpleDateFormat
+                .parse(item.lastUpdated ?: "") ?: Calendar.getInstance().time,
+            tempC = item.tempC?.toFloat() ?: 0.0f,
+            tempF = item.tempF?.toFloat() ?: 0.0f,
+            isDay = item.isDay != 0,
+            condition = Condition(
+                text = item.condition?.text ?: "",
+                icon = item.condition?.icon ?: "",
+                code = item.condition?.code ?: 0,
+            ),
+            windMph= item.windMph?.toFloat() ?: 0.0f,
+            windKph = item.windKph?.toFloat() ?: 0.0f,
+            windDegree = item.windDegree ?: 0,
+            windDir = WindDirection
+                .valueOf(item.windDir ?: "UNKNOWN"),
+            pressureMb = item.pressureMb?.toFloat() ?: 0.0f,
+            pressureIn = item.pressureIn?.toFloat() ?: 0.0f,
+            precipMm = item.precipMm?.toFloat() ?: 0.0f,
+            precipIn = item.precipIn?.toFloat() ?: 0.0f,
+            humidity = item.humidity ?: 0,
+            cloud = item.cloud ?: 0,
+            feelsLikeC = item.feelslikeC?.toFloat() ?: 0.0f,
+            feelsLikeF = item.feelslikeF?.toFloat() ?: 0.0f,
+            visKm = item.visKm?.toFloat() ?: 0.0f,
+            visMiles = item.visMiles?.toFloat() ?: 0.0f,
+            uv = item.uv?.toFloat() ?: 0.0f,
+            gustMph = item.gustMph?.toFloat() ?: 0.0f,
+            gustKph = item.gustMph?.toFloat() ?: 0.0f,
+        )
 
     }
 

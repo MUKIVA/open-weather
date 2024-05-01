@@ -11,7 +11,7 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 class ForecastModule {
     @Provides
-    fun provideForecastState() = ForecastState.default()
+    fun provideForecastState(): ForecastState = ForecastState.Init
 //    @Provides
 //    fun provideMinimalForecastState() = MinimalForecastState.default()
 }

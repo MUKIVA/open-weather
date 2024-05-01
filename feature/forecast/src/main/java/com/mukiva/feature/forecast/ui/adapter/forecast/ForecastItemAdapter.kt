@@ -8,14 +8,14 @@ import com.mukiva.feature.forecast.databinding.ItemHumidityBinding
 import com.mukiva.feature.forecast.databinding.ItemPressureBinding
 import com.mukiva.feature.forecast.databinding.ItemTempBinding
 import com.mukiva.feature.forecast.databinding.ItemWindBinding
-import com.mukiva.feature.forecast.domain.IForecastItem
+import com.mukiva.feature.forecast.domain.ForecastItem
 import com.mukiva.feature.forecast.domain.UnitsType
 import kotlin.math.max
 import kotlin.math.min
 
 class ForecastItemAdapter(
     private val unitsType: UnitsType
-) : ListAdapter<IForecastItem, ForecastItemViewHolder>(ForecastItemDiffUtil)
+) : ListAdapter<ForecastItem, ForecastItemViewHolder>(ForecastItemDiffUtil)
     , IValueProvider
 {
     private var mMaxValue: Float = Float.MAX_VALUE
@@ -24,10 +24,10 @@ class ForecastItemAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return when(getItem(position)) {
-            is IForecastItem.IHourlyHumidity -> HUMIDITY_VIEW_TYPE
-            is IForecastItem.IHourlyPressure -> PRESSURE_VIEW_TYPE
-            is IForecastItem.IHourlyTemp -> TEMP_VIEW_TYPE
-            is IForecastItem.IHourlyWind -> WIND_VIEW_TYPE
+            is ForecastItem.HourlyHumidity -> HUMIDITY_VIEW_TYPE
+            is ForecastItem.HourlyPressure -> PRESSURE_VIEW_TYPE
+            is ForecastItem.HourlyTemp -> TEMP_VIEW_TYPE
+            is ForecastItem.HourlyWind -> WIND_VIEW_TYPE
         }
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ForecastItemViewHolder {
@@ -65,12 +65,11 @@ class ForecastItemAdapter(
     }
 
     override fun getValueByPos(pos: Int): Float {
-        val item = getItem(pos)
-        return when(item) {
-            is IForecastItem.IHourlyHumidity -> item.humidity.toFloat()
-            is IForecastItem.IHourlyPressure -> item.pressureIn.toFloat()
-            is IForecastItem.IHourlyTemp -> item.tempC.toFloat()
-            is IForecastItem.IHourlyWind -> item.windKph.toFloat()
+        return when(val item = getItem(pos)) {
+            is ForecastItem.HourlyHumidity -> item.humidity.toFloat()
+            is ForecastItem.HourlyPressure -> item.pressureIn.toFloat()
+            is ForecastItem.HourlyTemp -> item.tempC.toFloat()
+            is ForecastItem.HourlyWind -> item.windKph.toFloat()
         }
     }
 
@@ -90,34 +89,33 @@ class ForecastItemAdapter(
     }
 
     override fun getFormattedValue(index: Int): String {
-        val item = getItem(index)
-        return when (item) {
-            is IForecastItem.IHourlyHumidity -> item.humidity.toString()
-            is IForecastItem.IHourlyPressure -> item.pressureMb.toString()
-            is IForecastItem.IHourlyTemp -> item.tempC.toInt().toString()
-            is IForecastItem.IHourlyWind -> item.windKph.toInt().toString()
+        return when (val item = getItem(index)) {
+            is ForecastItem.HourlyHumidity -> item.humidity.toString()
+            is ForecastItem.HourlyPressure -> item.pressureMb.toString()
+            is ForecastItem.HourlyTemp -> item.tempC.toInt().toString()
+            is ForecastItem.HourlyWind -> item.windKph.toInt().toString()
         }
     }
 
-    override fun submitList(list: List<IForecastItem>?) {
+    override fun submitList(list: List<ForecastItem>?) {
         super.submitList(list)
         mMinValue = Float.MAX_VALUE
         mMaxValue = Float.MIN_VALUE
         list?.forEach {
             when (it) {
-                is IForecastItem.IHourlyHumidity -> {
+                is ForecastItem.HourlyHumidity -> {
                     mMaxValue = max(it.humidity.toFloat(), mMaxValue)
                     mMinValue = min(it.humidity.toFloat(), mMinValue)
                 }
-                is IForecastItem.IHourlyPressure -> {
+                is ForecastItem.HourlyPressure -> {
                     mMaxValue = max(it.pressureIn.toFloat(), mMaxValue)
                     mMinValue = min(it.pressureIn.toFloat(), mMinValue)
                 }
-                is IForecastItem.IHourlyTemp -> {
+                is ForecastItem.HourlyTemp -> {
                     mMaxValue = max(it.tempC.toFloat(), mMaxValue)
                     mMinValue = min(it.tempC.toFloat(), mMinValue)
                 }
-                is IForecastItem.IHourlyWind -> {
+                is ForecastItem.HourlyWind -> {
                     mMaxValue = max(it.windKph.toFloat(), mMaxValue)
                     mMinValue = min(it.windKph.toFloat(), mMinValue)
                 }

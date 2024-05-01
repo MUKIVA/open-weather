@@ -2,21 +2,20 @@ package com.mukiva.feature.forecast.ui.adapter.forecast
 
 import android.annotation.SuppressLint
 import androidx.recyclerview.widget.DiffUtil
-import com.mukiva.feature.forecast.domain.IForecastGroup
-import com.mukiva.feature.forecast.domain.IForecastItem
+import com.mukiva.feature.forecast.presentation.ForecastGroup
 
-object GroupItemCallback : DiffUtil.ItemCallback<IForecastGroup<IForecastItem>>() {
+object GroupItemCallback : DiffUtil.ItemCallback<ForecastGroup>() {
     override fun areItemsTheSame(
-        oldItem: IForecastGroup<IForecastItem>,
-        newItem: IForecastGroup<IForecastItem>
+        oldItem: ForecastGroup,
+        newItem: ForecastGroup
     ): Boolean {
-        return oldItem === newItem
+        return oldItem.forecastType == newItem.forecastType
     }
 
     @SuppressLint("DiffUtilEquals")
     override fun areContentsTheSame(
-        oldItem: IForecastGroup<IForecastItem>,
-        newItem: IForecastGroup<IForecastItem>
+        oldItem: ForecastGroup,
+        newItem: ForecastGroup
     ): Boolean {
         return oldItem == newItem
     }

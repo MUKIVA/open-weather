@@ -3,11 +3,10 @@ package com.mukiva.openweather.glue.forecast
 import android.content.Context
 import com.mukiva.core.data.repository.forecast.entity.ForecastDayRemote
 import com.mukiva.core.data.repository.forecast.entity.ForecastRemote
-import com.mukiva.feature.dashboard.domain.model.IMinimalForecast
+import com.mukiva.feature.dashboard.domain.model.MinimalForecast
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Date
 import javax.inject.Inject
 
 class ForecastMapper @Inject constructor(
@@ -25,24 +24,17 @@ class ForecastMapper @Inject constructor(
     )
     private val mCalendar = Calendar.getInstance()
 
-    fun asDomain(item: ForecastRemote): List<IMinimalForecast> = with(item) {
+    fun asDomain(item: ForecastRemote): List<MinimalForecast> = with(item) {
         return forecastDay.mapIndexed { index, item ->
-            object : IMinimalForecast {
-                override val index: Int
-                    get() = index
-                override val dayAvgTempC: Double
-                    get() = item.getDayAvgTemp(isMetricSystem = true)
-                override val dayAvgTempF: Double
-                    get() = item.getDayAvgTemp(isMetricSystem = false)
-                override val nightAvgTempC: Double
-                    get() = item.getNightAvgTemp(isMetricSystem = true)
-                override val nightAvgTempF: Double
-                    get() = item.getNightAvgTemp(isMetricSystem = false)
-                override val date: Date
-                    get() = item.date ?: throw Exception("Fail to get date")
-                override val conditionIconUrl: String
-                    get() = item.day?.condition?.icon ?: ""
-            }
+            MinimalForecast(
+                index = index,
+                dayAvgTempC = item.getDayAvgTemp(isMetricSystem = true),
+                dayAvgTempF = item.getDayAvgTemp(isMetricSystem = false),
+                nightAvgTempC = item.getNightAvgTemp(isMetricSystem = true),
+                nightAvgTempF = item.getNightAvgTemp(isMetricSystem = false),
+                date = item.date ?: throw Exception("Fail to get date"),
+                conditionIconUrl = item.day?.condition?.icon ?: "",
+            )
         }
     }
 

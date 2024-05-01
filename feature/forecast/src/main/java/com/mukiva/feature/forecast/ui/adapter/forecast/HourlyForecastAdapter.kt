@@ -3,7 +3,7 @@ package com.mukiva.feature.forecast.ui.adapter.forecast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DiffUtil
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.mukiva.feature.forecast.domain.IHourlyForecast
+import com.mukiva.feature.forecast.presentation.HourlyForecast
 import com.mukiva.feature.forecast.domain.UnitsType
 import com.mukiva.feature.forecast.ui.GroupsTemplateFragment
 
@@ -13,7 +13,7 @@ class HourlyForecastAdapter(
     private val locationName: String
 ) : FragmentStateAdapter(fragment) {
 
-    private var mDayForecastStateList: Collection<IHourlyForecast> = emptyList()
+    private var mDayForecastStateList: List<HourlyForecast> = emptyList()
 
     override fun getItemCount(): Int = mDayForecastStateList.size
 
@@ -28,9 +28,9 @@ class HourlyForecastAdapter(
         )
     }
 
-    operator fun get(index: Int) = mDayForecastStateList.elementAt(index)
+    operator fun get(index: Int) = mDayForecastStateList[index]
 
-    fun submit(days: Collection<IHourlyForecast>) {
+    fun submit(days: List<HourlyForecast>) {
         val diffCallback = HourlyForecastDiffUtilCallback(mDayForecastStateList, days)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         mDayForecastStateList = days

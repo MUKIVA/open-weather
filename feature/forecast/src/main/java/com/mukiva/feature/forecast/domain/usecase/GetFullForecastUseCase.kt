@@ -2,7 +2,7 @@ package com.mukiva.feature.forecast.domain.usecase
 
 import android.util.Log
 import com.mukiva.core.network.IConnectionProvider
-import com.mukiva.feature.forecast.domain.IHourlyForecast
+import com.mukiva.feature.forecast.presentation.HourlyForecast
 import com.mukiva.feature.forecast.domain.repository.IForecastRepository
 import com.mukiva.usecase.ApiError
 import com.mukiva.usecase.ApiResult
@@ -14,7 +14,7 @@ class GetFullForecastUseCase @Inject constructor(
 ) {
 
 
-    suspend operator fun invoke(locationName: String, days: Int): ApiResult<List<IHourlyForecast>> {
+    suspend operator fun invoke(locationName: String, days: Int): ApiResult<List<HourlyForecast>> {
         if (!connectionStatusProvider.hasConnection()) {
             return ApiResult.Error(ApiError.NO_INTERNET)
         }

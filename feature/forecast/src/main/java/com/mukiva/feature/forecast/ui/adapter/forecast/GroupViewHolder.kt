@@ -4,11 +4,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mukiva.core.ui.uiLazy
 import com.mukiva.feature.forecast.R
 import com.mukiva.feature.forecast.databinding.ItemForecastGroupTemplateBinding
-import com.mukiva.feature.forecast.domain.IForecastGroup
-import com.mukiva.feature.forecast.domain.IForecastItem
+import com.mukiva.feature.forecast.domain.ForecastItem
 import com.mukiva.feature.forecast.domain.UnitsType
 import com.mukiva.feature.forecast.presentation.ForecastGroup
-import com.mukiva.openweather.ui.gone
 
 class GroupViewHolder(
     private val bind: ItemForecastGroupTemplateBinding,
@@ -19,30 +17,25 @@ class GroupViewHolder(
         ForecastItemAdapter(unitsType)
     }
 
-    fun bind(item: IForecastGroup<IForecastItem>) = with(bind) {
-        updateItems(item.items)
+    fun bind(item: ForecastGroup) = with(bind) {
+        updateItems(item.forecast)
 
         if (content.adapter == null)
             content.adapter = mItemAdapter
 
-        if (item is ForecastGroup)
-            updateTitle(item.type)
-        else
-            hideSectionName()
+        updateTitle(item.forecastType)
     }
 
-    private fun hideSectionName() = bind.sectionName.gone()
-
-    private fun updateTitle(type: ForecastGroup.GroupType) = with(bind) {
+    private fun updateTitle(type: ForecastGroup.Type) = with(bind) {
         sectionName.text = when(type) {
-            ForecastGroup.GroupType.TEMP -> itemView.context.getString(R.string.group_temp_title)
-            ForecastGroup.GroupType.WIND -> itemView.context.getString(R.string.group_wind_title)
-            ForecastGroup.GroupType.PRESSURE -> itemView.context.getString(R.string.group_pressure_title)
-            ForecastGroup.GroupType.HUMIDITY -> itemView.context.getString(R.string.group_humidity_title)
+            ForecastGroup.Type.TEMP -> itemView.context.getString(R.string.group_temp_title)
+            ForecastGroup.Type.WIND -> itemView.context.getString(R.string.group_wind_title)
+            ForecastGroup.Type.PRESSURE -> itemView.context.getString(R.string.group_pressure_title)
+            ForecastGroup.Type.HUMIDITY -> itemView.context.getString(R.string.group_humidity_title)
         }
     }
 
-    private fun updateItems(items: Collection<IForecastItem>) {
+    private fun updateItems(items: Collection<ForecastItem>) {
         mItemAdapter.submitList(items.toList())
     }
 

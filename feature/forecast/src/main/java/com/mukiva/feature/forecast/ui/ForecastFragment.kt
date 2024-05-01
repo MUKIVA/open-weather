@@ -28,7 +28,7 @@ import com.mukiva.openweather.ui.loading
 import com.mukiva.core.ui.uiLazy
 import com.mukiva.core.ui.viewBindings
 import com.mukiva.feature.forecast.databinding.ItemDayTabBinding
-import com.mukiva.feature.forecast.domain.IHourlyForecast
+import com.mukiva.feature.forecast.presentation.HourlyForecast
 import com.mukiva.feature.forecast.domain.UnitsType
 import com.mukiva.openweather.ui.visible
 import dagger.hilt.android.AndroidEntryPoint
@@ -131,23 +131,33 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast) {
     }
 
     private fun updateState(state: ForecastState) {
-        mUnitsTypeProvider = { state.unitsType }
-        updateViewPager(state.hourlyForecast)
-        updateType(state.type)
+        if (state is ForecastState.Content) {
+            mUnitsTypeProvider = { state.unitsType }
+            updateViewPager(state.hourlyForecast)
+        }
+        updateType(state)
     }
 
-    private fun updateViewPager(list: Collection<IHourlyForecast>) {
+    private fun updateViewPager(list: List<HourlyForecast>) {
         mHourlyForecastAdapter.submit(list)
     }
 
-    private fun updateType(type: ForecastState.Type) = with(mBinding) {
-        when(type) {
-            ForecastState.Type.INIT -> {
-                content.gone()
-                emptyView.loading()
-                mViewModel.loadForecast(getArgs(Args::class.java).locationName)
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(KEY_DAY_IS_INIT, mDayIsInit)
+    }
+
+    private fun updateType(state: ForecastState) = with(mBinding) {
+        when(state) {
+            is ForecastState.Content -> {
+                if (!mDayIsInit) {
+                    viewPager.setCurrentItem(getArgs(Args::class.java).dayPosition, false)
+                    mDayIsInit = true
+                }
+                emptyView.hide()
+                content.visible()
             }
-            ForecastState.Type.ERROR -> {
+            ForecastState.Error -> {
                 content.gone()
                 emptyView.error(
                     getString(R.string.get_forecast_error),
@@ -156,24 +166,16 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast) {
                     mViewModel.loadForecast(getArgs(Args::class.java).locationName)
                 }
             }
-            ForecastState.Type.CONTENT -> {
-                if (!mDayIsInit) {
-                    viewPager.setCurrentItem(getArgs(Args::class.java).dayPosition, false)
-                    mDayIsInit = true
-                }
-                emptyView.hide()
-                content.visible()
+            ForecastState.Init -> {
+                content.gone()
+                emptyView.loading()
+                mViewModel.loadForecast(getArgs(Args::class.java).locationName)
             }
-            ForecastState.Type.LOADING -> {
+            ForecastState.Loading -> {
                 emptyView.loading()
                 content.gone()
             }
         }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putBoolean(KEY_DAY_IS_INIT, mDayIsInit)
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {

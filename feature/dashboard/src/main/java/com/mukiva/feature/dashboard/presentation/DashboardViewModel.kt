@@ -3,7 +3,7 @@ package com.mukiva.feature.dashboard.presentation
 import androidx.lifecycle.viewModelScope
 import com.mukiva.core.presentation.MultiStateViewModel
 import com.mukiva.feature.dashboard.navigation.IDashboardRouter
-import com.mukiva.feature.dashboard.domain.model.ILocation
+import com.mukiva.feature.dashboard.domain.model.Location
 import com.mukiva.feature.dashboard.domain.model.UnitsType
 import com.mukiva.feature.dashboard.domain.repository.IForecastUpdater
 import com.mukiva.feature.dashboard.domain.repository.ISettingsRepository
@@ -160,7 +160,7 @@ class DashboardViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getAllLocations(): List<ILocation> {
+    private suspend fun getAllLocations(): List<Location> {
         return when (val result = getAllLocationsUseCase()) {
             is ApiResult.Error -> emptyList()
             is ApiResult.Success -> result.data.sortedBy { it.position }
@@ -169,7 +169,7 @@ class DashboardViewModel @Inject constructor(
 
 
 
-    private suspend fun wrapAsState(locations: Collection<ILocation>): Collection<MinorWeatherState> {
+    private suspend fun wrapAsState(locations: Collection<Location>): Collection<MinorWeatherState> {
         return locations.mapAsync {
             MinorWeatherState(
                 type = MinorWeatherState.Type.LOADING,

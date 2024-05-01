@@ -11,7 +11,7 @@ import com.mukiva.feature.forecast.databinding.ItemHumidityBinding
 import com.mukiva.feature.forecast.databinding.ItemPressureBinding
 import com.mukiva.feature.forecast.databinding.ItemTempBinding
 import com.mukiva.feature.forecast.databinding.ItemWindBinding
-import com.mukiva.feature.forecast.domain.IForecastItem
+import com.mukiva.feature.forecast.domain.ForecastItem
 import com.mukiva.feature.forecast.domain.UnitsType
 import com.mukiva.feature.forecast.domain.WindDirection
 import java.util.Date
@@ -28,14 +28,14 @@ sealed class ForecastItemViewHolder(
         itemView.context.resources.configuration.locales[0]
     )
 
-    abstract fun bind(item: IForecastItem)
+    abstract fun bind(item: ForecastItem)
 
     class TempItemViewHolder(
         private val bind: ItemTempBinding,
         unitsType: UnitsType
     ) : ForecastItemViewHolder(bind.root, unitsType) {
-        override fun bind(item: IForecastItem) {
-            if (item !is IForecastItem.IHourlyTemp) return
+        override fun bind(item: ForecastItem) {
+            if (item !is ForecastItem.HourlyTemp) return
             updateTemp(item.tempC, item.tempF, unitsType)
             updateFeelsLike(item.feelsLikeC, item.feelsLikeF, unitsType)
             updateCloud(item.cloud)
@@ -62,9 +62,9 @@ sealed class ForecastItemViewHolder(
             feelsLikeValue.text = itemView.context.getString(strRes, temp)
         }
 
-        private fun updateCloud(cloud: Double) = with(bind) {
+        private fun updateCloud(cloud: Int) = with(bind) {
             cloudValue.text = itemView.context
-                .getString(CoreUiRes.string.template_percent, cloud.roundToInt())
+                .getString(CoreUiRes.string.template_percent, cloud)
         }
 
         private fun updateCloudIcon(iconUrl: String) = with(bind) {
@@ -98,8 +98,8 @@ sealed class ForecastItemViewHolder(
         unitsType: UnitsType
     ) : ForecastItemViewHolder(bind.root, unitsType) {
 
-        override fun bind(item: IForecastItem) {
-            if (item !is IForecastItem.IHourlyWind) return
+        override fun bind(item: ForecastItem) {
+            if (item !is ForecastItem.HourlyWind) return
 
             updateWindDegree(item.windDegree)
             updateWindSpeed(item.windMph, item.windKph, unitsType)
@@ -149,8 +149,8 @@ sealed class ForecastItemViewHolder(
         private val bind: ItemHumidityBinding,
         unitsType: UnitsType
     ) : ForecastItemViewHolder(bind.root, unitsType) {
-        override fun bind(item: IForecastItem) {
-            if (item !is IForecastItem.IHourlyHumidity) return
+        override fun bind(item: ForecastItem) {
+            if (item !is ForecastItem.HourlyHumidity) return
             updateValue(item.humidity)
             updateTime(item.date)
         }
@@ -169,8 +169,8 @@ sealed class ForecastItemViewHolder(
         private val bind: ItemPressureBinding,
         unitsType: UnitsType
     ) : ForecastItemViewHolder(bind.root, unitsType) {
-        override fun bind(item: IForecastItem) {
-            if (item !is IForecastItem.IHourlyPressure) return
+        override fun bind(item: ForecastItem) {
+            if (item !is ForecastItem.HourlyPressure) return
             updateValue(
                 item.pressureMb,
                 item.pressureIn,

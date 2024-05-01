@@ -1,5 +1,8 @@
 @file:Suppress("UnstableApiUsage")
 
+include(":weather-api")
+
+
 pluginManagement {
     repositories {
         google {

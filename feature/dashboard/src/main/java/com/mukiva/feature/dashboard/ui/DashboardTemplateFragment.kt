@@ -23,15 +23,15 @@ import com.mukiva.core.ui.getInteger
 import com.mukiva.feature.dashboard.R
 import com.mukiva.core.ui.R as CoreUiRes
 import com.mukiva.feature.dashboard.databinding.FragmentDashboardTemplateBinding
-import com.mukiva.feature.dashboard.domain.model.ICondition
-import com.mukiva.feature.dashboard.domain.model.ICurrentWeather
+import com.mukiva.feature.dashboard.domain.model.Condition
+import com.mukiva.feature.dashboard.domain.model.CurrentWeather
 import com.mukiva.feature.dashboard.domain.model.UnitsType
 import com.mukiva.feature.dashboard.domain.model.WindDirection
 import com.mukiva.openweather.ui.gone
 import com.mukiva.openweather.ui.loading
 import com.mukiva.core.ui.uiLazy
 import com.mukiva.core.ui.viewBindings
-import com.mukiva.feature.dashboard.domain.model.IMinimalForecast
+import com.mukiva.feature.dashboard.domain.model.MinimalForecast
 import com.mukiva.feature.dashboard.presentation.DashboardViewModel
 import com.mukiva.feature.dashboard.presentation.IDashboardState
 import com.mukiva.feature.dashboard.presentation.MinorWeatherState
@@ -148,12 +148,12 @@ class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template)
         }
     }
 
-    private fun updateForecast(state: Collection<IMinimalForecast>) {
+    private fun updateForecast(state: Collection<MinimalForecast>) {
         mMinimalForecastAdapter.submitList(state.toList())
     }
 
     private fun updatePressure(
-        currentWeather: ICurrentWeather,
+        currentWeather: CurrentWeather,
         unitsType: UnitsType
     ) = with(mBinding.pressureField) {
         subtitle.text = getString(R.string.field_pressure_subtitle)
@@ -197,7 +197,7 @@ class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template)
     }
 
     private fun updateWindSpeed(
-        currentWeather: ICurrentWeather,
+        currentWeather: CurrentWeather,
         speedUnitsType: UnitsType
     ) = with(mBinding.windSpeedField) {
         subtitle.text = getString(R.string.field_wind_speed_subtitle)
@@ -220,7 +220,7 @@ class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template)
     }
 
     private fun updateConditionField(
-        condition: ICondition,
+        condition: Condition,
         cloudPercent: Int
     ) = with(mBinding.conditionField) {
         subtitle.text = getString(R.string.field_condition_subtitle)
@@ -228,7 +228,7 @@ class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template)
         fieldValue.setDrawable(R.drawable.ic_condition)
     }
 
-    private fun updateFeelsLike(currentWeather: ICurrentWeather, unitsType: UnitsType) = with(mBinding.feelsLikeField) {
+    private fun updateFeelsLike(currentWeather: CurrentWeather, unitsType: UnitsType) = with(mBinding.feelsLikeField) {
         val value = when(unitsType) {
             UnitsType.METRIC -> getString(
                 CoreUiRes.string.template_celsius,
