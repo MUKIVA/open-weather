@@ -1,11 +1,13 @@
 plugins {
     alias(libs.plugins.androidLib)
     alias(libs.plugins.kotlinAndroid)
+    alias(libs.plugins.ksp)
 }
 
 android {
-    namespace = "com.mukiva.core.usecase"
+    namespace = "com.github.mukiva.weather_database"
     compileSdk = 34
+
     defaultConfig {
         minSdk = 26
     }
@@ -20,6 +22,10 @@ android {
 
 dependencies {
     implementation(libs.androidx.core)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room)
+    implementation(libs.kotlinx.datetime)
     implementation(libs.kotlinx.coroutines)
     implementation(libs.kotlinx.coroutines.android)
 }

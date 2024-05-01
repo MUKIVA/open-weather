@@ -1,6 +1,5 @@
 package com.github.mukiva.weather_api
 
-import com.github.mukiva.weather_api.models.CurrentDto
 import com.github.mukiva.weather_api.models.ForecastWithCurrentAndLocationDto
 import com.github.mukiva.weather_api.models.LocationDto
 import com.github.mukiva.weather_api.utils.WeatherApiKeyInterceptor
@@ -13,23 +12,17 @@ import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface WeatherApi {
-
-    @GET("/current.json")
-    fun current(
-        @Query(value = "q") q: String,
-    ): Result<CurrentDto>
-
+interface IWeatherApi {
     @GET("/forecast.json")
-    fun forecast(
+    suspend fun forecast(
         @Query(value = "q") q: String,
         @Query(value = "days") days: Int,
     ): Result<ForecastWithCurrentAndLocationDto>
 
     @GET("/search.json")
-    fun search(
+    suspend fun search(
         @Query(value = "q") q: String,
-    ): Result<LocationDto>
+    ): Result<List<LocationDto>>
 
 }
 

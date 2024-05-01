@@ -4,8 +4,9 @@ plugins {
 }
 
 android {
-    namespace = "com.mukiva.core.usecase"
+    namespace = "com.github.mukiva.weather_data"
     compileSdk = 34
+
     defaultConfig {
         minSdk = 26
     }
@@ -19,7 +20,10 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.core)
+    implementation(project(":weather-api"))
+    implementation(project(":database"))
+
+    implementation(libs.kotlinx.datetime)
     implementation(libs.kotlinx.coroutines)
     implementation(libs.kotlinx.coroutines.android)
 }

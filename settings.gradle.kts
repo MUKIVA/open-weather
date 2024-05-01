@@ -1,11 +1,5 @@
 @file:Suppress("UnstableApiUsage")
 
-include(":database")
-
-
-include(":weather-api")
-
-
 pluginManagement {
     repositories {
         google {
@@ -43,3 +37,7 @@ include(":feature:location_manager")
 include(":feature:forecast")
 
 include(":navigation")
+
+include(":weather-data")
+include(":database")
+include(":weather-api")
