@@ -3,33 +3,46 @@ package com.mukiva.feature.dashboard.ui.adapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
+import androidx.recyclerview.widget.AdapterListUpdateCallback
+import androidx.recyclerview.widget.AsyncDifferConfig
+import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import androidx.viewpager2.adapter.FragmentViewHolder
+import com.mukiva.feature.dashboard.domain.model.Location
 import com.mukiva.feature.dashboard.ui.DashboardTemplateFragment
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 
 class DashboardAdapter(
     fm: FragmentManager,
     lifecycle: Lifecycle
 ) : FragmentStateAdapter(fm, lifecycle) {
 
-    private var mLocationCount = 0
+    private val mDiffer: AsyncListDiffer<Location> = AsyncListDiffer(
+        AdapterListUpdateCallback(this),
+        AsyncDifferConfig.Builder(LocationDiffCallback).build()
+    )
 
-    override fun getItemCount(): Int = mLocationCount
+    private val mCurrentMap = HashMap<Int, Flow<ICurrentWeatherProvider.Current?>>()
+
+    override fun getItemCount(): Int = mDiffer.currentList.size
 
     override fun createFragment(position: Int): Fragment {
-        return DashboardTemplateFragment
-            .newInstance(DashboardTemplateFragment.Args(position))
+        val location = mDiffer.currentList.get(position)
+        val fragment = DashboardTemplateFragment
+            .newInstance(DashboardTemplateFragment.Args(
+                locationName = location.name,
+                region = location.region,
+            ))
+        mCurrentMap[position] = fragment.currentStateFlow
+        return fragment
     }
 
-    override fun onBindViewHolder(
-        holder: FragmentViewHolder,
-        position: Int,
-        payloads: MutableList<Any>
-    ) {
-        super.onBindViewHolder(holder, position, payloads)
+    fun submit(list: List<Location>) {
+        mDiffer.submitList(list)
     }
 
-    fun submit(count: Int) {
-        mLocationCount = count
+    fun requestCurrent(position: Int): Flow<ICurrentWeatherProvider.Current?> {
+        return mCurrentMap[position] ?: emptyFlow()
     }
 }
+

@@ -9,6 +9,9 @@ import com.mukiva.feature.forecast.presentation.HourlyForecast
 import com.mukiva.feature.forecast.domain.WindDirection
 import com.mukiva.feature.forecast.presentation.ForecastGroup
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import java.text.SimpleDateFormat
 import java.util.Date
 import javax.inject.Inject
@@ -25,8 +28,8 @@ class FullForecastMapper @Inject constructor(
     fun asDomain(forecast: ForecastRemote): List<HourlyForecast> {
         return forecast.forecastDay.mapIndexed { index, item ->
             HourlyForecast(
-                id = index, 
-                date = item.date ?: throw Exception("Fail to get date"),
+                index = index,
+                date = Clock.System.now().toLocalDateTime(TimeZone.UTC), //item.date ?: throw Exception("Fail to get date"),
                 groups = createGroup(item)
             )
         }
@@ -61,7 +64,7 @@ class FullForecastMapper @Inject constructor(
     ): ForecastItem.HourlyHumidity {
         return ForecastItem.HourlyHumidity(
             humidity = humidity ?: 0,
-            date = date,
+            date = Clock.System.now().toLocalDateTime(TimeZone.UTC),
         )
     }
 
@@ -71,7 +74,7 @@ class FullForecastMapper @Inject constructor(
         return ForecastItem.HourlyPressure(
             pressureMb = pressureMb ?: 0.0,
             pressureIn = pressureIn ?: 0.0,
-            date = date,
+            date = Clock.System.now().toLocalDateTime(TimeZone.UTC),
         )
     }
 
@@ -83,7 +86,7 @@ class FullForecastMapper @Inject constructor(
             windKph = windKph ?: 0.0,
             windDegree = windDegree ?: 0,
             windDirection = WindDirection.valueOf(windDir ?: "UNKNOWN"),
-            date = date,
+            date = Clock.System.now().toLocalDateTime(TimeZone.UTC),
         )
     }
 
@@ -97,7 +100,7 @@ class FullForecastMapper @Inject constructor(
             feelsLikeF = feelsLikeF ?: 0.0,
             cloud = cloud ?: 0,
             iconUrl = condition?.icon ?: "",
-            date = date,
+            date = Clock.System.now().toLocalDateTime(TimeZone.UTC),
         )
     }
 

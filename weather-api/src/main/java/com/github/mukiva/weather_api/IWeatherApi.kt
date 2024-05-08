@@ -13,13 +13,13 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface IWeatherApi {
-    @GET("/forecast.json")
+    @GET("forecast.json")
     suspend fun forecast(
         @Query(value = "q") q: String,
         @Query(value = "days") days: Int,
     ): Result<ForecastWithCurrentAndLocationDto>
 
-    @GET("/search.json")
+    @GET("search.json")
     suspend fun search(
         @Query(value = "q") q: String,
     ): Result<List<LocationDto>>

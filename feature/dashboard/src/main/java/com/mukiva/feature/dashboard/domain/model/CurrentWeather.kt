@@ -1,29 +1,29 @@
 package com.mukiva.feature.dashboard.domain.model
 
-import java.util.Date
+import kotlinx.datetime.LocalDateTime
+
 
 data class CurrentWeather(
-    val lastUpdatedEpoch: Int,
-    val lastUpdated: Date,
-    val tempC: Float,
-    val tempF: Float,
+    val lastUpdatedEpoch: LocalDateTime,
+    val tempC: Double,
+    val tempF: Double,
     val isDay: Boolean,
     val condition: Condition,
-    val windMph: Float,
-    val windKph: Float,
+    val windMph: Double,
+    val windKph: Double,
     val windDegree: Int,
     val windDir: WindDirection,
-    val pressureMb: Float,
-    val pressureIn: Float,
-    val precipMm: Float,
-    val precipIn: Float,
+    val pressureMb: Double,
+    val pressureIn: Double,
+    val precipMm: Double,
+    val precipIn: Double,
     val humidity: Int,
     val cloud: Int,
-    val feelsLikeC: Float,
-    val feelsLikeF: Float,
-    val visKm: Float,
-    val visMiles: Float,
-    val uv: Float,
-    val gustMph: Float,
-    val gustKph: Float,
+    val feelsLikeC: Double,
+    val feelsLikeF: Double,
+    val visKm: Double,
+    val visMiles: Double,
+    val uv: Double,
+    val gustMph: Double,
+    val gustKph: Double,
 )

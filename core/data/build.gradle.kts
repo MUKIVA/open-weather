@@ -12,7 +12,11 @@ android {
     defaultConfig {
         minSdk = 26
     }
-
+    buildTypes {
+        create("profile") {
+            signingConfig = signingConfigs.findByName("debug")
+        }
+    }
     buildFeatures {
         viewBinding = true
     }

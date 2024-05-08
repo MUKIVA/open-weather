@@ -22,5 +22,4 @@ class ConnectionProvider @Inject constructor(
             else -> false
         }
     }
-
 }

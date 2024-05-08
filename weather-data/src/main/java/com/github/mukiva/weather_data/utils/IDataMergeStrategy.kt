@@ -1,5 +1,7 @@
 package com.github.mukiva.weather_data.utils
 
+import android.util.Log
+
 interface IDataMergeStrategy<E> {
     fun merge(local: E, remote: E): E
 }
@@ -7,24 +9,43 @@ interface IDataMergeStrategy<E> {
 internal class ForecastMergeStrategy<T : Any> : IDataMergeStrategy<RequestResult<T>> {
     override fun merge(local: RequestResult<T>, remote: RequestResult<T>): RequestResult<T> {
         return when {
-            local is RequestResult.InProgress && remote is RequestResult.InProgress ->
+            local is RequestResult.InProgress && remote is RequestResult.InProgress -> {
+                Log.d("P", "PP")
                 merge(local, remote)
-            local is RequestResult.InProgress && remote is RequestResult.Success ->
+            }
+            local is RequestResult.InProgress && remote is RequestResult.Success -> {
+                Log.d("P", "PS")
                 merge(local, remote)
-            local is RequestResult.Success && remote is RequestResult.InProgress ->
+            }
+
+            local is RequestResult.Success && remote is RequestResult.InProgress ->{
+                Log.d("P", "SP")
                 merge(local, remote)
-            local is RequestResult.Success && remote is RequestResult.Success ->
+            }
+            local is RequestResult.Success && remote is RequestResult.Success ->{
+                Log.d("P", "SS")
                 merge(local, remote)
-            local is RequestResult.Error && remote is RequestResult.Error ->
+            }
+            local is RequestResult.Error && remote is RequestResult.Error ->{
+                Log.d("P", "EE")
                 merge(local, remote)
-            local is RequestResult.Error && remote is RequestResult.Success ->
+            }
+            local is RequestResult.Error && remote is RequestResult.Success ->{
+                Log.d("P", "ES")
                 merge(local, remote)
-            local is RequestResult.Success && remote is RequestResult.Error ->
+            }
+            local is RequestResult.Success && remote is RequestResult.Error ->{
+                Log.d("P", "SE")
                 merge(local, remote)
-            local is RequestResult.Error && remote is RequestResult.InProgress ->
+            }
+            local is RequestResult.Error && remote is RequestResult.InProgress -> {
+                Log.d("P", "EP")
                 merge(local, remote)
-            local is RequestResult.InProgress && remote is RequestResult.Error ->
+            }
+            local is RequestResult.InProgress && remote is RequestResult.Error ->{
+                Log.d("P", "PE")
                 merge(local, remote)
+            }
             else -> error("Not Implemented merge brunch")
         }
     }
@@ -57,7 +78,7 @@ internal class ForecastMergeStrategy<T : Any> : IDataMergeStrategy<RequestResult
         local: RequestResult.Success<T>,
         remote: RequestResult.Success<T>
     ): RequestResult<T> {
-        return RequestResult.InProgress(remote.data)
+        return RequestResult.Success(checkNotNull(remote.data))
     }
 
     private fun merge(
@@ -78,7 +99,7 @@ internal class ForecastMergeStrategy<T : Any> : IDataMergeStrategy<RequestResult
         local: RequestResult.Success<T>,
         remote: RequestResult.Error<T>
     ): RequestResult<T> {
-        return RequestResult.Error(local.data, remote.error)
+        return RequestResult.Success(checkNotNull(local.data))
     }
 
     private fun merge(

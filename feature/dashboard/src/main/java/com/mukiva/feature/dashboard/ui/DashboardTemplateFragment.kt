@@ -8,18 +8,12 @@ import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.doOnNextLayout
-import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.mukiva.core.ui.KEY_ARGS
-import com.mukiva.core.ui.collectWithScope
 import com.mukiva.core.ui.getArgs
-import com.mukiva.core.ui.getInteger
 import com.mukiva.feature.dashboard.R
 import com.mukiva.core.ui.R as CoreUiRes
 import com.mukiva.feature.dashboard.databinding.FragmentDashboardTemplateBinding
@@ -32,35 +26,48 @@ import com.mukiva.openweather.ui.loading
 import com.mukiva.core.ui.uiLazy
 import com.mukiva.core.ui.viewBindings
 import com.mukiva.feature.dashboard.domain.model.MinimalForecast
-import com.mukiva.feature.dashboard.presentation.DashboardViewModel
-import com.mukiva.feature.dashboard.presentation.IDashboardState
-import com.mukiva.feature.dashboard.presentation.MinorWeatherState
+import com.mukiva.feature.dashboard.presentation.ForecastViewModel
+import com.mukiva.feature.dashboard.presentation.LocationWeatherState
 import com.mukiva.feature.dashboard.presentation.UnitsTypeProvider
+import com.mukiva.feature.dashboard.ui.adapter.ICurrentWeatherProvider
 import com.mukiva.feature.dashboard.ui.adapter.MinimalForecastAdapter
+import com.mukiva.openweather.ui.error
 import com.mukiva.openweather.ui.hide
 import com.mukiva.openweather.ui.visible
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import java.io.Serializable
 
 @AndroidEntryPoint
-class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template) {
+class DashboardTemplateFragment
+    : Fragment(R.layout.fragment_dashboard_template)
+    ,  ICurrentWeatherProvider {
 
     data class Args(
-        val position: Int
+        val locationName: String,
+        val region: String,
     ): Serializable
 
+    override val currentStateFlow: StateFlow<ICurrentWeatherProvider.Current?>
+        get() = mCurrentWeatherFlow.asStateFlow()
+
+    private val mCurrentWeatherFlow = MutableStateFlow<ICurrentWeatherProvider.Current?>(null)
     private val mBinding by viewBindings(FragmentDashboardTemplateBinding::bind)
-    private val mViewModel by viewModels<DashboardViewModel>(
-        ownerProducer = { requireParentFragment() }
-    )
+    private val mViewModel by viewModels<ForecastViewModel>()
     private val mMinimalForecastAdapter by uiLazy {
         MinimalForecastAdapter(
-            onItemClick = { pos -> mViewModel.goForecast(pos) },
+            onItemClick = { pos ->
+                mViewModel.goForecast(getArgs(Args::class.java).locationName, pos)
+                          },
             unitsTypeProvider = UnitsTypeProvider
         )
     }
-    private val rootHeight get() = mBinding.root.height
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -69,83 +76,43 @@ class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template)
             .layoutTransition
             .setAnimateParentHierarchy(false)
 
-        initNestedScroll()
         initForecastList()
         subscribeOnViewModel()
-
-        mBinding.emptyView.root.doOnNextLayout {
-            onCollapsingToolbarStateChanged(mViewModel.toolbarIsExpanded)
-        }
     }
 
     private fun initForecastList() = with(mBinding) {
         daysForecastList.adapter = mMinimalForecastAdapter
     }
 
-    private fun initNestedScroll() = with(mBinding) {
-        content.setOnScrollChangeListener { _, _, scrollY, _, _ ->
-            ScrollSynchronizer.updateScroll(scrollY, lifecycleScope)
-        }
-
-        content.doOnNextLayout {
-            it.scrollY = ScrollSynchronizer.getLastScroll()
-        }
-
-        ViewCompat.setOnApplyWindowInsetsListener(grid) { v, insets ->
-
-            val navInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
-
-            v.updatePadding(
-                bottom = navInsets.bottom
-            )
-
-            WindowInsetsCompat.CONSUMED
-        }
-
-        lifecycleScope.launch {
-            ScrollSynchronizer.getOffsetFlow()
-                .flowWithLifecycle(lifecycle)
-                .collect { content.scrollY = it }
-        }
-    }
-
     private fun subscribeOnViewModel() {
-        mViewModel.observeState(IDashboardState.MinorState::class, viewLifecycleOwner) {
-            val pos = getArgs(Args::class.java).position
-            if (pos >= it.list.size) return@observeState
-            val state = it.list.elementAt(pos)
-            updateFragmentType(state.type)
-            if (state.currentWeather == null) return@observeState
-            with(state.currentWeather) {
-                updateDayStatus(isDay)
-                updateFeelsLike(this, it.unitsType)
-                updateConditionField(condition, cloud)
-                updateWindSpeed(this, it.unitsType)
-                updateWindDirection(windDir, windDegree.toFloat())
-                updateHumidity(humidity)
-                updatePressure(this, it.unitsType)
-            }
-            updateForecast(state.minimalForecastState)
-        }
-        mViewModel.toolbarIsExpandedFlow
+        mViewModel.state
             .flowWithLifecycle(lifecycle)
-            .collectWithScope(lifecycleScope, ::onCollapsingToolbarStateChanged)
+            .onEach(::updateState)
+            .filterIsInstance<LocationWeatherState.Content>()
+            .onEach(::updateContent)
+            .launchIn(lifecycleScope)
+
     }
 
-    private fun onCollapsingToolbarStateChanged(isExpanded: Boolean) = with(mBinding) {
-        val duration = getInteger(CoreUiRes.integer.def_animation_duration).toLong()
-        when(isExpanded) {
-            true -> {
-                emptyView.root.animate()
-                    .setDuration(duration)
-                    .translationY(-(rootHeight * 0.25f))
-            }
-            false -> {
-                emptyView.root.animate()
-                    .setDuration(duration)
-                    .translationY(0.0f)
-            }
+    private fun updateContent(state: LocationWeatherState.Content) {
+        val forecast = state.forecast
+        val unitsType = state.unitsType
+        val current = forecast.currentWeather
+        mCurrentWeatherFlow.update {
+            ICurrentWeatherProvider.Current(
+                locationName = getArgs(Args::class.java).locationName,
+                unitsType = unitsType,
+                currentWeather = current,
+                )
         }
+        updateForecast(forecast.forecastState)
+        updateHumidity(current.humidity)
+        updatePressure(current, unitsType)
+        updateWindDirection(current.windDir, current.windDegree.toFloat())
+        updateConditionField(current.condition, current.cloud)
+        updateDayStatus(current.isDay)
+        updateFeelsLike(current, unitsType)
+        updateWindSpeed(current, unitsType)
     }
 
     private fun updateForecast(state: Collection<MinimalForecast>) {
@@ -188,7 +155,7 @@ class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template)
         val rotatedDrawable = RotateDrawable().apply {
             fromDegrees = 0f
             toDegrees = degree
-            level = 10000
+            level = ROTATE_DRAWABLE_MAX_LEVEL
             setDrawable(drawable)
         }
 
@@ -245,17 +212,36 @@ class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template)
         fieldValue.setDrawable(R.drawable.ic_feels_like)
     }
 
-    private fun updateFragmentType(type: MinorWeatherState.Type) = with(mBinding) {
-        when(type) {
-            MinorWeatherState.Type.LOADING -> {
-                content.gone()
-                emptyView.loading()
-            }
-            MinorWeatherState.Type.CONTENT -> {
-                content.visible()
+    private fun updateState(state: LocationWeatherState) {
+        val loadAction = {
+            val locationName = getArgs(Args::class.java).locationName
+            mViewModel.loadForecast(locationName)
+        }
+
+        when(state) {
+            is LocationWeatherState.Content -> with(mBinding) {
                 emptyView.hide()
+                root.visible()
+            }
+            LocationWeatherState.Error -> with(mBinding) {
+                emptyView.error(
+                    msg = "TODO(ERROR)",
+                    buttonText = "TODO(Refresh)",
+                    onButtonClick = loadAction
+                )
+                root.gone()
+            }
+            LocationWeatherState.Init -> with(mBinding) {
+                emptyView.hide()
+                root.gone()
+                loadAction()
+            }
+            LocationWeatherState.Loading -> with(mBinding) {
+                emptyView.loading()
+                root.gone()
             }
         }
+
     }
 
     private fun updateDayStatus(isDay: Boolean) = with(mBinding.isDayField) {
@@ -283,11 +269,12 @@ class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template)
     companion object {
         private const val FROM_MBAR_TO_MMHG = 0.750062f
 
+        private const val ROTATE_DRAWABLE_MAX_LEVEL = 10000
+
         fun newInstance(args: Args) = DashboardTemplateFragment().apply {
             arguments = bundleOf(
                 KEY_ARGS to args
             )
         }
     }
-
 }

@@ -1,36 +1,42 @@
 package com.mukiva.feature.location_manager.domain.usecase
 
 import android.util.Log
-import com.mukiva.core.network.IConnectionProvider
+import com.github.mukiva.weather_data.LocationRepository
+import com.github.mukiva.weather_data.utils.RequestResult
 import com.mukiva.feature.location_manager.domain.model.Location
-import com.mukiva.feature.location_manager.domain.repository.ILocationRepository
-import com.mukiva.usecase.ApiError
-import com.mukiva.usecase.ApiResult
-import com.mukiva.usecase.CoroutineHelper
-import java.text.ParseException
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import javax.inject.Inject
+import com.github.mukiva.weather_data.models.Location as DataLocation
 
 class AddLocationUseCase @Inject constructor(
-    private val connectionProvider: IConnectionProvider,
-    private val repository: ILocationRepository
+    private val repository: LocationRepository
 ) {
-    suspend operator fun invoke(location: Location): ApiResult<Unit> {
-        if (!connectionProvider.hasConnection()) {
-            return ApiResult.Error(ApiError.NO_INTERNET)
-        }
-
+    suspend operator fun invoke(location: Location): RequestResult<Unit> {
         return try {
-            CoroutineHelper.doIO {
-                repository.addLocalLocation(location)
-            }
-            ApiResult.Success(Unit)
-        } catch (err: Exception) {
-            Log.d("AddLocationUseCase", "${err.message}")
-            when (err) {
-                is ParseException -> ApiResult.Error(ApiError.PARSE_ERROR)
-                else -> ApiResult.Error(ApiError.SERVER_ERROR)
-            }
+            repository.addLocalLocation(
+                location = location.toData()
+            )
+            RequestResult.Success(Unit)
+        } catch (e: Exception) {
+            Log.e("ERROR","Add location error: ${e.message}")
+            RequestResult.Error()
         }
     }
 
+    private fun Location.toData(): DataLocation {
+        return DataLocation(
+            id = id.toLong(),
+            name = cityName,
+            region = regionName,
+            country = countryName,
+            lat = 0.0,
+            lon = 0.0,
+            tzId = "",
+            localtimeEpoch = Clock.System.now().toLocalDateTime(TimeZone.UTC),
+            priority = 0,
+        )
+    }
 }
+

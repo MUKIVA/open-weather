@@ -13,7 +13,6 @@ typealias LocationName = String
 @Singleton
 class ForecastRepositoryImpl @Inject constructor(
     private val gateway: IForecastGateway,
-    private val apiKeyProvider: IApiKeyProvider,
     private val updater: IForecastUpdater
 ) : IForecastRepository {
 
@@ -23,7 +22,6 @@ class ForecastRepositoryImpl @Inject constructor(
 
         if (updater.isTimeForUpdate || mLocationCache[locationName] == null) {
             mLocationCache[locationName] = gateway.getCurrentWeather(
-                key = apiKeyProvider.apiKey,
                 q = locationName
             )
             updater.commitUpdate()
@@ -44,7 +42,6 @@ class ForecastRepositoryImpl @Inject constructor(
 
         if (updater.isTimeForUpdate || mLocationCache[locationName] == null) {
             mLocationCache[locationName] = gateway.getCurrentWeather(
-                key = apiKeyProvider.apiKey,
                 q = locationName,
                 days = days,
                 aqi = if (aqi) "yes" else "no",

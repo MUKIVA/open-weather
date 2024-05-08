@@ -7,14 +7,19 @@ import com.mukiva.feature.forecast.databinding.ItemForecastGroupTemplateBinding
 import com.mukiva.feature.forecast.domain.UnitsType
 import com.mukiva.feature.forecast.presentation.ForecastGroup
 
-class GroupsForecastAdapter(
-    private val unitsType: UnitsType
-) : ListAdapter<ForecastGroup, GroupViewHolder>(GroupItemCallback) {
+class GroupsForecastAdapter : ListAdapter<ForecastGroup, GroupViewHolder>(GroupItemCallback) {
+
+    private var mUnitsType: UnitsType = UnitsType.METRIC
+
+    fun updateUnitsType(unitsType: UnitsType) {
+        mUnitsType = unitsType
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GroupViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return GroupViewHolder(
             bind = ItemForecastGroupTemplateBinding.inflate(inflater, parent, false),
-            unitsType = unitsType
+            unitsType = { mUnitsType }
         )
     }
 

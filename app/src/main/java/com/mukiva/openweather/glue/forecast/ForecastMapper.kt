@@ -5,6 +5,9 @@ import com.mukiva.core.data.repository.forecast.entity.ForecastDayRemote
 import com.mukiva.core.data.repository.forecast.entity.ForecastRemote
 import com.mukiva.feature.dashboard.domain.model.MinimalForecast
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import javax.inject.Inject
@@ -27,49 +30,16 @@ class ForecastMapper @Inject constructor(
     fun asDomain(item: ForecastRemote): List<MinimalForecast> = with(item) {
         return forecastDay.mapIndexed { index, item ->
             MinimalForecast(
-                index = index,
-                dayAvgTempC = item.getDayAvgTemp(isMetricSystem = true),
-                dayAvgTempF = item.getDayAvgTemp(isMetricSystem = false),
-                nightAvgTempC = item.getNightAvgTemp(isMetricSystem = true),
-                nightAvgTempF = item.getNightAvgTemp(isMetricSystem = false),
-                date = item.date ?: throw Exception("Fail to get date"),
+                id = index,
+                avgTempC = item.day?.avgTempC ?: 0.0,
+                avgTempF = item.day?.avgTempF ?: 0.0,
+                minTempC = item.day?.minTempC ?: 0.0,
+                minTempF = item.day?.minTempF ?: 0.0,
+                maxTempC = item.day?.maxTempC ?: 0.0,
+                maxTempF = item.day?.maxTempF ?: 0.0,
+                date = Clock.System.now().toLocalDateTime(TimeZone.UTC),
                 conditionIconUrl = item.day?.condition?.icon ?: "",
             )
         }
     }
-
-    private fun ForecastDayRemote.getDayAvgTemp(isMetricSystem: Boolean): Double {
-        val sunrise = mHourOfDayFormatter.parse(astro?.sunrise ?: throw Exception("Fail to parse sunrise time"))
-
-        mCalendar.time = sunrise!!
-        val sunriseHour = mCalendar.get(Calendar.HOUR_OF_DAY)
-
-        val hourItem = hour.find {
-            mCalendar.time = it.time?.let { time -> mTimeFormatter.parse(time) } ?: mCalendar.time
-            mCalendar.get(Calendar.HOUR_OF_DAY) == sunriseHour
-        }
-
-        return when(isMetricSystem) {
-            true -> hourItem?.tempC ?: 0.0
-            false -> hourItem?.tempF ?: 0.0
-        }
-    }
-
-    private fun ForecastDayRemote.getNightAvgTemp(isMetricSystem: Boolean): Double {
-        val moonrise = mHourOfDayFormatter.parse(astro?.moonrise ?: throw Exception("Fail to parse moonrise time"))
-
-        mCalendar.time = moonrise!!
-        val moonriseHour = mCalendar.get(Calendar.HOUR_OF_DAY)
-
-        val hourItem = hour.find {
-            mCalendar.time = it.time?.let { time -> mTimeFormatter.parse(time) } ?: mCalendar.time
-            mCalendar.get(Calendar.HOUR_OF_DAY) == moonriseHour
-        }
-
-        return when(isMetricSystem) {
-            true -> hourItem?.tempC ?: 0.0
-            false -> hourItem?.tempF ?: 0.0
-        }
-    }
-
 }

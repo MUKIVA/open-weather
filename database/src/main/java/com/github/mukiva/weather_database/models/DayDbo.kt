@@ -7,8 +7,6 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class DayDbo(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int,
     @ColumnInfo("maxtemp_c")
     val maxTempC: Double,
     @ColumnInfo("maxtemp_f")
@@ -47,7 +45,6 @@ data class DayDbo(
     val dailyChanceOfSnow: Int,
     @ColumnInfo("uv")
     val uv: Double,
-    @ColumnInfo("condition")
-    @Embedded
+    @Embedded(prefix = "condition")
     val condition: ConditionDbo
 )

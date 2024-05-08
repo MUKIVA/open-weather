@@ -6,6 +6,6 @@ import androidx.room.PrimaryKey
 @Entity
 data class ForecastDbo(
     @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    val id: Long = 0,
 )
 

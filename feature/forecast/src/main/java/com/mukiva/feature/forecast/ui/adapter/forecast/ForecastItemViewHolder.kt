@@ -14,8 +14,8 @@ import com.mukiva.feature.forecast.databinding.ItemWindBinding
 import com.mukiva.feature.forecast.domain.ForecastItem
 import com.mukiva.feature.forecast.domain.UnitsType
 import com.mukiva.feature.forecast.domain.WindDirection
-import java.util.Date
-import java.text.SimpleDateFormat
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.format.char
 import kotlin.math.roundToInt
 
 sealed class ForecastItemViewHolder(
@@ -23,10 +23,11 @@ sealed class ForecastItemViewHolder(
     protected val unitsType: UnitsType
 ) : RecyclerView.ViewHolder(root) {
 
-    protected val mTimeFormatter = SimpleDateFormat(
-        "HH:mm",
-        itemView.context.resources.configuration.locales[0]
-    )
+    protected val mTimeFormatter = LocalDateTime.Format {
+        hour()
+        char(':')
+        minute()
+    }
 
     abstract fun bind(item: ForecastItem)
 
@@ -73,7 +74,7 @@ sealed class ForecastItemViewHolder(
                 .into(icon)
         }
 
-        private fun updateTime(date: Date) = with(bind) {
+        private fun updateTime(date: LocalDateTime) = with(bind) {
             time.text = mTimeFormatter.format(date)
         }
 
@@ -128,7 +129,7 @@ sealed class ForecastItemViewHolder(
                 .getString(CoreUiRes.string.template_degree, degree)
         }
 
-        private fun updateTime(time: Date) = with(bind) {
+        private fun updateTime(time: LocalDateTime) = with(bind) {
             this.time.text = mTimeFormatter.format(time)
         }
 
@@ -138,7 +139,7 @@ sealed class ForecastItemViewHolder(
             val rotatedDrawable = RotateDrawable().apply {
                 fromDegrees = 0f
                 toDegrees = degree.toFloat()
-                level = 10000
+                level = MAX_ROTATION_LEVEL
                 setDrawable(drawable)
             }
             icon.setImageDrawable(rotatedDrawable)
@@ -160,7 +161,7 @@ sealed class ForecastItemViewHolder(
                 .getString(CoreUiRes.string.template_percent, value)
         }
 
-        private fun updateTime(time: Date) = with(bind) {
+        private fun updateTime(time: LocalDateTime) = with(bind) {
             this.time.text = mTimeFormatter.format(time)
         }
     }
@@ -200,8 +201,11 @@ sealed class ForecastItemViewHolder(
                 .getString(strRes, pressure)
         }
 
-        private fun updateTime(time: Date) = with(bind) {
+        private fun updateTime(time: LocalDateTime) = with(bind) {
             this.time.text = mTimeFormatter.format(time)
         }
+    }
+    companion object {
+        private const val MAX_ROTATION_LEVEL = 10000
     }
 }

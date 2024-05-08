@@ -7,8 +7,14 @@ import com.mukiva.feature.dashboard.databinding.ItemMinForecastBinding
 import com.mukiva.feature.dashboard.domain.model.MinimalForecast
 import com.mukiva.feature.dashboard.domain.model.UnitsType
 import com.mukiva.feature.dashboard.presentation.IDashboardState
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.format
+import kotlinx.datetime.format.DateTimeFormat
+import kotlinx.datetime.format.DayOfWeekNames
+import kotlinx.datetime.format.MonthNames
+import kotlinx.datetime.format.Padding
+import kotlinx.datetime.format.char
 import java.text.SimpleDateFormat
-import java.util.Date
 import kotlin.math.roundToInt
 
 class MinimalForecastItemViewHolder(
@@ -17,29 +23,29 @@ class MinimalForecastItemViewHolder(
     private val unitsTypeProvider: IDashboardState
 ) : RecyclerView.ViewHolder(bindings.root) {
 
-    private val dayFormatter = SimpleDateFormat(
-        "d MMMM",
-        itemView.context.resources.configuration.locales[0]
-    )
+    private val dayOfWeekFormatter = LocalDateTime.Format {
+        dayOfWeek(DayOfWeekNames.ENGLISH_FULL)
+    }
 
-    private val dayOfWeekFormatter = SimpleDateFormat(
-        "EEEE",
-        itemView.context.resources.configuration.locales[0]
-    )
+    private val dayFormatter = LocalDateTime.Format {
+        dayOfMonth(padding = Padding.NONE)
+        char(' ')
+        monthName(MonthNames.ENGLISH_FULL)
+    }
 
     fun bind(item: MinimalForecast) = with(bindings) {
         updateCondition(item.conditionIconUrl)
         updateDate(item.date)
         updateTempInfo(
-            item.dayAvgTempC,
-            item.dayAvgTempF,
-            item.nightAvgTempC,
-            item.nightAvgTempF,
+            item.maxTempC,
+            item.maxTempF,
+            item.avgTempC,
+            item.avgTempF,
             unitsTypeProvider.unitsType
         )
 
         root.setOnClickListener {
-            onItemClick(item.index)
+            onItemClick(item.id)
         }
     }
 
@@ -67,7 +73,7 @@ class MinimalForecastItemViewHolder(
         this.dayTemp.text = itemView.context.getString(strRes, day)
     }
 
-    private fun updateDate(date: Date) = with(bindings) {
+    private fun updateDate(date: LocalDateTime) = with(bindings) {
         this.date.text = dayFormatter.format(date)
         dayOfWeek.text = dayOfWeekFormatter.format(date)
     }

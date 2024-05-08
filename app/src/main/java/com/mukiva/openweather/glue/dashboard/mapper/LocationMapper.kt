@@ -8,22 +8,20 @@ object LocationMapper {
 
     fun mapToDomain(item: LocationRemote): Location {
         return Location(
+            id = item.id.toLong(),
             name = item.name ?: "UNKNOWN",
             region = item.region ?: "UNKNOWN",
             country = item.country ?: "UNKNOWN",
-            lat = item.lat?.toFloat() ?: 0.0f,
-            lon = item.lon?.toFloat() ?: 0.0f,
             position = 0,
         )
     }
 
     fun mapToDomain(item: LocationDTO): Location {
         return Location(
+            id = item.uid.toLong(),
             name = item.cityName ?: "UNKNOWN",
             region = item.regionName ?: "UNKNOWN",
             country = item.countryName ?: "UNKNOWN",
-            lat = item.lat?.toFloat() ?: 0.0f,
-            lon = item.lon?.toFloat() ?: 0.0f,
             position = item.position ?: 0,
         )
     }

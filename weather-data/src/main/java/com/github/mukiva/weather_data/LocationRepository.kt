@@ -11,22 +11,34 @@ import com.github.mukiva.weather_database.models.LocationDbo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.merge
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 class LocationRepository(
     private val database: WeatherDatabase,
     private val gateway: IWeatherApi,
 ) {
-    suspend fun searchRemote(q: String): Flow<RequestResult<List<Location>>> {
-        return flow { this.emit(gateway.search(q)) }
+    fun searchRemote(q: String): Flow<RequestResult<List<Location>>> {
+        val remoteRequest = flow { this.emit(gateway.search(q)) }
             .map { result -> result.asRequestResult() }
-            .map { requestResult -> requestResult.map { locations -> locations.toLocation() } }
+            .map { requestResult ->
+                requestResult.map { locations ->
+                    locations.map { it.toLocation() }
+                }
+            }
+        val start = flow<RequestResult<List<Location>>> { emit(RequestResult.InProgress(null)) }
+        return merge(start, remoteRequest)
     }
 
     fun getAllLocal(): Flow<RequestResult<List<Location>>> {
-        return database.locationDao
+        val localRequest = database.locationDao
             .getAll()
             .map { locationsDbo -> locationsDbo.map { it.toLocation() } }
             .map { locations -> RequestResult.Success(locations) }
+        val start = flow<RequestResult<List<Location>>> { emit(RequestResult.InProgress(null)) }
+        return merge(start, localRequest)
     }
 
     suspend fun addLocalLocation(location: Location) {
@@ -38,33 +50,22 @@ class LocationRepository(
         database.locationDao
             .delete(location.toDbo())
     }
-}
 
-
-
-
-internal fun List<LocationDto>.toLocation(): List<Location> {
-    return map { it.toLocation() }
-}
-
-internal fun List<Location>.toDbo(): List<LocationDbo> {
-    return map { it.toDbo() }
-}
-
-internal fun List<LocationDbo>.toLocation(): List<Location> {
-    return map { it.toLocation() }
+    suspend fun removeAllLocations() {
+        database.locationDao.deleteAll()
+    }
 }
 
 internal fun LocationDto.toLocation(): Location {
     return Location(
-        id = 0,
+        id = id.toLong(),
         name = name,
         region = region,
         country = country,
         lat = lat,
         lon = lon,
-        tzId = tzId,
-        localtimeEpoch = localtimeEpoch,
+        tzId = tzId ?: "",
+        localtimeEpoch = localtimeEpoch ?: Clock.System.now().toLocalDateTime(TimeZone.UTC),
         priority = 0,
     )
 }

@@ -4,7 +4,7 @@
     <dimen name="def_v_padding">8dp</dimen>
 
     <dimen name="def_sheet_handle_h">5dp</dimen>
-    <dimen name="def_sheet_handle_w">30dp</dimen>
+    <dimen name="def_sheet_handle_w">60dp</dimen>
     <dimen name="def_sheet_handle_alpha">0.5</dimen>
 
     <dimen name="def_separator_h">1dp</dimen>

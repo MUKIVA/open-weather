@@ -11,6 +11,11 @@ android {
     defaultConfig {
         minSdk = 26
     }
+    buildTypes {
+        create("profile") {
+            signingConfig = signingConfigs.findByName("debug")
+        }
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -28,4 +33,8 @@ dependencies {
     implementation(libs.kotlinx.datetime)
     implementation(libs.kotlinx.coroutines)
     implementation(libs.kotlinx.coroutines.android)
+}
+
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
 }

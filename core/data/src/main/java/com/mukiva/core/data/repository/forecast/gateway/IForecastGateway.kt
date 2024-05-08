@@ -6,9 +6,7 @@ import retrofit2.http.Query
 
 interface IForecastGateway {
     @GET("forecast.json")
-    @JvmSuppressWildcards
     suspend fun getCurrentWeather(
-        @Query("key") key: String,
         @Query("q") q: String,
         @Query("days") days: Int = DEFAULT_DAYS_COUNT,
         @Query("aqi") aqi: String = DEFAULT_AQI,

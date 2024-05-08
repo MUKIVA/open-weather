@@ -2,15 +2,18 @@ package com.mukiva.feature.forecast.ui
 
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.os.bundleOf
+import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import com.mukiva.core.ui.KEY_ARGS
@@ -29,10 +32,12 @@ import com.mukiva.core.ui.uiLazy
 import com.mukiva.core.ui.viewBindings
 import com.mukiva.feature.forecast.databinding.ItemDayTabBinding
 import com.mukiva.feature.forecast.presentation.HourlyForecast
-import com.mukiva.feature.forecast.domain.UnitsType
 import com.mukiva.openweather.ui.visible
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.format.DayOfWeekNames
 import java.io.Serializable
 import java.text.SimpleDateFormat
 
@@ -45,18 +50,11 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast) {
         val dayPosition: Int
     ) : Serializable
 
-    private var mUnitsTypeProvider: () -> UnitsType = { UnitsType.METRIC }
     private val mBinding by viewBindings(FragmentForecastBinding::bind)
     private val mViewModel by viewModels<ForecastViewModel>()
     private val mHourlyForecastAdapter by uiLazy {
-        HourlyForecastAdapter(
-            fragment = this,
-            unitsTypeProvider = { mUnitsTypeProvider() },
-            locationName = getArgs(Args::class.java).locationName
-        )
+        HourlyForecastAdapter(childFragmentManager, lifecycle)
     }
-    private var mDayIsInit: Boolean = false
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -74,15 +72,17 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast) {
     }
 
     private fun initViewPager() = with(mBinding) {
-        val dayFormatter = SimpleDateFormat(
-            "EEE",
-            requireContext().resources.configuration.locales[0]
-        )
+        val dayFormatter = LocalDateTime.Format {
+            dayOfMonth()
+        }
 
-        val dayOfWeekFormatter = SimpleDateFormat(
-            "d",
-            requireContext().resources.configuration.locales[0]
-        )
+        val dayOfWeekFormatter = LocalDateTime.Format {
+            dayOfWeek(DayOfWeekNames.ENGLISH_ABBREVIATED)
+        }
+
+        viewPager.children.find { child -> child is RecyclerView }?.apply {
+            (this as RecyclerView).isNestedScrollingEnabled = false
+        }
 
         viewPager.adapter = mHourlyForecastAdapter
 
@@ -100,8 +100,10 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast) {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
 
-                val deselectedTextColor = getAttrColor(com.google.android.material.R.attr.colorPrimary)
-                val selectedTextColor = getAttrColor(com.google.android.material.R.attr.colorSurface)
+                val deselectedTextColor =
+                    getAttrColor(com.google.android.material.R.attr.colorPrimary)
+                val selectedTextColor =
+                    getAttrColor(com.google.android.material.R.attr.colorSurface)
 
 
                 for (i in 0 until tabLayout.tabCount) {
@@ -123,16 +125,15 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast) {
     }
 
     private fun subscribeOnViewModel() {
-        lifecycleScope.launch {
-            mViewModel.state
-                .flowWithLifecycle(lifecycle)
-                .collect(::updateState)
-        }
+        mViewModel.state
+            .flowWithLifecycle(lifecycle)
+            .onEach(::updateState)
+            .launchIn(lifecycleScope)
+
     }
 
     private fun updateState(state: ForecastState) {
         if (state is ForecastState.Content) {
-            mUnitsTypeProvider = { state.unitsType }
             updateViewPager(state.hourlyForecast)
         }
         updateType(state)
@@ -142,18 +143,10 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast) {
         mHourlyForecastAdapter.submit(list)
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putBoolean(KEY_DAY_IS_INIT, mDayIsInit)
-    }
-
     private fun updateType(state: ForecastState) = with(mBinding) {
+        Log.d("FRAGMENT", "$state")
         when(state) {
             is ForecastState.Content -> {
-                if (!mDayIsInit) {
-                    viewPager.setCurrentItem(getArgs(Args::class.java).dayPosition, false)
-                    mDayIsInit = true
-                }
                 emptyView.hide()
                 content.visible()
             }
@@ -178,17 +171,10 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast) {
         }
     }
 
-    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        super.onViewStateRestored(savedInstanceState)
-        if (savedInstanceState == null) return
-        mDayIsInit = savedInstanceState.getBoolean(KEY_DAY_IS_INIT)
-    }
-
     companion object {
-
-        private const val KEY_DAY_IS_INIT = "KEY_DAY_IS_INIT"
-
-        fun newInstance(args: Args) = ForecastFragment().apply {
+        fun newInstance(
+            args: Args
+        ) = ForecastFragment().apply {
             arguments = bundleOf(
                 KEY_ARGS to args
             )

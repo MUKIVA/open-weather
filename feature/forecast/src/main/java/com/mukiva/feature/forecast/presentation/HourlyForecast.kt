@@ -1,9 +1,9 @@
 package com.mukiva.feature.forecast.presentation
 
-import java.util.Date
+import kotlinx.datetime.LocalDateTime
 
 data class HourlyForecast(
-    val id: Int,
-    val date: Date,
+    val index: Int,
+    val date: LocalDateTime,
     val groups: List<ForecastGroup>,
 )

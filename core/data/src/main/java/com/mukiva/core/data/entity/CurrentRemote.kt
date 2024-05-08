@@ -44,7 +44,7 @@ data class CurrentRemote(
     @SerializedName("vis_miles")
     var visMiles: Double? = null,
     @SerializedName("uv")
-    var uv: Int? = null,
+    var uv: Double? = null,
     @SerializedName("gust_mph")
     var gustMph: Double? = null,
     @SerializedName("gust_kph")

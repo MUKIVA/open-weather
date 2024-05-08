@@ -11,6 +11,11 @@ android {
     defaultConfig {
         minSdk = 26
     }
+    buildTypes {
+        create("profile") {
+            signingConfig = signingConfigs.findByName("debug")
+        }
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17

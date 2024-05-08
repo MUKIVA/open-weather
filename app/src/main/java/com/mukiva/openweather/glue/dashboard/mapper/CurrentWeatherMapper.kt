@@ -6,8 +6,10 @@ import com.mukiva.feature.dashboard.domain.model.Condition
 import com.mukiva.feature.dashboard.domain.model.CurrentWeather
 import com.mukiva.feature.dashboard.domain.model.WindDirection
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import java.text.SimpleDateFormat
-import java.util.Calendar
 import javax.inject.Inject
 
 class CurrentWeatherMapper @Inject constructor(
@@ -21,35 +23,33 @@ class CurrentWeatherMapper @Inject constructor(
 
     fun mapToDomain(item: CurrentRemote): CurrentWeather {
         return CurrentWeather(
-            lastUpdatedEpoch = item.lastUpdatedEpoch ?: 0,
-            lastUpdated = simpleDateFormat
-                .parse(item.lastUpdated ?: "") ?: Calendar.getInstance().time,
-            tempC = item.tempC?.toFloat() ?: 0.0f,
-            tempF = item.tempF?.toFloat() ?: 0.0f,
+            lastUpdatedEpoch = Clock.System.now().toLocalDateTime(TimeZone.UTC), //item.lastUpdatedEpoch,
+            tempC = item.tempC ?: 0.0,
+            tempF = item.tempF ?: 0.0,
             isDay = item.isDay != 0,
             condition = Condition(
                 text = item.condition?.text ?: "",
                 icon = item.condition?.icon ?: "",
                 code = item.condition?.code ?: 0,
             ),
-            windMph= item.windMph?.toFloat() ?: 0.0f,
-            windKph = item.windKph?.toFloat() ?: 0.0f,
+            windMph= item.windMph ?: 0.0,
+            windKph = item.windKph ?: 0.0,
             windDegree = item.windDegree ?: 0,
             windDir = WindDirection
                 .valueOf(item.windDir ?: "UNKNOWN"),
-            pressureMb = item.pressureMb?.toFloat() ?: 0.0f,
-            pressureIn = item.pressureIn?.toFloat() ?: 0.0f,
-            precipMm = item.precipMm?.toFloat() ?: 0.0f,
-            precipIn = item.precipIn?.toFloat() ?: 0.0f,
+            pressureMb = item.pressureMb ?: 0.0,
+            pressureIn = item.pressureIn ?: 0.0,
+            precipMm = item.precipMm ?: 0.0,
+            precipIn = item.precipIn ?: 0.0,
             humidity = item.humidity ?: 0,
             cloud = item.cloud ?: 0,
-            feelsLikeC = item.feelslikeC?.toFloat() ?: 0.0f,
-            feelsLikeF = item.feelslikeF?.toFloat() ?: 0.0f,
-            visKm = item.visKm?.toFloat() ?: 0.0f,
-            visMiles = item.visMiles?.toFloat() ?: 0.0f,
-            uv = item.uv?.toFloat() ?: 0.0f,
-            gustMph = item.gustMph?.toFloat() ?: 0.0f,
-            gustKph = item.gustMph?.toFloat() ?: 0.0f,
+            feelsLikeC = item.feelslikeC ?: 0.0,
+            feelsLikeF = item.feelslikeF ?: 0.0,
+            visKm = item.visKm ?: 0.0,
+            visMiles = item.visMiles ?: 0.0,
+            uv = item.uv ?: 0.0,
+            gustMph = item.gustMph ?: 0.0,
+            gustKph = item.gustMph ?: 0.0,
         )
 
     }

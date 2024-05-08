@@ -22,7 +22,7 @@ data class Current(
     var feelslikeF: Double,
     var visKm: Double,
     var visMiles: Double,
-    var uv: Int,
+    var uv: Double,
     var gustMph: Double,
     var gustKph: Double,
 )

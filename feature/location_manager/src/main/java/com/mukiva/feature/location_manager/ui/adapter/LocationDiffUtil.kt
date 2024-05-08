@@ -6,7 +6,7 @@ import com.mukiva.feature.location_manager.domain.model.Location
 object LocationDiffUtil : DiffUtil.ItemCallback<Location>() {
 
     override fun areItemsTheSame(oldItem: Location, newItem: Location): Boolean {
-        return oldItem.uid == newItem.uid
+        return oldItem.id == newItem.id
     }
 
     override fun areContentsTheSame(oldItem: Location, newItem: Location): Boolean {

@@ -47,7 +47,7 @@ data class CurrentDto(
     @SerialName("vis_miles")
     var visMiles: Double,
     @SerialName("uv")
-    var uv: Int,
+    var uv: Double,
     @SerialName("gust_mph")
     var gustMph: Double,
     @SerialName("gust_kph")

@@ -7,8 +7,8 @@ import kotlinx.datetime.LocalDateTime
 
 @Entity
 data class LocationDbo(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    @PrimaryKey
+    val id: Long,
     @ColumnInfo("name")
     val name: String,
     @ColumnInfo("region")

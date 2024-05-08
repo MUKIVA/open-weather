@@ -1,34 +1,38 @@
 package com.mukiva.feature.dashboard.ui
 
+import android.graphics.Rect
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import com.mukiva.core.ui.collectWithScope
 import com.mukiva.core.ui.getDimen
-import com.mukiva.core.ui.getInteger
 import com.mukiva.feature.dashboard.R
-import com.mukiva.feature.dashboard.databinding.FragmentDashboardBinding
-import com.mukiva.feature.dashboard.domain.model.UnitsType
 import com.mukiva.feature.dashboard.presentation.DashboardViewModel
 import com.mukiva.feature.dashboard.ui.adapter.DashboardAdapter
 import com.mukiva.openweather.ui.error
 import com.mukiva.openweather.ui.gone
-import com.mukiva.openweather.ui.hide
 import com.mukiva.openweather.ui.loading
 import com.mukiva.openweather.ui.notify
 import com.mukiva.core.ui.uiLazy
 import com.mukiva.core.ui.viewBindings
-import com.mukiva.feature.dashboard.presentation.IDashboardState
+import com.mukiva.feature.dashboard.presentation.DashboardState
+import com.mukiva.openweather.ui.hide
 import com.mukiva.openweather.ui.visible
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlin.math.abs
+import com.mukiva.feature.dashboard.databinding.FragmentDashboardBinding
+import com.mukiva.feature.dashboard.domain.model.UnitsType
+import com.mukiva.feature.dashboard.ui.adapter.ICurrentWeatherProvider
 import com.mukiva.core.ui.R as CoreUiRes
 
 @AndroidEntryPoint
@@ -46,49 +50,51 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         observeViewModel()
     }
 
-    override fun onResume() = with(mBinding) {
-        super.onResume()
-        dashboard.adapter = mDashboardAdapter
-    }
-
     override fun onStop() = with(mBinding) {
         super.onStop()
         dashboard.adapter = null
     }
 
+    override fun onResume() = with(mBinding) {
+        super.onResume()
+        dashboard.adapter = mDashboardAdapter
+    }
+
     private fun initDashboard() = with(mBinding) {
-        dashboard.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-                ifResumed { mViewModel.onPageSelect(position) }
-            }
-        })
-
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                dashboard.setCurrentItem(mViewModel.position, false)
-            }
+        dashboard.children.find { child -> child is RecyclerView }?.apply {
+            (this as RecyclerView).isNestedScrollingEnabled = false
         }
-
     }
 
     private fun initAppbar() = with(mBinding) {
 
-        toolbarLayout.setExpanded(mViewModel.toolbarIsExpanded, false)
-        mainCard.root.clipToPadding = false
+        dashboard.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                mDashboardAdapter.requestCurrent(position)
+                    .flowWithLifecycle(lifecycle)
+                    .onEach(::updateMainCard)
+                    .launchIn(lifecycleScope)
+            }
+        })
 
         toolbarLayout.addOnOffsetChangedListener { appBarLayout, verticalOffset ->
             val maxOffset = appBarLayout.totalScrollRange
             val invOffsetRatio = 1 - abs(verticalOffset.toFloat() / maxOffset)
-            val defRadius = getDimen(CoreUiRes.dimen.def_radius)
-            val maxElevation = getDimen(CoreUiRes.dimen.def_max_elevation)
 
-            val radius = invOffsetRatio * defRadius
-            val elevation = invOffsetRatio * invOffsetRatio * maxElevation
-            mainCard.card.cardElevation = elevation
-            dashboardContainer.radius = radius
+            val drawable = ResourcesCompat
+                .getDrawable(resources, R.drawable.background_dashboard, requireActivity().theme)
 
-            mViewModel.toolbarIsExpanded = maxOffset != abs(verticalOffset)
+            val background = (drawable as LayerDrawable)
+                .findDrawableByLayerId(R.id.background) as GradientDrawable
+            val dragHandler = drawable
+                .findDrawableByLayerId(R.id.dragHandler) as GradientDrawable
+            val topPadding = Rect().let { background.getPadding(it); it.top }
+
+            dragHandler.alpha = (ALPHA_MAX_VALUE * invOffsetRatio).toInt()
+            background.cornerRadius = invOffsetRatio * getDimen(CoreUiRes.dimen.def_radius)
+            mBinding.dashboardContainer.background = drawable
+            mBinding.dashboard.translationY = topPadding * invOffsetRatio
         }
     }
 
@@ -97,7 +103,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
             when (item.itemId) {
                 R.id.select_locations -> {
                     mViewModel.goSelectLocations()
-                    return@setOnMenuItemClickListener false
+                    return@setOnMenuItemClickListener true
                 }
                 R.id.settings -> {
                     mViewModel.goSettings()
@@ -109,149 +115,108 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
     }
 
     private fun observeViewModel() {
-        with(mViewModel) {
-            observeState(IDashboardState.ScreenType::class, viewLifecycleOwner) {
-                updateType(it.type)
-            }
-            observeState(IDashboardState.MinorState::class, viewLifecycleOwner) {
-                updateDashboard(it.list.size)
-            }
-            observeState(IDashboardState.MainCardState::class, viewLifecycleOwner) {
-                updateMainCard(it, it.unitsType)
-            }
-        }
-        mViewModel.toolbarIsExpandedFlow
+        mViewModel.state
             .flowWithLifecycle(lifecycle)
-            .collectWithScope(lifecycleScope) {
-                val duration = getInteger(CoreUiRes.integer.def_animation_duration).toLong()
-                val handlerVerticalMargin = getDimen(com.mukiva.core.ui.R.dimen.def_v_padding)
-                val dragHandlerHeight = mBinding.dragHandler.height
-                val translate = handlerVerticalMargin * 2 + dragHandlerHeight
-                when(it) {
-                    true -> {
-                        mBinding.dragHandler
-                            .animate()
-                            .setDuration(duration)
-                            .alpha(MAX_DRAG_HANDLER_ALPHA)
-                        mBinding.dashboard
-                            .animate()
-                            .setDuration(duration)
-                            .translationY(translate.toFloat())
-                    }
-                    false -> {
-                        mBinding.dragHandler
-                            .animate()
-                            .setDuration(duration)
-                            .alpha(MIN_DRAG_HANDLER_ALPHA)
-                        mBinding.dashboard
-                            .animate()
-                            .setDuration(duration)
-                            .translationY(0.0f)
-                    }
-                }
-            }
+            .onEach(::updateState)
+            .launchIn(lifecycleScope)
     }
 
-    private fun updateDashboard(count: Int) = with(mBinding) {
-        if (count != 0) {
-            mDashboardAdapter.submit(count)
-            if (mBinding.dashboard.adapter == null)
-                mBinding.dashboard.adapter = mDashboardAdapter
-            dashboard.offscreenPageLimit = count.coerceIn(1, count)
-        }
-    }
+    private fun updateMainCard(
+        current: ICurrentWeatherProvider.Current?
+    ) = with(mBinding) {
 
-    private fun updateMainCard(state: IDashboardState.MainCardState, unitsType: UnitsType) = with(mBinding) {
-
-        val mainCardTemp: (UnitsType) -> String = { unitsType ->
-            when(unitsType) {
-                UnitsType.METRIC -> getString(CoreUiRes.string.template_celsius, state.tempC)
-                UnitsType.IMPERIAL -> getString(CoreUiRes.string.template_fahrenheit, state.tempF)
+        val tempStringFactory: (Int, Int) -> String = { tempC, tempF ->
+            when(current?.unitsType) {
+                UnitsType.METRIC -> getString(CoreUiRes.string.template_celsius, tempC)
+                UnitsType.IMPERIAL -> getString(CoreUiRes.string.template_fahrenheit, tempF)
+                else -> error("Unreachable code")
             }
         }
 
-        val createTitle: (UnitsType) -> String = { unitsType ->
-            when(unitsType) {
-                UnitsType.METRIC -> getString(
-                    R.string.template_celsius_main_title,
-                    state.tempC, state.cityName
+        when {
+            current == null -> {
+                mainCard.emptyView.loading()
+                mainCard.mainTemp.gone()
+                mainCard.cityName.gone()
+            }
+            else -> {
+                mainCard.emptyView.hide()
+                mainCard.mainTemp.visible()
+                mainCard.cityName.visible()
+                mainCard.mainTemp.text = tempStringFactory(
+                    current.currentWeather.tempC.toInt(),
+                    current.currentWeather.tempF.toInt(),
                 )
-                UnitsType.IMPERIAL -> getString(
-                    R.string.template_fahrenheit_main_title,
-                    state.tempF, state.cityName
+                mainCard.cityName.text = current.locationName
+                updateMainTitle(
+                    current.currentWeather.tempC.toInt(),
+                    current.currentWeather.tempF.toInt(),
+                    current.locationName,
+                    current.unitsType
                 )
             }
         }
-
-        val updateMainCardType: (IDashboardState.MainCardState.Type) -> Unit = {
-            when(it) {
-                IDashboardState.MainCardState.Type.LOADING -> {
-                    mainCard.cityName.gone()
-                    mainCard.mainTemp.gone()
-                    mainCard.emptyView.loading()
-                }
-                IDashboardState.MainCardState.Type.CONTENT -> {
-                    mainCard.cityName.visible()
-                    mainCard.mainTemp.visible()
-                    mainCard.emptyView.hide()
-                }
-            }
-        }
-
-        updateMainCardType(state.type)
-        if (state.type == IDashboardState.MainCardState.Type.LOADING) return
-
-        val title = createTitle(unitsType)
-
-        toolbar.title = title
-        collapsingAppbarLayout.title = title
-        mainCard.mainTemp.text = mainCardTemp(unitsType)
-        mainCard.cityName.text = state.cityName
     }
 
-    private fun updateType(type: IDashboardState.ScreenType.Type) = with(mBinding) {
-
-        val setContentVisible: (View.() -> Unit) -> Unit = {
-            toolbarLayout.it()
-            dashboardContainer.it()
-        }
-        when(type) {
-            IDashboardState.ScreenType.Type.INIT -> {
-                mainEmptyView.loading()
-                setContentVisible(View::gone)
-                mViewModel.load()
+    private fun updateState(state: DashboardState) {
+        when(state) {
+            is DashboardState.Content -> {
+                mBinding.toolbarLayout.visible()
+                mBinding.dashboardContainer.visible()
+                mBinding.mainEmptyView.hide()
+                mDashboardAdapter.submit(state.locations)
             }
-            IDashboardState.ScreenType.Type.LOADING -> {
-                mainEmptyView.loading()
-                setContentVisible(View::gone)
+            DashboardState.Empty -> {
+                mBinding.toolbarLayout.gone()
+                mBinding.dashboardContainer.gone()
+                mBinding.mainEmptyView.notify(
+                    msg = "TODO(ADD LOCATION)",
+                    buttonMsg = "TODO(Add)",
+                    action = mViewModel::goSelectLocations
+                )
             }
-            IDashboardState.ScreenType.Type.CONTENT -> {
-                mainEmptyView.hide()
-                setContentVisible(View::visible)
+            DashboardState.Error -> {
+                mBinding.toolbarLayout.gone()
+                mBinding.dashboardContainer.gone()
+                mBinding.mainEmptyView.error(
+                    msg = "TODO(ERROR)",
+                    buttonText = "TODO(REFRESH)",
+                    onButtonClick = mViewModel::loadLocations
+                )
             }
-            IDashboardState.ScreenType.Type.ERROR -> {
-                mainEmptyView.error("TODO: ADD ERROR TEXT", "TODO: REFRESH") {
-                    mViewModel.load()
-                }
-                setContentVisible(View::gone)
+            DashboardState.Init -> {
+                mBinding.toolbarLayout.gone()
+                mBinding.dashboardContainer.gone()
+                mBinding.mainCard.emptyView.loading()
+                mViewModel.loadLocations()
             }
-            IDashboardState.ScreenType.Type.EMPTY -> {
-                mainEmptyView.notify("Please, add your city", "Search") { mViewModel.goSelectLocations() }
-                setContentVisible(View::gone)
+            DashboardState.Loading -> {
+                mBinding.toolbarLayout.gone()
+                mBinding.dashboardContainer.gone()
+                mBinding.mainEmptyView.loading()
+                mBinding.mainCard.emptyView.loading()
             }
         }
     }
 
-    private fun Fragment.ifResumed(block: () -> Unit) {
-        if (lifecycle.currentState == Lifecycle.State.RESUMED) {
-            block()
+    private fun updateMainTitle(
+        tempC: Int,
+        tempF: Int,
+        locationName: String,
+        unitsType: UnitsType
+    ) {
+        val tempStringFactory: () -> String = {
+            when(unitsType) {
+                UnitsType.METRIC ->
+                    getString(R.string.template_celsius_main_title, tempC, locationName)
+                UnitsType.IMPERIAL ->
+                    getString(R.string.template_fahrenheit_main_title, tempF, locationName)
+            }
         }
+        mBinding.collapsingAppbarLayout.title = tempStringFactory()
     }
 
     companion object {
-
-        private const val MAX_DRAG_HANDLER_ALPHA = 0.5f
-        private const val MIN_DRAG_HANDLER_ALPHA = 0.0f
-        fun newInstance() = DashboardFragment()
+        private const val ALPHA_MAX_VALUE = 255
     }
 }

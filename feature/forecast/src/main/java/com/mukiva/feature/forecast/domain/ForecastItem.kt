@@ -1,5 +1,6 @@
 package com.mukiva.feature.forecast.domain
 
+import kotlinx.datetime.LocalDateTime
 import java.util.Date
 
 sealed class ForecastItem(
@@ -7,13 +8,15 @@ sealed class ForecastItem(
 ) {
     data class HourlyHumidity(
         val humidity: Int,
-        val date: Date,
+        val date: LocalDateTime,
     ) : ForecastItem(HUMIDITY_ID)
+
     data class HourlyPressure(
         val pressureMb: Double,
         val pressureIn: Double,
-        val date: Date,
+        val date: LocalDateTime,
     ) : ForecastItem(PRESSURE_ID)
+
     data class HourlyTemp(
         val tempC: Double,
         val tempF: Double,
@@ -21,7 +24,7 @@ sealed class ForecastItem(
         val feelsLikeF: Double,
         val cloud: Int,
         val iconUrl: String,
-        val date: Date,
+        val date: LocalDateTime,
     ) : ForecastItem(TEMP_ID)
 
     data class HourlyWind(
@@ -29,7 +32,7 @@ sealed class ForecastItem(
         val windKph: Double,
         val windDegree: Int,
         val windDirection: WindDirection,
-        val date: Date,
+        val date: LocalDateTime,
     ) : ForecastItem(WIND_ID)
 
     companion object {

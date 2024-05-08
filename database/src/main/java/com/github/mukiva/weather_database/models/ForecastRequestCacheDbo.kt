@@ -10,9 +10,9 @@ data class ForecastRequestCacheDbo(
     @PrimaryKey
     val requestQuery: String,
     @ColumnInfo("current_id")
-    val currentId: Int,
+    val currentId: Long,
     @ColumnInfo("location_id")
-    val locationId: Int,
+    val locationId: Long,
     @ColumnInfo("forecast_id")
-    val forecastId: Int,
+    val forecastId: Long,
 )

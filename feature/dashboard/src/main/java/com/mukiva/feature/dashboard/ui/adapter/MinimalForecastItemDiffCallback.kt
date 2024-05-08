@@ -6,7 +6,7 @@ import com.mukiva.feature.dashboard.domain.model.MinimalForecast
 
 object MinimalForecastItemDiffCallback : DiffUtil.ItemCallback<MinimalForecast>() {
     override fun areItemsTheSame(oldItem: MinimalForecast, newItem: MinimalForecast): Boolean {
-        return oldItem.index == newItem.index
+        return oldItem.id == newItem.id
     }
 
     @SuppressLint("DiffUtilEquals")
@@ -15,3 +15,4 @@ object MinimalForecastItemDiffCallback : DiffUtil.ItemCallback<MinimalForecast>(
     }
 
 }
+

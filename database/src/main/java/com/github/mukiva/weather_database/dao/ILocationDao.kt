@@ -20,11 +20,11 @@ interface ILocationDao {
     suspend fun getByLocationName(cityName: String, region: String): LocationDbo
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(location: LocationDbo): Int
+    suspend fun insert(location: LocationDbo): Long
 
     @Delete
     suspend fun delete(location: LocationDbo)
 
     @Query("DELETE FROM LocationDbo")
-    fun deleteAll()
+    suspend fun deleteAll()
 }

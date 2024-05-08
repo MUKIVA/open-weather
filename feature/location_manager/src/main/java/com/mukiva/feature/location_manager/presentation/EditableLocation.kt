@@ -6,9 +6,4 @@ data class EditableLocation(
     val location: Location,
     val isSelected: Boolean,
     val isEditable: Boolean
-) {
-    companion object {
-        val ListState<EditableLocation>.selectedCount get() = this.list.count { it.isSelected }
-
-    }
-}
+)

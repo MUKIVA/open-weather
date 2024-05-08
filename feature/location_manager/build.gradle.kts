@@ -11,6 +11,11 @@ android {
     defaultConfig {
         minSdk = 26
     }
+    buildTypes {
+        create("profile") {
+            signingConfig = signingConfigs.findByName("debug")
+        }
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -32,6 +37,8 @@ dependencies {
     implementation(project(":core:network"))
     implementation(project(":core:data"))
 
+    implementation(project(":weather-data"))
+
     implementation(libs.androidx.core)
     implementation(libs.android.material)
     implementation(libs.androidx.lifecycle)
@@ -46,4 +53,6 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room)
     ksp(libs.androidx.room.compiler)
+
+    implementation(libs.kotlinx.datetime)
 }

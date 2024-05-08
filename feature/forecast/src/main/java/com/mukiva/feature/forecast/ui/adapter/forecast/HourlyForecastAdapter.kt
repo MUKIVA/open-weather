@@ -1,39 +1,37 @@
 package com.mukiva.feature.forecast.ui.adapter.forecast
 
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.DiffUtil
+import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
+import androidx.recyclerview.widget.AdapterListUpdateCallback
+import androidx.recyclerview.widget.AsyncDifferConfig
+import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.mukiva.feature.forecast.presentation.HourlyForecast
-import com.mukiva.feature.forecast.domain.UnitsType
 import com.mukiva.feature.forecast.ui.GroupsTemplateFragment
 
 class HourlyForecastAdapter(
-    fragment: Fragment,
-    private val unitsTypeProvider: () -> UnitsType,
-    private val locationName: String
-) : FragmentStateAdapter(fragment) {
+    fragmentManager: FragmentManager,
+    lifecycle: Lifecycle,
+) : FragmentStateAdapter(fragmentManager, lifecycle) {
 
-    private var mDayForecastStateList: List<HourlyForecast> = emptyList()
+    private val mDiffer: AsyncListDiffer<HourlyForecast> = AsyncListDiffer(
+        AdapterListUpdateCallback(this),
+        AsyncDifferConfig.Builder(HourlyForecastDiffUtilCallback).build()
+    )
 
-    override fun getItemCount(): Int = mDayForecastStateList.size
+    override fun getItemCount(): Int = mDiffer.currentList.size
 
     override fun createFragment(position: Int): Fragment {
         return GroupsTemplateFragment.newInstance(
             args = GroupsTemplateFragment
-                .Args(
-                    locationName = locationName,
-                    groups = mDayForecastStateList.elementAt(position).groups,
-                    unitsType = unitsTypeProvider()
-                )
+                .Args(position = position)
         )
     }
 
-    operator fun get(index: Int) = mDayForecastStateList[index]
+    operator fun get(pos: Int): HourlyForecast = mDiffer.currentList[pos]
 
     fun submit(days: List<HourlyForecast>) {
-        val diffCallback = HourlyForecastDiffUtilCallback(mDayForecastStateList, days)
-        val diffResult = DiffUtil.calculateDiff(diffCallback)
-        mDayForecastStateList = days
-        diffResult.dispatchUpdatesTo(this)
+        mDiffer.submitList(days)
     }
 }

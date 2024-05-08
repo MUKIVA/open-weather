@@ -1,39 +1,42 @@
 package com.mukiva.feature.location_manager.domain.usecase
 
-import android.util.Log
+import com.github.mukiva.weather_data.LocationRepository
+import com.github.mukiva.weather_data.utils.RequestResult
+import com.github.mukiva.weather_data.utils.map
 import com.mukiva.feature.location_manager.domain.model.Location
-import com.mukiva.feature.location_manager.domain.repository.ILocationRepository
-import com.mukiva.usecase.ApiError
-import com.mukiva.usecase.ApiResult
-import com.mukiva.usecase.CoroutineHelper
-import java.text.ParseException
+import com.mukiva.feature.location_manager.presentation.EditableLocation
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
+import com.github.mukiva.weather_data.models.Location as DataLocation
 
 class GetAddedLocationsUseCase @Inject constructor(
-    private val repository: ILocationRepository
+    private val repository: LocationRepository
 ) {
-
-    suspend operator fun invoke(): ApiResult<List<Location>> {
-        return CoroutineHelper.doIO {
-            wrapResult {
-                repository.getAllLocal().sortedBy { it.position }
+    operator fun invoke(): Flow<RequestResult<List<EditableLocation>>> {
+        return repository.getAllLocal()
+            .map { requestResult ->
+                requestResult.map { dataLocations ->
+                    dataLocations.map(::toEditable)
+                }
             }
-        }
     }
 
-    private suspend fun <TResult> wrapResult(
-        block: suspend() -> TResult
-    ): ApiResult<TResult> {
-        return try {
-            val result = block()
-            ApiResult.Success(result)
-        } catch (e: Exception) {
-            Log.d("GetAddedLocationsUseCase", "${e.message}")
-            when (e) {
-                is ParseException -> ApiResult.Error(ApiError.PARSE_ERROR)
-                else -> ApiResult.Error(ApiError.SERVER_ERROR)
-            }
-        }
+    private fun toEditable(location: DataLocation) = EditableLocation(
+        location = toLocation(location),
+        isSelected = false,
+        isEditable = false //state.value.type == LocationManagerState.Type.EDIT
+    )
+
+    private fun toLocation(dataLocation: DataLocation): Location {
+        return Location(
+            id = dataLocation.id.toInt(),
+            position = dataLocation.priority,
+            cityName = dataLocation.name,
+            regionName = dataLocation.region,
+            countryName = dataLocation.country,
+            isAdded = true
+        )
     }
 
 }

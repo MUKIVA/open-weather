@@ -3,12 +3,8 @@ package com.mukiva.feature.location_manager.ui
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import androidx.recyclerview.widget.ListAdapter
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -21,16 +17,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.mukiva.core.ui.collectWithScope
-import com.mukiva.core.ui.databinding.LayListStatesBinding
 import com.mukiva.core.ui.getInteger
 import com.mukiva.feature.location_manager.R
 import com.mukiva.feature.location_manager.databinding.FragmentLocationManagerBinding
-import com.mukiva.feature.location_manager.presentation.EditableLocation
-import com.mukiva.feature.location_manager.presentation.ListState
-import com.mukiva.feature.location_manager.presentation.LocationManagerEvent
-import com.mukiva.feature.location_manager.presentation.LocationManagerState
 import com.mukiva.feature.location_manager.presentation.LocationManagerViewModel
 import com.mukiva.feature.location_manager.ui.adapter.DragDropItemTouchHelper
 import com.mukiva.feature.location_manager.ui.adapter.LocationManagerSavedAdapter
@@ -43,6 +32,8 @@ import com.mukiva.openweather.ui.loading
 import com.mukiva.openweather.ui.recycler.PaddingItemDecorator
 import com.mukiva.core.ui.uiLazy
 import com.mukiva.core.ui.viewBindings
+import com.mukiva.feature.location_manager.presentation.SavedLocationsState
+import com.mukiva.feature.location_manager.presentation.SearchLocationsState
 import com.mukiva.openweather.ui.visible
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.FlowPreview
@@ -71,6 +62,7 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
         swipeIsEnabled = false
         dragDropIsEnabled = true
     } }
+
     private val mSearchViewBackgroundColorAnimator by uiLazy {
         ValueAnimator.ofObject(ArgbEvaluator(), Color.TRANSPARENT, Color.BLACK).apply {
             duration = getInteger(CoreUiRes.integer.def_animation_duration).toLong()
@@ -80,6 +72,7 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
             }
         }
     }
+
     private val mTouchHelper by uiLazy { ItemTouchHelper(mTouchHelperCallback) }
     private val mSearchAdapter by uiLazy {
         LocationManagerSearchAdapter(
@@ -89,7 +82,13 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
         )
     }
     private val mSearchQueryFlow = MutableSharedFlow<String>()
-    private val mOnBackPressedDecorator = object : OnBackPressedCallback(true) {
+
+    private val mSearchOnBackPressedDecorator = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            mBinding.searchView.hide()
+        }
+    }
+    private val mEditOnBackPressedDecorator = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             mViewModel.enterNormalMode()
         }
@@ -139,11 +138,13 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
             }
 
         searchView.setOnShowListener {
-            mViewModel.enterSearchMode()
+            mSearchViewBackgroundColorAnimator.start()
+            requireActivity().onBackPressedDispatcher
+                .addCallback(mSearchOnBackPressedDecorator)
         }
         searchView.setOnHideListener {
-            mViewModel.enterNormalMode()
-            mOnBackPressedDecorator.remove()
+            mSearchViewBackgroundColorAnimator.reverse()
+            mSearchOnBackPressedDecorator.remove()
         }
 
         mSearchQueryFlow
@@ -194,159 +195,102 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
     }
 
     private fun subscribeOnViewModel() {
-        mViewModel.state
+        mViewModel.savedLocationsState
             .flowWithLifecycle(lifecycle)
-            .collectWithScope(lifecycleScope, ::updateState)
+            .onEach(::updateSavedLocationsState)
+            .launchIn(lifecycleScope)
+        mViewModel.searchLocationState
+            .flowWithLifecycle(lifecycle)
+            .onEach(::updateSearchLocationsState)
+            .launchIn(lifecycleScope)
 
-        mViewModel.subscribeOnEvent(::handleEvent)
     }
 
-    private fun handleEvent(evt: LocationManagerEvent) {
-        when(evt) {
-            is LocationManagerEvent.Toast -> sendToast(evt.msg)
-        }
-    }
-
-    private fun sendToast(msg: String) {
-        Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()
-    }
-
-    private fun updateState(state: LocationManagerState) = with(mBinding) {
-        updateMode(state.type)
-        updateListState(
-            state = state.savedListState.type,
-            list = addedList,
-            emptyView = addedEmptyView,
-            onFailBind = {
-                mBinding.addedEmptyView.error(
-                    msg = getString(R.string.search_error),
-                    buttonText = getString(R.string.search_error_refresh),
-                    onButtonClick = { mViewModel.executeSearch("") }
-                )
-            }
-
-        )
-        updateListState(
-            state = state.searchListState.type,
-            list = searchViewList,
-            emptyView = searchEmptyView,
-            onFailBind = {
-                mBinding.searchEmptyView.error(
-                    msg = getString(R.string.search_error),
-                    buttonText = getString(R.string.search_error_refresh),
-                    onButtonClick = { mViewModel.executeSearch("") }
-                )
-            }
-        )
-        updateList(state.searchListState.list, mSearchAdapter)
-        updateList(state.savedListState.list, mAddedAdapter)
-        updateEditTitle(state.savedListState)
-    }
-    private fun updateEditTitle(state: ListState<EditableLocation>) {
-        with(EditableLocation) {
-            mBinding.toolbar.title = getString(
-                R.string.selected_location_count,
-                state.selectedCount
-            )
-        }
-    }
-    private fun updateListState(
-        state: LocationManagerState.ListStateType,
-        list: RecyclerView,
-        emptyView: LayListStatesBinding,
-        onFailBind: () -> Unit
-    ) {
+    private fun updateSavedLocationsState(state: SavedLocationsState) {
         when(state) {
-            LocationManagerState.ListStateType.ERROR -> {
-                list.gone()
-                onFailBind()
+            is SavedLocationsState.Content -> with(mBinding) {
+                addedEmptyView.hide()
+                addedList.visible()
+                mTouchHelperCallback.isEnabled = false
+                toolbar.animate()
+                    .alpha(0.0f)
+                searchBar.animate()
+                    .alpha(1.0f)
+                    .withStartAction { searchBar.visible() }
+                mEditOnBackPressedDecorator.remove()
+                mAddedAdapter.submitList(state.data)
             }
-            LocationManagerState.ListStateType.EMPTY -> {
-                list.gone()
-                emptyView.emptyView(
-                    msg = getString(R.string.search_empty)
+            SavedLocationsState.Empty -> with(mBinding) {
+                addedList.gone()
+                addedEmptyView.emptyView("TODO(EMPTY)")
+                toolbar.animate()
+                    .alpha(0.0f)
+                searchBar.animate()
+                    .alpha(1.0f)
+                    .withStartAction { searchBar.visible() }
+                mEditOnBackPressedDecorator.remove()
+            }
+            SavedLocationsState.Error -> with(mBinding) {
+                addedList.gone()
+                addedEmptyView.error(
+                    msg = "TODO(ERROR)",
+                    buttonText = "TODO(REFRESH)",
+                    onButtonClick = mViewModel::fetchAddedLocations
                 )
             }
-            LocationManagerState.ListStateType.LOADING -> {
-                list.gone()
-                emptyView.loading()
+            SavedLocationsState.Init -> with(mBinding) {
+                addedList.gone()
+                addedEmptyView.loading()
+                mViewModel.fetchAddedLocations()
             }
-            LocationManagerState.ListStateType.CONTENT -> {
-                list.visible()
-                emptyView.hide()
+            SavedLocationsState.Loading -> with(mBinding) {
+                addedList.gone()
+                addedEmptyView.loading()
             }
-        }
-    }
-
-    private fun updateMode(mode: LocationManagerState.Type) {
-        Log.d("LocationManager", "$mode")
-        when(mode) {
-            LocationManagerState.Type.NORMAL -> with(mBinding) {
-                mOnBackPressedDecorator.remove()
-                animateToolbarMode(mode)
-                searchView.hide()
-                searchView.animate()
-                mTouchHelperCallback.isEnabled = false
-                if ((searchView.background as? ColorDrawable)?.color != Color.TRANSPARENT)
-                    mSearchViewBackgroundColorAnimator.reverse()
-            }
-            LocationManagerState.Type.EDIT -> {
-                animateToolbarMode(mode)
-                requireActivity().onBackPressedDispatcher
-                    .addCallback(mOnBackPressedDecorator)
+            is SavedLocationsState.Edit -> with(mBinding) {
+                addedEmptyView.hide()
+                addedList.visible()
                 mTouchHelperCallback.isEnabled = true
-            }
-            LocationManagerState.Type.SEARCH -> with(mBinding) {
                 requireActivity().onBackPressedDispatcher
-                    .addCallback(mOnBackPressedDecorator)
-                mTouchHelperCallback.isEnabled = false
-                if ((searchView.background as? ColorDrawable)?.color != Color.BLACK)
-                    mSearchViewBackgroundColorAnimator.start()
+                    .addCallback(mEditOnBackPressedDecorator)
+                toolbar.animate().alpha(1.0f)
+                searchBar.animate()
+                    .alpha(0.0f)
+                    .withEndAction { searchBar.gone() }
+                mAddedAdapter.submitList(state.data)
             }
         }
     }
 
-    private fun animateToolbarMode(mode: LocationManagerState.Type) {
-        val duration = getInteger(CoreUiRes.integer.def_animation_duration).toLong()
-        when(mode) {
-            LocationManagerState.Type.NORMAL -> {
-                mBinding.toolbar.animate()
-                    .withStartAction { mBinding.toolbar.isEnabled = false }
-                    .setDuration(duration)
-                    .alpha(HIDDEN_ALPHA)
-                    .withEndAction { mBinding.toolbar.gone() }
-                mBinding.searchBar.animate()
-                    .withStartAction { mBinding.searchBar.visible() }
-                    .setDuration(duration)
-                    .alpha(VISIBLE_ALPHA)
-                    .withEndAction { mBinding.searchBar.isEnabled = true }
+    private fun updateSearchLocationsState(state: SearchLocationsState) {
+        when(state) {
+            is SearchLocationsState.Content -> with(mBinding) {
+                searchEmptyView.hide()
+                searchViewList.visible()
+                mSearchAdapter.submitList(state.data)
             }
-            LocationManagerState.Type.SEARCH -> {}
-            LocationManagerState.Type.EDIT -> {
-                mBinding.toolbar.animate()
-                    .withStartAction { mBinding.toolbar.visible() }
-                    .setDuration(duration)
-                    .alpha(VISIBLE_ALPHA)
-                    .withEndAction { mBinding.toolbar.isEnabled = true }
-                mBinding.searchBar.animate()
-                    .withStartAction { mBinding.searchBar.isEnabled = false }
-                    .setDuration(duration)
-                    .alpha(HIDDEN_ALPHA)
-                    .withEndAction { mBinding.searchBar.gone() }
+            SearchLocationsState.Empty -> with(mBinding) {
+                searchEmptyView.emptyView("TODO(EMPTY)")
+                searchViewList.gone()
+            }
+            SearchLocationsState.Error -> with(mBinding) {
+                searchEmptyView.error(
+                    msg = "TODO(ERROR)",
+                    buttonText = "TODO(REFRESH)",
+                    onButtonClick = { mViewModel.executeSearch(searchView.text.toString()) }
+                )
+                searchViewList.gone()
+            }
+            SearchLocationsState.Loading -> with(mBinding) {
+                searchEmptyView.loading()
+                searchViewList.gone()
+
             }
         }
     }
 
-    private fun <T> updateList(
-        list: List<T>,
-        adapter: ListAdapter<T, *>
-    ) {
-        adapter.submitList(list)
-    }
 
     companion object {
-        private const val HIDDEN_ALPHA = 0.0f
-        private const val VISIBLE_ALPHA = 1.0f
         private const val DEBOUNCE_EDIT_TEXT = 500L
 
         fun newInstance() = LocationManagerFragment()

@@ -14,7 +14,7 @@ import kotlin.math.max
 import kotlin.math.min
 
 class ForecastItemAdapter(
-    private val unitsType: UnitsType
+    private val unitsType: () -> UnitsType,
 ) : ListAdapter<ForecastItem, ForecastItemViewHolder>(ForecastItemDiffUtil)
     , IValueProvider
 {
@@ -35,21 +35,21 @@ class ForecastItemAdapter(
         return when (viewType) {
             HUMIDITY_VIEW_TYPE -> ForecastItemViewHolder.HumidityItemViewHolder(
                 ItemHumidityBinding.inflate(inflater, parent, false),
-                unitsType
+                unitsType()
             )
             PRESSURE_VIEW_TYPE -> ForecastItemViewHolder.PressureItemViewHolder(
                 ItemPressureBinding.inflate(inflater, parent, false),
-                unitsType
+                unitsType()
             )
             TEMP_VIEW_TYPE -> ForecastItemViewHolder.TempItemViewHolder(
                 ItemTempBinding.inflate(inflater, parent, false),
-                unitsType
+                unitsType()
             )
             WIND_VIEW_TYPE -> ForecastItemViewHolder.WindItemViewHolder(
                 ItemWindBinding.inflate(inflater, parent, false),
-                unitsType
+                unitsType()
             )
-            else -> throw IllegalStateException("Fail to get ViewType")
+            else -> error("Fail to get ViewType")
         }
     }
 

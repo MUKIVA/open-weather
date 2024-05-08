@@ -9,16 +9,14 @@ import kotlinx.datetime.LocalDateTime
 @Entity
 data class ForecastDayDbo(
     @PrimaryKey(autoGenerate = true)
-    val id: Int,
+    val id: Long = 0,
     @ColumnInfo("date_epoch")
     val dateEpoch: LocalDateTime,
-    @ColumnInfo("day")
-    @Embedded
+    @Embedded(prefix = "day")
     val day: DayDbo,
-    @ColumnInfo("astro")
-    @Embedded
+    @Embedded(prefix = "astro")
     val astro: AstroDbo,
     @ColumnInfo("forecast_id")
-    val forecastId: Int
+    val forecastId: Long
 )
 

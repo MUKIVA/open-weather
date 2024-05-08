@@ -14,15 +14,12 @@ import javax.inject.Singleton
 class LocationRepositoryImpl @Inject constructor(
     private val gateway: ILocationSearchGateway,
     private val dataBase: LocationDataBase,
-    private val apiKeyProvider: IApiKeyProvider
 ) : ILocationRepository {
     override suspend fun searchRemote(q: String): List<LocationDTO> {
-        return gateway.searchLocations(
-            key = apiKeyProvider.apiKey,
-            q = q
-        ).mapIndexed { index, locationRemoteEntity ->
-            locationRemoteEntity.asDTO(index)
-        }
+        return gateway.searchLocations(q = q,)
+            .mapIndexed { index, locationRemoteEntity ->
+                locationRemoteEntity.asDTO(index)
+            }
     }
 
     override suspend fun getAllLocal(): List<LocationDTO> {

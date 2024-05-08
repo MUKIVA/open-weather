@@ -1,6 +1,9 @@
 package com.mukiva.feature.location_manager.presentation
 
+import android.util.Log
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.mukiva.weather_data.utils.RequestResult
 import com.mukiva.feature.location_manager.navigation.ILocationManagerRouter
 import com.mukiva.feature.location_manager.domain.model.Location
 import com.mukiva.feature.location_manager.domain.repository.IForecastUpdater
@@ -8,235 +11,138 @@ import com.mukiva.feature.location_manager.domain.usecase.AddLocationUseCase
 import com.mukiva.feature.location_manager.domain.usecase.GetAddedLocationsUseCase
 import com.mukiva.feature.location_manager.domain.usecase.LocationSearchUseCase
 import com.mukiva.feature.location_manager.domain.usecase.UpdateStoredLocationsUseCase
-import com.mukiva.openweather.presentation.SingleStateViewModel
-import com.mukiva.usecase.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Collections
 import javax.inject.Inject
 
 @HiltViewModel
 class LocationManagerViewModel @Inject constructor(
-    initialState: LocationManagerState,
     private val searchUseCase: LocationSearchUseCase,
     private val addLocationUseCase: AddLocationUseCase,
     private val getAddedLocationsUseCase: GetAddedLocationsUseCase,
     private val updateStoredLocationsUseCase: UpdateStoredLocationsUseCase,
     private val locationManagerRouter: ILocationManagerRouter,
     private val forecastUpdater: IForecastUpdater
-) : SingleStateViewModel<LocationManagerState, LocationManagerEvent>(initialState) {
+) : ViewModel() {
+    val savedLocationsState: StateFlow<SavedLocationsState>
+        get() = mSavedLocationsState
 
-    init {
-        fetchAddedLocations()
-    }
+    val searchLocationState: StateFlow<SearchLocationsState>
+        get() = mSearchLocationsState
+
+    private val mSavedLocationsState =
+        MutableStateFlow<SavedLocationsState>(SavedLocationsState.Init)
+    private val mSearchLocationsState =
+        MutableStateFlow<SearchLocationsState>(SearchLocationsState.Empty)
 
     fun addLocation(location: Location) {
         viewModelScope.launch {
-           when (val result = addLocationUseCase(location)) {
-               is ApiResult.Error -> {
-                   event(LocationManagerEvent.Toast("FAIL: ${result.err}"))
-               }
-               is ApiResult.Success -> {
-                   val locations = state.value.searchListState.list
-                   updateSearchListState(locations.filter {
-                       it.uid != location.uid
-                   })
-                   fetchAddedLocations()
-                   event(LocationManagerEvent.Toast("SUCCESS ADD"))
-                   forecastUpdater.markForUpdate()
-               }
-           }
+            addLocationUseCase(location)
+            fetchAddedLocations()
+            mSearchLocationsState.update {  state ->
+                if (state is SearchLocationsState.Content) {
+                    state.copy(data = state.data.filter { it.id != location.id })
+                } else state
+            }
+        }
+    }
+    fun enterEditMode(location: EditableLocation) {
+        mSavedLocationsState.update { state ->
+            if (state is SavedLocationsState.Content) {
+                val selectedLocation = location.copy(
+                    isSelected = true,
+                    isEditable = true,
+                )
+                SavedLocationsState.Edit(state.data
+                    .map {
+                        if (selectedLocation.location.id == it.location.id)
+                            selectedLocation
+                        else it.copy(isEditable = true)
+                    }
+                )
+            } else state
+        }
+    }
+    fun enterNormalMode() {
+        mSavedLocationsState.update { state ->
+            if (state is SavedLocationsState.Edit) {
+                SavedLocationsState.Content(state.data
+                    .map { it.copy(isEditable = false, isSelected = false) }
+                )
+            } else state
         }
     }
     fun removeSelectedLocations() {
-        with(state.value) {
-            val newSavedListSate = savedListState.copy(
-                list = savedListState.list.filter { !it.isSelected }
-            )
-            viewModelScope.launch {
-                updateStoredLocationsUseCase(newSavedListSate.list)
-                forecastUpdater.markForUpdate()
-            }
-            modifyState { copy(savedListState = newSavedListSate) }
-            validateEditState(newSavedListSate)
-        }
+        mSavedLocationsState.update { state -> if (state is SavedLocationsState.Edit) {
+            val newData = state.data.filter { editableLocation -> !editableLocation.isSelected }
+            viewModelScope.launch { updateStoredLocationsUseCase(newData) }
+            savedLocationsStateFactory(newData)
+        } else state }
     }
-    fun removeLocation(item: EditableLocation) {
-        with(state.value) {
-            val newSavedListState = savedListState.copy(
-                list = savedListState.list.filter { it.location.uid != item.location.uid }
-            )
-            modifyState {
-                copy(savedListState = newSavedListState)
-            }
-            validateEditState(newSavedListState)
-        }
-
+    fun removeLocation(editableLocation: EditableLocation) {
+        mSavedLocationsState.update { state -> if (state is SavedLocationsState.Edit) {
+            val newData = state.data.filter { editableLocation.location.id != it.location.id }
+            viewModelScope.launch { updateStoredLocationsUseCase(newData) }
+            savedLocationsStateFactory(newData)
+        } else state }
     }
     fun moveLocation(from: Int, to: Int) {
-        with(state.value) {
-            val newState = savedListState.copy(
-                list = savedListState.list.swapAll(from, to)
-            )
-            viewModelScope.async {
-                updateStoredLocationsUseCase(newState.list)
-                forecastUpdater.markForUpdate()
-            }.invokeOnCompletion {
-                modifyState {
-                    copy(
-                        savedListState = newState
-                    )
-                }
-            }
-
-        }
+        mSavedLocationsState.update { state -> if (state is SavedLocationsState.Edit) {
+            val newData = state.data.swapAll(from, to)
+            viewModelScope.launch { updateStoredLocationsUseCase(newData) }
+            state.copy(data = newData)
+        } else state }
     }
     fun executeSearch(q: String) {
-        setSearchListType(LocationManagerState.ListStateType.LOADING)
-
-        if (q == "") {
-            setSearchListType(LocationManagerState.ListStateType.EMPTY)
+        if (q.isBlank()) {
+            mSearchLocationsState.update { SearchLocationsState.Empty }
             return
         }
-
-        viewModelScope.launch {
-            when (val result = searchUseCase(q)) {
-                is ApiResult.Error -> {
-                    setSearchListType(LocationManagerState.ListStateType.ERROR)
-                }
-                is ApiResult.Success -> {
-                    updateSearchListState(result.data)
-                }
+        searchUseCase(q)
+            .onEach {
+                Log.d("SEARCH", it.toString())
+                applySearchListState(it)
             }
-        }
+            .launchIn(viewModelScope)
+    }
 
-    }
-    fun enterSearchMode() =
-        setManagerType(LocationManagerState.Type.SEARCH)
-    fun enterNormalMode() {
-        setManagerType(LocationManagerState.Type.NORMAL)
-        updateIsEditableForAllLocations(false)
-    }
-    fun enterEditMode(item: EditableLocation) {
-        setManagerType(LocationManagerState.Type.EDIT)
-        updateIsEditableForAllLocations(true, item)
-    }
     fun selectAllEditable() {
-        modifyState {
-            copy(
-                savedListState = savedListState.copy(
-                    list = savedListState.list.map { it.copy(isSelected = true) }
-                )
-            )
-        }
+        mSavedLocationsState.update { state -> if (state is SavedLocationsState.Edit) {
+            val newData = state.data.map { editableLocation -> editableLocation.copy(isSelected = true) }
+            viewModelScope.launch { updateStoredLocationsUseCase(newData) }
+            state.copy(data = newData)
+        } else state }
     }
-    fun switchEditableSelect(item: EditableLocation) {
-        with(state.value) {
-            val newSavedListState = savedListState.copy(
-                list = savedListState.list.map {
-                    when (it.location.uid == item.location.uid) {
-                        true -> it.copy(isSelected = !it.isSelected)
-                        false -> it
-                    }
-                }
-            )
-            modifyState {
-                copy(savedListState = newSavedListState)
-            }
-            validateEditState(newSavedListState)
-        }
-    }
-    fun goBack() {
-        locationManagerRouter.goBack()
-    }
-    private fun updateIsEditableForAllLocations(isEditable: Boolean, item: EditableLocation? = null) {
-        modifyState {
-            copy(
-                savedListState = savedListState.copy(
-                    list = savedListState.list.map {
-                        it.copy(
-                            isEditable = isEditable,
-                            isSelected = item?.run {
-                                location.uid == it.location.uid
-                            } ?: false
-                        )
-                    }
-                )
-            )
-        }
 
-    }
-    private fun validateEditState(listState: ListState<EditableLocation>) = with(EditableLocation) {
-        if (listState.selectedCount == 0) {
-            enterNormalMode()
-        }
-        if (listState.list.isEmpty()) {
-            modifyState {
-                copy(savedListState = savedListState.copy(
-                    type = LocationManagerState.ListStateType.EMPTY
-                ))
-            }
-        }
-    }
-    private fun setManagerType(type: LocationManagerState.Type) {
-        modifyState {
-            copy(type = type)
-        }
-    }
-    private fun fetchAddedLocations() {
-        viewModelScope.launch {
-            when (val result = getAddedLocationsUseCase()) {
-                is ApiResult.Success -> {
-                    updateAddedListState(result.data.map { it.asEditable() })
-                }
-                is ApiResult.Error -> {
-                    event(LocationManagerEvent.Toast(result.err.name))
+    fun switchEditableSelect(editableLocation: EditableLocation) {
+        mSavedLocationsState.update { state -> if (state is SavedLocationsState.Edit) {
+            var anyLocationIsSelected = false
+            val newData = state.data.map { location ->
+                if (editableLocation.location.id == location.location.id) {
+                    anyLocationIsSelected = anyLocationIsSelected || !location.isSelected
+                    location.copy(isSelected = !location.isSelected)
+                } else {
+                    anyLocationIsSelected = anyLocationIsSelected || location.isSelected
+                    location
                 }
             }
-        }
+            savedLocationsStateFactory(newData)
+        } else state }
     }
-    private fun updateAddedListState(list: List<EditableLocation>) {
-        modifyState {
-            copy(
-                savedListState = savedListState.copy(
-                    list = list,
-                    type = when(list.size) {
-                        0 -> LocationManagerState.ListStateType.EMPTY
-                        else -> LocationManagerState.ListStateType.CONTENT
-                    }
-                )
-            )
-        }
-    }
-    private fun updateSearchListState(list: List<Location>) {
-        modifyState {
-            copy(
-                searchListState = searchListState.copy(
-                    list = list,
-                    type = when(list.size) {
-                        0 -> LocationManagerState.ListStateType.EMPTY
-                        else -> LocationManagerState.ListStateType.CONTENT
-                    }
-                )
-            )
-        }
-    }
-    private fun setSearchListType(type: LocationManagerState.ListStateType) {
-        modifyState {
-            copy(
-                searchListState = searchListState.copy(
-                    type = type
-                )
-            )
-        }
-    }
-    private fun Location.asEditable() = EditableLocation(
-        location = this,
-        isSelected = false,
-        isEditable = state.value.type == LocationManagerState.Type.EDIT
-    )
 
+    fun goBack() = locationManagerRouter.goBack()
+
+    fun fetchAddedLocations() {
+        getAddedLocationsUseCase()
+            .onEach(::applySavedListState)
+            .launchIn(viewModelScope)
+    }
 
     private fun List<EditableLocation>.swapAll(from: Int, to: Int): List<EditableLocation> {
         if (from < to) {
@@ -251,4 +157,45 @@ class LocationManagerViewModel @Inject constructor(
         return this
     }
 
+    private fun applySavedListState(state: RequestResult<List<EditableLocation>>) {
+        when(state) {
+            is RequestResult.Error -> mSavedLocationsState
+                .update { SavedLocationsState.Error }
+            is RequestResult.InProgress -> mSavedLocationsState
+                .update { SavedLocationsState.Loading }
+            is RequestResult.Success -> mSavedLocationsState.update {
+                val data = checkNotNull(state.data)
+                if (data.isEmpty())
+                    SavedLocationsState.Empty
+                else
+                    SavedLocationsState.Content(data)
+            }
+        }
+    }
+
+    private fun applySearchListState(state: RequestResult<List<Location>>) {
+        when(state) {
+            is RequestResult.Error ->
+                mSearchLocationsState.update { SearchLocationsState.Error }
+            is RequestResult.InProgress ->
+                mSearchLocationsState.update { SearchLocationsState.Loading }
+            is RequestResult.Success -> mSearchLocationsState.update {
+                val data = checkNotNull(state.data)
+                if (data.isEmpty())
+                    SearchLocationsState.Empty
+                else
+                    SearchLocationsState.Content(data)
+            }
+        }
+    }
+
+    private fun savedLocationsStateFactory(data: List<EditableLocation>): SavedLocationsState {
+        return when {
+            data.isEmpty() -> SavedLocationsState.Empty
+            data.any { it.isSelected } ->
+                SavedLocationsState.Edit(data)
+            else ->
+                SavedLocationsState.Content(data.map { it.copy(isEditable = false) })
+        }
+    }
 }

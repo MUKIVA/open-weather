@@ -1,36 +1,45 @@
 package com.mukiva.feature.location_manager.domain.usecase
 
 import android.util.Log
-import com.mukiva.feature.location_manager.domain.repository.ILocationRepository
+import com.github.mukiva.weather_data.LocationRepository
+import com.github.mukiva.weather_data.utils.RequestResult
 import com.mukiva.feature.location_manager.presentation.EditableLocation
-import com.mukiva.usecase.ApiError
-import com.mukiva.usecase.ApiResult
-import com.mukiva.usecase.CoroutineHelper
-import java.text.ParseException
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import javax.inject.Inject
+import com.github.mukiva.weather_data.models.Location as DataLocation
 
 class UpdateStoredLocationsUseCase @Inject constructor(
-    private val repository: ILocationRepository
+    private val repository: LocationRepository
 ) {
 
-    suspend operator fun invoke(newList: List<EditableLocation>): ApiResult<Unit> {
+    suspend operator fun invoke(newList: List<EditableLocation>): RequestResult<Unit> {
         return try {
-            CoroutineHelper.doIO {
-
-                val typedArray = newList.mapIndexed { index, item ->
-                    item.location.copy(position = index)
-                }.toTypedArray()
-
-                repository.removeAllLocalLocations()
-                repository.addLocalLocation(*typedArray)
-                ApiResult.Success(Unit)
+            repository.removeAllLocations()
+            newList.onEachIndexed { index, editableLocation ->
+                repository.addLocalLocation(editableLocation.toDataLocation(index))
             }
+            RequestResult.Success(Unit)
         } catch (e: Exception) {
-            Log.d("UpdateStoredLocationsUseCase", "FAIL: ${e.message}")
-            when (e) {
-                is ParseException -> ApiResult.Error(ApiError.PARSE_ERROR)
-                else -> ApiResult.Error(ApiError.SERVER_ERROR)
-            }
+            Log.e("ERROR","Update location error: ${e.message}")
+            RequestResult.Error()
         }
+    }
+
+    private fun EditableLocation.toDataLocation(
+        priority: Int
+    ): DataLocation {
+        return DataLocation(
+            id = location.id.toLong(),
+            name = location.cityName,
+            region = location.regionName,
+            country = location.countryName,
+            lat = 0.0,
+            lon = 0.0,
+            tzId = "",
+            localtimeEpoch = Clock.System.now().toLocalDateTime(TimeZone.UTC),
+            priority = priority,
+        )
     }
 }

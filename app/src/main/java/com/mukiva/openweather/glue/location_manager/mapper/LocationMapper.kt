@@ -7,7 +7,7 @@ object LocationMapper {
 
     fun asDomain(item: LocationDTO) = with(item) {
         Location(
-            uid = uid,
+            id = uid,
             position = position ?: 0,
             cityName = cityName ?: "Unknown",
             regionName = regionName ?: "Unknown",
@@ -18,7 +18,7 @@ object LocationMapper {
 
     fun asDTO(item: Location) = with(item) {
         LocationDTO(
-            uid = uid,
+            uid = id,
             position = position,
             cityName = cityName,
             regionName = regionName,

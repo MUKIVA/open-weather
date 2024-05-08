@@ -10,7 +10,7 @@ import com.mukiva.feature.forecast.presentation.ForecastGroup
 
 class GroupViewHolder(
     private val bind: ItemForecastGroupTemplateBinding,
-    private val unitsType: UnitsType
+    private val unitsType: () -> UnitsType,
 ) : RecyclerView.ViewHolder(bind.root) {
 
     private val mItemAdapter by uiLazy {

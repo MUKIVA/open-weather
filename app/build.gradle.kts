@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.secrets)
     alias(libs.plugins.hiltAndroid)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlinxSerialization)
 }
 
 android {
@@ -36,6 +37,13 @@ android {
 
             signingConfig = signingConfigs.findByName("release")
         }
+        create("profile") {
+            applicationIdSuffix = ".profile"
+            isProfileable = true
+            isDebuggable = false
+
+            signingConfig = signingConfigs.findByName("debug")
+        }
     }
 
     buildFeatures {
@@ -55,6 +63,10 @@ dependencies {
     implementation(project(":feature:location_manager"))
     implementation(project(":feature:settings"))
 
+    implementation(project(":weather-data"))
+    implementation(project(":weather-api"))
+    implementation(project(":database"))
+
     implementation(project(":navigation"))
 
     implementation(libs.androidx.navigation.fragment)
@@ -70,7 +82,11 @@ dependencies {
     ksp(libs.hilt.compiler)
 
     implementation(libs.retrofit)
-    implementation(libs.retrofit.converter.gson)
+//    implementation(libs.retrofit.converter.gson)
+    implementation(libs.retrofit.converter.json)
+    implementation(libs.kotlinx.datetime)
+
+    implementation(libs.kotlinx.serialization.json)
 }
 
 secrets {

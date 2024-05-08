@@ -1,5 +1,6 @@
 package com.github.mukiva.weather_data
 
+import android.util.Log
 import com.github.mukiva.weather_api.IWeatherApi
 import com.github.mukiva.weather_api.models.AstroDto
 import com.github.mukiva.weather_api.models.ConditionDto
@@ -44,17 +45,20 @@ import com.github.mukiva.weather_database.relations.ForecastWithCurrentAndLocati
 class ForecastRepository(
     private val database: WeatherDatabase,
     private val gateway: IWeatherApi,
-
 ) {
-    suspend fun getForecast(
+    fun getForecast(
         locationName: String,
         forecastMergeStrategy: IDataMergeStrategy<RequestResult<ForecastWithCurrentAndLocation>> = ForecastMergeStrategy()
     ): Flow<RequestResult<ForecastWithCurrentAndLocation>> {
-        val local = getLocalForecast(locationName)
-            .map { requestResult -> requestResult.map { cache -> cache.toDomain() } }
         val remote = getRemoteForecast(locationName)
             .map { requestResult -> requestResult.map { dto -> dto.toDomain() } }
-
+        val local = getLocalForecast(locationName)
+            .map { requestResult ->
+                requestResult.map { cache ->
+                    cache.toDomain()
+                }
+            }
+        Log.d("DATA", "FORECAST")
         return local.combine(remote, forecastMergeStrategy::merge)
     }
 
@@ -75,7 +79,7 @@ class ForecastRepository(
     ): Flow<RequestResult<ForecastWithCurrentAndLocationDbo>> {
         val local = database.forecastDao
             .getCache(locationName)
-            .map { cache -> RequestResult.Success(cache) }
+            .map(::cacheValidate)
 
         val start = flow<RequestResult<ForecastWithCurrentAndLocationDbo>> {
             emit(RequestResult.InProgress(null))
@@ -115,6 +119,13 @@ class ForecastRepository(
             forecastId = forecastId,
         )
         database.forecastDao.insertCache(cache)
+    }
+
+    private fun cacheValidate(cache: ForecastWithCurrentAndLocationDbo?): RequestResult<ForecastWithCurrentAndLocationDbo> {
+        return if (cache == null)
+            RequestResult.InProgress(cache)
+        else
+            RequestResult.Success(cache)
     }
 
     companion object {
@@ -291,7 +302,9 @@ internal fun CurrentDbo.toCurrent(): Current {
     )
 }
 
-internal fun HourDto.toDbo(forecastDayId: Int): HourDbo {
+internal fun HourDto.toDbo(
+    forecastDayId: Long
+): HourDbo {
     return HourDbo(
         id = 0,
         timeEpoch = timeEpoch,
@@ -407,7 +420,9 @@ internal fun HourDbo.toHour(): Hour {
     )
 }
 
-internal fun ForecastDayDto.toDbo(forecastId: Int): ForecastDayDbo {
+internal fun ForecastDayDto.toDbo(
+    forecastId: Long
+): ForecastDayDbo {
     return ForecastDayDbo(
         id = 0,
         dateEpoch = dateEpoch,
@@ -441,7 +456,6 @@ internal fun AstroDto.toDbo(): AstroDbo {
 
 internal fun DayDto.toDbo(): DayDbo {
     return DayDbo(
-        id = 0,
         maxTempC = maxTempC,
         maxTempF = maxTempF,
         minTempC = minTempC,

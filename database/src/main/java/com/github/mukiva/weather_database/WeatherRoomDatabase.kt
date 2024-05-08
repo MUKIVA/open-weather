@@ -35,7 +35,7 @@ class WeatherDatabase internal constructor(
     ForecastRequestCacheDbo::class,
     HourDbo::class,
     LocationDbo::class,
-], version = 1)
+], version = 1, exportSchema = true)
 @TypeConverters(Converters::class)
 internal abstract class WeatherRoomDatabase : RoomDatabase() {
     abstract fun locationDao(): ILocationDao

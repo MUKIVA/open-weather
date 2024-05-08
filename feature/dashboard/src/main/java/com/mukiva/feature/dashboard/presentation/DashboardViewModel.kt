@@ -1,91 +1,36 @@
 package com.mukiva.feature.dashboard.presentation
 
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mukiva.core.presentation.MultiStateViewModel
+import com.github.mukiva.weather_data.utils.RequestResult
 import com.mukiva.feature.dashboard.navigation.IDashboardRouter
 import com.mukiva.feature.dashboard.domain.model.Location
-import com.mukiva.feature.dashboard.domain.model.UnitsType
-import com.mukiva.feature.dashboard.domain.repository.IForecastUpdater
-import com.mukiva.feature.dashboard.domain.repository.ISettingsRepository
 import com.mukiva.feature.dashboard.domain.usecase.GetAllLocationsUseCase
-import com.mukiva.feature.dashboard.domain.usecase.GetCurrentWeatherUseCase
-import com.mukiva.usecase.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
     private val getAllLocationsUseCase: GetAllLocationsUseCase,
-    private val getCurrentWeatherUseCase: GetCurrentWeatherUseCase,
     private val router: IDashboardRouter,
-    private val settingsRepository: ISettingsRepository,
-    forecastUpdater: IForecastUpdater
-) : MultiStateViewModel<IDashboardState>() {
+) : ViewModel() {
 
-    val position get() = mPosition
-    var toolbarIsExpanded: Boolean
-        get() = mToolbarIsExpandedFlow.value
-        set(value) {
-            mToolbarIsExpandedFlow.value = value
-        }
-    val toolbarIsExpandedFlow: Flow<Boolean>
-        get() = mToolbarIsExpandedFlow
+    val state: StateFlow<DashboardState>
+        get() = mState.asStateFlow()
 
-    private var mPosition = 0
-    private var mToolbarIsExpandedFlow = MutableStateFlow<Boolean>(true)
+    private val mState = MutableStateFlow<DashboardState>(DashboardState.Init)
 
-    private val mMinorList
-        get() = getState(IDashboardState.MinorState::class).list.toList()
-
-    init {
-
-        initState(
-            IDashboardState.ScreenType::class,
-            IDashboardState.ScreenType.default()
-        )
-
-        initState(
-            IDashboardState.MainCardState::class,
-            IDashboardState.MainCardState.default()
-        )
-
-        initState(
-            IDashboardState.MinorState::class,
-            IDashboardState.MinorState(emptyList())
-        )
-        viewModelScope.launch {
-            settingsRepository.getUnitsTypeFlow()
-                .collect { onUnitsTypeUpdate(it) }
-        }
-
-        forecastUpdater.observeUpdate { load() }
-
-    }
-
-    fun load() {
-        viewModelScope.launch {
-            modifyState(IDashboardState.ScreenType::class) {
-                copy(type = IDashboardState.ScreenType.Type.LOADING)
-            }
-            val locations = getAllLocations()
-            if (locations.isEmpty()) {
-                modifyState(IDashboardState.ScreenType::class) {
-                    copy(type = IDashboardState.ScreenType.Type.EMPTY)
-                }
-                return@launch
-            }
-            val stateWrappedLocations = wrapAsState(locations)
-            modifyState(IDashboardState.ScreenType::class) {
-                copy(
-                    type = IDashboardState.ScreenType.Type.CONTENT
-                )
-            }
-            modifyState(IDashboardState.MinorState::class) { copy(list = stateWrappedLocations) }
-        }
+    fun loadLocations() {
+        getAllLocationsUseCase()
+            .map(::asState)
+            .onEach { mState.emit(it) }
+            .launchIn(viewModelScope)
     }
 
     fun goSelectLocations() {
@@ -94,124 +39,20 @@ class DashboardViewModel @Inject constructor(
     fun goSettings() {
         router.goSettings()
     }
-    fun goForecast(pos: Int) {
-        val item = mMinorList[mPosition]
-        router.goFullForecast(item.location.name, pos)
-    }
-    fun onPageSelect(position: Int) {
-        val minorList = mMinorList
-        if (minorList.isEmpty()) return
-        mPosition = position.coerceIn(0, minorList.lastIndex)
 
-        viewModelScope.launch {
-            if (minorList[mPosition].currentWeather == null)
-                loadRemoteForecast(minorList[mPosition].location.name, mPosition)
-            else
-                loadCachedForecast(mPosition)
+    private fun asState(requestResult: RequestResult<List<Location>>): DashboardState {
+        return when(requestResult) {
+            is RequestResult.Error -> DashboardState.Error
+            is RequestResult.InProgress -> DashboardState.Loading
+            is RequestResult.Success -> stateContentFactory(checkNotNull(requestResult.data))
         }
     }
 
-
-    private suspend fun loadRemoteForecast(locationName: String, position: Int) {
-        modifyState(IDashboardState.MainCardState::class) {
-            copy(type = IDashboardState.MainCardState.Type.LOADING)
+    private fun stateContentFactory(locations: List<Location>): DashboardState {
+        return when {
+            locations.isEmpty() -> DashboardState.Empty
+            else -> DashboardState.Content(locations = locations)
         }
-        when (val result = getCurrentWeatherUseCase(locationName)) {
-            is ApiResult.Error -> modifyState(IDashboardState.ScreenType::class) {
-                copy(type = IDashboardState.ScreenType.Type.ERROR)
-            }
-            is ApiResult.Success -> {
-                modifyState(IDashboardState.MainCardState::class) {
-                    copy(
-                        type = IDashboardState.MainCardState.Type.CONTENT,
-                        tempC = result.data.currentWeather?.tempC?.toInt() ?: 0,
-                        tempF = result.data.currentWeather?.tempF?.toInt() ?: 0,
-                        cityName = result.data.location.name,
-                        iconUrl = result.data.currentWeather?.condition?.icon ?: ""
-                    )
-                }
-                modifyState(IDashboardState.MinorState::class) {
-                    copy(
-                        list = list.updateItemAtPositionAsync(position) {
-                            copy(
-                                type = MinorWeatherState.Type.CONTENT,
-                                currentWeather = result.data.currentWeather,
-                                minimalForecastState = result.data.forecastState
-                            )
-                        }
-                    )
-                }
-            }
-        }
-    }
-
-    private fun loadCachedForecast(position: Int) {
-        val minorList = mMinorList
-        val minorWeatherState = minorList[position]
-
-        modifyState(IDashboardState.MainCardState::class){
-            copy(
-                type = IDashboardState.MainCardState.Type.CONTENT,
-                tempC = minorWeatherState.currentWeather?.tempC?.toInt() ?: 0,
-                tempF = minorWeatherState.currentWeather?.tempF?.toInt() ?: 0,
-                cityName = minorWeatherState.location.name,
-                iconUrl = minorWeatherState.currentWeather?.condition?.icon ?: ""
-            )
-        }
-    }
-
-    private suspend fun getAllLocations(): List<Location> {
-        return when (val result = getAllLocationsUseCase()) {
-            is ApiResult.Error -> emptyList()
-            is ApiResult.Success -> result.data.sortedBy { it.position }
-        }
-    }
-
-
-
-    private suspend fun wrapAsState(locations: Collection<Location>): Collection<MinorWeatherState> {
-        return locations.mapAsync {
-            MinorWeatherState(
-                type = MinorWeatherState.Type.LOADING,
-                location = it,
-                currentWeather = null,
-                minimalForecastState = emptyList()
-            )
-        }
-    }
-
-    private suspend fun <T> Iterable<T>.updateItemAtPositionAsync(
-        position: Int,
-        transform: T.() -> T
-    ): Collection<T> {
-        val destination = ArrayList<T>(count())
-        for ((index, item) in this.withIndex()) {
-            if (index == position)
-                destination.add(item.transform())
-            else
-                destination.add(item)
-            delay(ASYNC_MAP_TICK)
-        }
-        return destination
-    }
-
-    private suspend fun <T, R> Iterable<T>.mapAsync(transform: (T) -> R): Collection<R> {
-        val destination = ArrayList<R>(count())
-        for (item in this) {
-            destination.add(transform(item))
-            delay(ASYNC_MAP_TICK)
-        }
-        return destination
-    }
-
-    private fun onUnitsTypeUpdate(unitsType: UnitsType) {
-        UnitsTypeProvider.updateValue(unitsType)
-        forceDraw(IDashboardState.MinorState::class)
-        forceDraw(IDashboardState.MainCardState::class)
-    }
-
-    companion object {
-        private const val ASYNC_MAP_TICK = 250L
     }
 
 }

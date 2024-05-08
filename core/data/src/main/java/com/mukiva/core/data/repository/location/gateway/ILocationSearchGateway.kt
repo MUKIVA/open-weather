@@ -7,7 +7,6 @@ import retrofit2.http.Query
 interface ILocationSearchGateway {
     @GET("search.json")
     suspend fun searchLocations(
-        @Query("key") key: String,
         @Query("q") q: String,
     ) : List<LocationRemote>
 }

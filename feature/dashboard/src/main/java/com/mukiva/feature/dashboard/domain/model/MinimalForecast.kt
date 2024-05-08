@@ -1,13 +1,15 @@
 package com.mukiva.feature.dashboard.domain.model
 
-import java.util.Date
+import kotlinx.datetime.LocalDateTime
 
 data class MinimalForecast(
-    val index: Int,
-    val dayAvgTempC: Double,
-    val dayAvgTempF: Double,
-    val nightAvgTempC: Double,
-    val nightAvgTempF: Double,
+    val id: Int,
+    val avgTempC: Double,
+    val avgTempF: Double,
+    val minTempC: Double,
+    val minTempF: Double,
+    val maxTempC: Double,
+    val maxTempF: Double,
     val conditionIconUrl: String,
-    val date: Date,
+    val date: LocalDateTime,
 )

@@ -35,5 +35,26 @@ data class LocationManagerState(
             )
         )
     }
+}
 
+sealed class SavedLocationsState {
+    data object Init : SavedLocationsState()
+    data object Loading : SavedLocationsState()
+    data object Error : SavedLocationsState()
+    data object Empty : SavedLocationsState()
+    data class Content(
+        val data: List<EditableLocation>
+    ) : SavedLocationsState()
+    data class Edit(
+        val data: List<EditableLocation>
+    ) : SavedLocationsState()
+}
+
+sealed class SearchLocationsState {
+    data object Loading : SearchLocationsState()
+    data object Error : SearchLocationsState()
+    data object Empty : SearchLocationsState()
+    data class Content(
+        val data: List<Location>
+    ) : SearchLocationsState()
 }

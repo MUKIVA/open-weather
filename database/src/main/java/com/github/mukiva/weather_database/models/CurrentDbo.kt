@@ -9,7 +9,7 @@ import kotlinx.datetime.LocalDateTime
 @Entity
 data class CurrentDbo(
     @PrimaryKey(autoGenerate = true)
-    val id: Int,
+    val id: Long = 0,
     @ColumnInfo("last_updated_epoch")
     var lastUpdatedEpoch: LocalDateTime,
     @ColumnInfo("temp_c")
@@ -18,8 +18,7 @@ data class CurrentDbo(
     var tempF: Double,
     @ColumnInfo("is_day")
     var isDay: Int,
-    @ColumnInfo("condition")
-    @Embedded
+    @Embedded(prefix = "condition")
     var condition: ConditionDbo,
     @ColumnInfo("wind_mph")
     var windMph: Double,
@@ -50,7 +49,7 @@ data class CurrentDbo(
     @ColumnInfo("vis_miles")
     var visMiles: Double,
     @ColumnInfo("uv")
-    var uv: Int,
+    var uv: Double,
     @ColumnInfo("gust_mph")
     var gustMph: Double,
     @ColumnInfo("gust_kph")

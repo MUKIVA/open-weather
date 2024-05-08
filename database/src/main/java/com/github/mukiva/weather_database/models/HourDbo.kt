@@ -9,7 +9,7 @@ import kotlinx.datetime.LocalDateTime
 @Entity
 data class HourDbo(
     @PrimaryKey(autoGenerate = true)
-    val id: Int,
+    val id: Long = 0,
     @ColumnInfo("time_epoch")
     val timeEpoch: LocalDateTime,
     @ColumnInfo("temp_c")
@@ -74,9 +74,8 @@ data class HourDbo(
     val gustKph: Double,
     @ColumnInfo("uv")
     val uv: Double,
-    @ColumnInfo("condition")
-    @Embedded
+    @Embedded(prefix = "condition")
     val condition: ConditionDbo,
     @ColumnInfo("forecast_day_id")
-    val forecastDayId: Int,
+    val forecastDayId: Long,
 )
