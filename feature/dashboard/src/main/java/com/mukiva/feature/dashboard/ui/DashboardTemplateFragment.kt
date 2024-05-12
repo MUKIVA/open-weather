@@ -12,15 +12,18 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import com.github.mukiva.open_weather.core.domain.Pressure
+import com.github.mukiva.open_weather.core.domain.Speed
+import com.github.mukiva.open_weather.core.domain.Temp
+import com.github.mukiva.open_weather.core.domain.WindDirection
 import com.mukiva.core.ui.KEY_ARGS
 import com.mukiva.core.ui.getArgs
+import com.mukiva.core.ui.getPressureString
+import com.mukiva.core.ui.getSpeedString
+import com.mukiva.core.ui.getTempString
 import com.mukiva.feature.dashboard.R
-import com.mukiva.core.ui.R as CoreUiRes
 import com.mukiva.feature.dashboard.databinding.FragmentDashboardTemplateBinding
 import com.mukiva.feature.dashboard.domain.model.Condition
-import com.mukiva.feature.dashboard.domain.model.CurrentWeather
-import com.mukiva.feature.dashboard.domain.model.UnitsType
-import com.mukiva.feature.dashboard.domain.model.WindDirection
 import com.mukiva.openweather.ui.gone
 import com.mukiva.openweather.ui.loading
 import com.mukiva.core.ui.uiLazy
@@ -28,7 +31,6 @@ import com.mukiva.core.ui.viewBindings
 import com.mukiva.feature.dashboard.domain.model.MinimalForecast
 import com.mukiva.feature.dashboard.presentation.ForecastViewModel
 import com.mukiva.feature.dashboard.presentation.LocationWeatherState
-import com.mukiva.feature.dashboard.presentation.UnitsTypeProvider
 import com.mukiva.feature.dashboard.ui.adapter.ICurrentWeatherProvider
 import com.mukiva.feature.dashboard.ui.adapter.MinimalForecastAdapter
 import com.mukiva.openweather.ui.error
@@ -64,8 +66,7 @@ class DashboardTemplateFragment
         MinimalForecastAdapter(
             onItemClick = { pos ->
                 mViewModel.goForecast(getArgs(Args::class.java).locationName, pos)
-                          },
-            unitsTypeProvider = UnitsTypeProvider
+            }
         )
     }
 
@@ -96,23 +97,21 @@ class DashboardTemplateFragment
 
     private fun updateContent(state: LocationWeatherState.Content) {
         val forecast = state.forecast
-        val unitsType = state.unitsType
         val current = forecast.currentWeather
         mCurrentWeatherFlow.update {
             ICurrentWeatherProvider.Current(
                 locationName = getArgs(Args::class.java).locationName,
-                unitsType = unitsType,
                 currentWeather = current,
                 )
         }
         updateForecast(forecast.forecastState)
         updateHumidity(current.humidity)
-        updatePressure(current, unitsType)
+        updatePressure(current.pressure)
         updateWindDirection(current.windDir, current.windDegree.toFloat())
         updateConditionField(current.condition, current.cloud)
         updateDayStatus(current.isDay)
-        updateFeelsLike(current, unitsType)
-        updateWindSpeed(current, unitsType)
+        updateFeelsLike(current.feelsLike)
+        updateWindSpeed(current.windSpeed)
     }
 
     private fun updateForecast(state: Collection<MinimalForecast>) {
@@ -120,27 +119,10 @@ class DashboardTemplateFragment
     }
 
     private fun updatePressure(
-        currentWeather: CurrentWeather,
-        unitsType: UnitsType
+        pressure: Pressure
     ) = with(mBinding.pressureField) {
         subtitle.text = getString(R.string.field_pressure_subtitle)
-
-        val pressureMmHg = currentWeather.pressureMb * FROM_MBAR_TO_MMHG
-
-        when(unitsType) {
-            UnitsType.METRIC -> {
-                fieldValue.text = getString(
-                    CoreUiRes.string.template_mmhg,
-                    pressureMmHg.toInt().toString()
-                )
-            }
-            UnitsType.IMPERIAL -> {
-                fieldValue.text = getString(
-                    CoreUiRes.string.template_mb,
-                    currentWeather.pressureMb.toInt().toString()
-                )
-            }
-        }
+        fieldValue.text = getPressureString(pressure)
     }
 
     private fun updateHumidity(humidity: Int) = with(mBinding.humidityField) {
@@ -164,24 +146,10 @@ class DashboardTemplateFragment
     }
 
     private fun updateWindSpeed(
-        currentWeather: CurrentWeather,
-        speedUnitsType: UnitsType
+        windSpeed: Speed,
     ) = with(mBinding.windSpeedField) {
         subtitle.text = getString(R.string.field_wind_speed_subtitle)
-        when(speedUnitsType) {
-            UnitsType.METRIC -> {
-                fieldValue.text = getString(
-                    CoreUiRes.string.template_kmh,
-                    currentWeather.windKph.toInt()
-                )
-            }
-            UnitsType.IMPERIAL -> {
-                fieldValue.text = getString(
-                    CoreUiRes.string.template_mph,
-                    currentWeather.windMph.toInt()
-                )
-            }
-        }
+        fieldValue.text = getSpeedString(windSpeed)
         fieldValue.setDrawable(R.drawable.ic_wind_speed)
 
     }
@@ -195,20 +163,9 @@ class DashboardTemplateFragment
         fieldValue.setDrawable(R.drawable.ic_condition)
     }
 
-    private fun updateFeelsLike(currentWeather: CurrentWeather, unitsType: UnitsType) = with(mBinding.feelsLikeField) {
-        val value = when(unitsType) {
-            UnitsType.METRIC -> getString(
-                CoreUiRes.string.template_celsius,
-                currentWeather.feelsLikeC.toInt()
-            )
-            UnitsType.IMPERIAL -> getString(
-                CoreUiRes.string.template_fahrenheit,
-                currentWeather.feelsLikeF.toInt()
-            )
-        }
-
+    private fun updateFeelsLike(temp: Temp) = with(mBinding.feelsLikeField) {
         subtitle.text = getString(R.string.field_feels_like_subtitle)
-        fieldValue.text = value
+        fieldValue.text = getTempString(temp)
         fieldValue.setDrawable(R.drawable.ic_feels_like)
     }
 

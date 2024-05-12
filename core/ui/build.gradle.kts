@@ -28,6 +28,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:domain"))
+
     implementation(libs.androidx.core)
     implementation(libs.android.material)
 }

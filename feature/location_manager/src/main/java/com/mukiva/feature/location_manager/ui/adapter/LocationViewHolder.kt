@@ -14,7 +14,7 @@ class LocationViewHolder(
         updateRegionName(item.regionName)
         updateCountryName(item.countryName)
 
-        binding.root.setOnClickListener {
+        root.setOnClickListener {
             onAddCallback(item)
         }
     }

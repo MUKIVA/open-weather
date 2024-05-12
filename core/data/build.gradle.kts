@@ -31,11 +31,7 @@ android {
 
 dependencies {
 
-    implementation(project(":core:presentation"))
-    implementation(project(":core:usecase"))
     implementation(project(":core:ui"))
-    implementation(project(":core:navigation"))
-    implementation(project(":core:network"))
 
     implementation(libs.androidx.core)
     implementation(libs.android.material)

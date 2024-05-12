@@ -5,11 +5,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.mukiva.feature.dashboard.databinding.ItemMinForecastBinding
 import com.mukiva.feature.dashboard.domain.model.MinimalForecast
-import com.mukiva.feature.dashboard.presentation.IDashboardState
 
 class MinimalForecastAdapter(
-    private val onItemClick: (Int) -> Unit,
-    private val unitsTypeProvider: IDashboardState
+    private val onItemClick: (Int) -> Unit
 ) : ListAdapter<MinimalForecast, MinimalForecastItemViewHolder>(MinimalForecastItemDiffCallback) {
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -18,8 +16,7 @@ class MinimalForecastAdapter(
         val inflater = LayoutInflater.from(parent.context)
         return MinimalForecastItemViewHolder(
             bindings = ItemMinForecastBinding.inflate(inflater, parent, false),
-            onItemClick = onItemClick,
-            unitsTypeProvider = unitsTypeProvider
+            onItemClick = onItemClick
         )
     }
 

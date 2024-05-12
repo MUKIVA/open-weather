@@ -8,14 +8,14 @@ import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.mukiva.feature.forecast.presentation.HourlyForecast
-import com.mukiva.feature.forecast.ui.GroupsTemplateFragment
+import com.mukiva.feature.forecast.ui.ForecastTimelineFragment
 
 class HourlyForecastAdapter(
     fragmentManager: FragmentManager,
     lifecycle: Lifecycle,
 ) : FragmentStateAdapter(fragmentManager, lifecycle) {
 
-    private val mDiffer: AsyncListDiffer<HourlyForecast> = AsyncListDiffer(
+    private val mDiffer: AsyncListDiffer<HourlyForecast.Content> = AsyncListDiffer(
         AdapterListUpdateCallback(this),
         AsyncDifferConfig.Builder(HourlyForecastDiffUtilCallback).build()
     )
@@ -23,15 +23,15 @@ class HourlyForecastAdapter(
     override fun getItemCount(): Int = mDiffer.currentList.size
 
     override fun createFragment(position: Int): Fragment {
-        return GroupsTemplateFragment.newInstance(
-            args = GroupsTemplateFragment
+        return ForecastTimelineFragment.newInstance(
+            args = ForecastTimelineFragment
                 .Args(position = position)
         )
     }
 
-    operator fun get(pos: Int): HourlyForecast = mDiffer.currentList[pos]
+    operator fun get(pos: Int): HourlyForecast.Content = mDiffer.currentList[pos]
 
-    fun submit(days: List<HourlyForecast>) {
+    fun submit(days: List<HourlyForecast.Content>) {
         mDiffer.submitList(days)
     }
 }

@@ -2,25 +2,19 @@ package com.mukiva.feature.dashboard.ui.adapter
 
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.mukiva.core.ui.R as CoreUiRes
+import com.github.mukiva.open_weather.core.domain.Temp
 import com.mukiva.feature.dashboard.databinding.ItemMinForecastBinding
 import com.mukiva.feature.dashboard.domain.model.MinimalForecast
-import com.mukiva.feature.dashboard.domain.model.UnitsType
-import com.mukiva.feature.dashboard.presentation.IDashboardState
+import com.mukiva.openweather.ui.getTempString
 import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.format
-import kotlinx.datetime.format.DateTimeFormat
 import kotlinx.datetime.format.DayOfWeekNames
 import kotlinx.datetime.format.MonthNames
 import kotlinx.datetime.format.Padding
 import kotlinx.datetime.format.char
-import java.text.SimpleDateFormat
-import kotlin.math.roundToInt
 
 class MinimalForecastItemViewHolder(
     private val bindings: ItemMinForecastBinding,
     private val onItemClick: (Int) -> Unit,
-    private val unitsTypeProvider: IDashboardState
 ) : RecyclerView.ViewHolder(bindings.root) {
 
     private val dayOfWeekFormatter = LocalDateTime.Format {
@@ -37,11 +31,8 @@ class MinimalForecastItemViewHolder(
         updateCondition(item.conditionIconUrl)
         updateDate(item.date)
         updateTempInfo(
-            item.maxTempC,
-            item.maxTempF,
-            item.avgTempC,
-            item.avgTempF,
-            unitsTypeProvider.unitsType
+            dayTemp = item.maxTemp,
+            nightTemp = item.minTemp,
         )
 
         root.setOnClickListener {
@@ -50,27 +41,12 @@ class MinimalForecastItemViewHolder(
     }
 
     private fun updateTempInfo(
-        dayTempC: Double,
-        dayTempF: Double,
-        nightTempC: Double,
-        nightTempF: Double,
-        unitsType: UnitsType
+        dayTemp: Temp,
+        nightTemp: Temp,
     ) = with(bindings) {
-        val (strRes, night, day) = when(unitsType) {
-            UnitsType.METRIC -> Triple(
-                CoreUiRes.string.template_celsius,
-                nightTempC.roundToInt(),
-                dayTempC.roundToInt()
-            )
-            UnitsType.IMPERIAL -> Triple(
-                CoreUiRes.string.template_fahrenheit,
-                nightTempF.roundToInt(),
-                dayTempF.roundToInt()
-            )
-        }
 
-        this.nightTemp.text = itemView.context.getString(strRes, night)
-        this.dayTemp.text = itemView.context.getString(strRes, day)
+        this.nightTemp.text = itemView.getTempString(nightTemp)
+        this.dayTemp.text = itemView.getTempString(dayTemp)
     }
 
     private fun updateDate(date: LocalDateTime) = with(bindings) {

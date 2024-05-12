@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <solid android:color="?attr/colorSurfaceContainer" />
+    <stroke
+        android:color="?attr/colorPrimary"
+        android:width="@dimen/def_cardview_stroke_width" />
+    <corners android:radius="@dimen/def_radius" />
+
+</shape>

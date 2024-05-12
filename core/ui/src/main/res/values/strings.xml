@@ -6,11 +6,20 @@
     <string name="template_celsius">%1$d℃</string>
     <string name="template_fahrenheit">%1$d℉</string>
 
-    <string name="template_kmh">%1$d Km/h</string>
+    <string name="template_kmh">%1$d kph</string>
     <string name="template_mph">%1$d mph</string>
 
-    <string name="template_mmhg">%1$s mmHg</string>
-    <string name="template_mb">%1$s mb</string>
+    <string name="template_km">%1$d Km/h</string>
+    <plurals name="template_miles">
+        <item quantity="one">%1$d mile</item>
+        <item quantity="other">%1$d miles</item>
+    </plurals>
+
+    <string name="template_mmhg">%1$d mmHg</string>
+    <string name="template_mb">%1$d mb</string>
+
+    <string name="template_mm">%1$d mm</string>
+    <string name="template_in">%1$d in</string>
 
     <string name="template_percent">%1$d%%</string>
     <string name="template_degree">%d°</string>

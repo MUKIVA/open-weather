@@ -1,7 +1,7 @@
 package com.mukiva.feature.settings.domain.repository
 
+import com.github.mukiva.open_weather.core.domain.UnitsType
 import com.mukiva.feature.settings.domain.config.Theme
-import com.mukiva.feature.settings.domain.config.UnitsType
 
 interface IGeneralSettingsSetter {
     suspend fun setTheme(theme: Theme)

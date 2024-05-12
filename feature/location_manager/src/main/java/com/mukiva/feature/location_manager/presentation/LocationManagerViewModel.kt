@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.github.mukiva.weather_data.utils.RequestResult
 import com.mukiva.feature.location_manager.navigation.ILocationManagerRouter
 import com.mukiva.feature.location_manager.domain.model.Location
-import com.mukiva.feature.location_manager.domain.repository.IForecastUpdater
 import com.mukiva.feature.location_manager.domain.usecase.AddLocationUseCase
 import com.mukiva.feature.location_manager.domain.usecase.GetAddedLocationsUseCase
 import com.mukiva.feature.location_manager.domain.usecase.LocationSearchUseCase
@@ -28,7 +27,6 @@ class LocationManagerViewModel @Inject constructor(
     private val getAddedLocationsUseCase: GetAddedLocationsUseCase,
     private val updateStoredLocationsUseCase: UpdateStoredLocationsUseCase,
     private val locationManagerRouter: ILocationManagerRouter,
-    private val forecastUpdater: IForecastUpdater
 ) : ViewModel() {
     val savedLocationsState: StateFlow<SavedLocationsState>
         get() = mSavedLocationsState

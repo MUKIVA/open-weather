@@ -30,10 +30,9 @@ android {
 
 dependencies {
 
-    implementation(project(":core:presentation"))
-    implementation(project(":core:navigation"))
     implementation(project(":core:ui"))
-    implementation(project(":core:network"))
+    implementation(project(":core:domain"))
+    implementation(project(":core:presentation"))
 
     implementation(libs.androidx.core)
     implementation(libs.android.material)

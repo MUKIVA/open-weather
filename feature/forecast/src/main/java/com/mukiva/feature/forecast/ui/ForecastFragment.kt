@@ -8,12 +8,10 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.os.bundleOf
-import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import com.mukiva.core.ui.KEY_ARGS
@@ -39,8 +37,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.format.DayOfWeekNames
 import java.io.Serializable
-import java.text.SimpleDateFormat
-
 
 @AndroidEntryPoint
 class ForecastFragment : Fragment(R.layout.fragment_forecast) {
@@ -80,10 +76,7 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast) {
             dayOfWeek(DayOfWeekNames.ENGLISH_ABBREVIATED)
         }
 
-        viewPager.children.find { child -> child is RecyclerView }?.apply {
-            (this as RecyclerView).isNestedScrollingEnabled = false
-        }
-
+        viewPager.offscreenPageLimit = 2
         viewPager.adapter = mHourlyForecastAdapter
 
         TabLayoutMediator(tabLayout, viewPager, true, true) { tab, index ->
@@ -129,7 +122,6 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast) {
             .flowWithLifecycle(lifecycle)
             .onEach(::updateState)
             .launchIn(lifecycleScope)
-
     }
 
     private fun updateState(state: ForecastState) {
@@ -139,7 +131,7 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast) {
         updateType(state)
     }
 
-    private fun updateViewPager(list: List<HourlyForecast>) {
+    private fun updateViewPager(list: List<HourlyForecast.Content>) {
         mHourlyForecastAdapter.submit(list)
     }
 

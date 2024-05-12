@@ -1,8 +1,8 @@
 package com.mukiva.feature.settings.presentation
 
 import androidx.lifecycle.viewModelScope
+import com.github.mukiva.open_weather.core.domain.UnitsType
 import com.mukiva.feature.settings.domain.config.Theme
-import com.mukiva.feature.settings.domain.config.UnitsType
 import com.mukiva.feature.settings.domain.repository.ISettingsRepository
 import com.mukiva.feature.settings.domain.SettingItem
 import com.mukiva.feature.settings.domain.SettingVariant

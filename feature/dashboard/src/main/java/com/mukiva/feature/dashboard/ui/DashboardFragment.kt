@@ -13,7 +13,10 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.github.mukiva.open_weather.core.domain.Temp
+import com.github.mukiva.open_weather.core.domain.UnitsType
 import com.mukiva.core.ui.getDimen
+import com.mukiva.core.ui.getTempString
 import com.mukiva.feature.dashboard.R
 import com.mukiva.feature.dashboard.presentation.DashboardViewModel
 import com.mukiva.feature.dashboard.ui.adapter.DashboardAdapter
@@ -31,8 +34,8 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlin.math.abs
 import com.mukiva.feature.dashboard.databinding.FragmentDashboardBinding
-import com.mukiva.feature.dashboard.domain.model.UnitsType
 import com.mukiva.feature.dashboard.ui.adapter.ICurrentWeatherProvider
+import kotlin.math.roundToInt
 import com.mukiva.core.ui.R as CoreUiRes
 
 @AndroidEntryPoint
@@ -124,15 +127,6 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
     private fun updateMainCard(
         current: ICurrentWeatherProvider.Current?
     ) = with(mBinding) {
-
-        val tempStringFactory: (Int, Int) -> String = { tempC, tempF ->
-            when(current?.unitsType) {
-                UnitsType.METRIC -> getString(CoreUiRes.string.template_celsius, tempC)
-                UnitsType.IMPERIAL -> getString(CoreUiRes.string.template_fahrenheit, tempF)
-                else -> error("Unreachable code")
-            }
-        }
-
         when {
             current == null -> {
                 mainCard.emptyView.loading()
@@ -143,16 +137,12 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
                 mainCard.emptyView.hide()
                 mainCard.mainTemp.visible()
                 mainCard.cityName.visible()
-                mainCard.mainTemp.text = tempStringFactory(
-                    current.currentWeather.tempC.toInt(),
-                    current.currentWeather.tempF.toInt(),
-                )
+                mainCard.mainTemp.text =
+                    getTempString(current.currentWeather.temp)
                 mainCard.cityName.text = current.locationName
                 updateMainTitle(
-                    current.currentWeather.tempC.toInt(),
-                    current.currentWeather.tempF.toInt(),
+                    current.currentWeather.temp,
                     current.locationName,
-                    current.unitsType
                 )
             }
         }
@@ -200,23 +190,26 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
     }
 
     private fun updateMainTitle(
-        tempC: Int,
-        tempF: Int,
-        locationName: String,
-        unitsType: UnitsType
+        temp: Temp,
+        locationName: String
     ) {
-        val tempStringFactory: () -> String = {
-            when(unitsType) {
-                UnitsType.METRIC ->
-                    getString(R.string.template_celsius_main_title, tempC, locationName)
-                UnitsType.IMPERIAL ->
-                    getString(R.string.template_fahrenheit_main_title, tempF, locationName)
-            }
-        }
-        mBinding.collapsingAppbarLayout.title = tempStringFactory()
+        mBinding.collapsingAppbarLayout.title =
+            getMainTitle(locationName, temp)
     }
 
     companion object {
         private const val ALPHA_MAX_VALUE = 255
+    }
+}
+
+internal fun Fragment.getMainTitle(
+    locationName: String,
+    temp: Temp,
+): String {
+    return when(temp.unitsType) {
+        UnitsType.METRIC ->
+            getString(R.string.template_celsius_main_title, temp.value.roundToInt(), locationName)
+        UnitsType.IMPERIAL ->
+            getString(R.string.template_fahrenheit_main_title, temp.value.roundToInt(), locationName)
     }
 }

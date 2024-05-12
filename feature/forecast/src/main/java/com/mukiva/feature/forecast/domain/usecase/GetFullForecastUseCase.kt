@@ -1,110 +1,74 @@
 package com.mukiva.feature.forecast.domain.usecase
 
+import com.github.mukiva.open_weather.core.domain.Distance
+import com.github.mukiva.open_weather.core.domain.Precipitation
+import com.github.mukiva.open_weather.core.domain.Pressure
+import com.github.mukiva.open_weather.core.domain.Speed
+import com.github.mukiva.open_weather.core.domain.Temp
+import com.github.mukiva.open_weather.core.domain.UnitsType
+import com.github.mukiva.open_weather.core.domain.WindDirection
 import com.github.mukiva.weather_data.ForecastRepository
 import com.github.mukiva.weather_data.models.Forecast
 import com.github.mukiva.weather_data.models.Hour
 import com.github.mukiva.weather_data.utils.RequestResult
 import com.github.mukiva.weather_data.utils.map
 import com.mukiva.feature.forecast.domain.ForecastItem
-import com.mukiva.feature.forecast.domain.WindDirection
-import com.mukiva.feature.forecast.presentation.ForecastGroup
+import com.mukiva.feature.forecast.domain.repository.ISettingsRepository
 import com.mukiva.feature.forecast.presentation.HourlyForecast
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class GetFullForecastUseCase @Inject constructor(
     private val forecastRepo: ForecastRepository,
+    private val settings: ISettingsRepository,
 ) {
-
-    operator fun invoke(locationName: String): Flow<RequestResult<List<HourlyForecast>>> {
-        return forecastRepo.getForecast(locationName)
+    operator fun invoke(locationName: String): Flow<RequestResult<List<HourlyForecast.Content>>> {
+        val request = forecastRepo.getForecast(locationName)
             .map { requestResult -> requestResult.map { it.forecast } }
-            .map { requestResult -> requestResult.map { forecast -> toHourlyForecast(forecast) } }
-    }
-
-    private fun toHourlyForecast(forecast: Forecast): List<HourlyForecast>  {
-        return buildList {
-            forecast.forecastDay.mapIndexed { index, forecastDay ->
-                HourlyForecast(
-                    index = index,
-                    date = forecastDay.dateEpoch,
-                    groups = createForecastGroups(forecastDay.hour) ,
-                )
-            }
+        val unitsTypeFlow = settings.getUnitsTypeFlow()
+        return unitsTypeFlow.combine(request) { unitsType, requestResult ->
+            requestResult.map { forecast -> toHourlyForecast(forecast, unitsType) }
         }
     }
 
-    private fun createForecastGroups(hours: List<Hour>): List<ForecastGroup> {
-        val tempGroup = ArrayList<ForecastItem>(HOURS_IN_DAY)
-        val humidityGroup = ArrayList<ForecastItem>(HOURS_IN_DAY)
-        val pressureGroup = ArrayList<ForecastItem>(HOURS_IN_DAY)
-        val windGroup = ArrayList<ForecastItem>(HOURS_IN_DAY)
-
-        hours.onEach { hour ->
-            tempGroup.add(asHourlyTemp(hour))
-            humidityGroup.add(asHourlyHumidity(hour))
-            pressureGroup.add(asHourlyPressure(hour))
-            windGroup.add(asHourlyWind(hour))
+    private fun toHourlyForecast(
+        forecast: Forecast,
+        unitsType: UnitsType
+    ): List<HourlyForecast.Content>  {
+        return forecast.forecastDay.mapIndexed { index, forecastDay ->
+            HourlyForecast.Content(
+                index = index,
+                date = forecastDay.dateEpoch,
+                hours = forecastDay.hour.mapIndexed { id, hour ->
+                    asForecastItem(id, hour, unitsType)
+                }
+            )
         }
 
-        return listOf(
-            asGroup(tempGroup, ForecastGroup.Type.TEMP),
-            asGroup(windGroup, ForecastGroup.Type.WIND),
-            asGroup(pressureGroup, ForecastGroup.Type.PRESSURE),
-            asGroup(humidityGroup, ForecastGroup.Type.HUMIDITY)
+    }
+
+    private fun asForecastItem(
+        index: Int,
+        hour: Hour,
+        unitsType: UnitsType,
+    ): ForecastItem = with(hour) {
+        return ForecastItem(
+            id = index,
+            humidity = humidity,
+            pressure = Pressure(unitsType, pressureMb, pressureIn),
+            precipitation = Precipitation(unitsType, precipMm, precipIn),
+            temp = Temp(unitsType, tempC, tempF),
+            feelsLike = Temp(unitsType, feelsLikeC, feelsLikeF),
+            cloud = cloud,
+            weatherIconUrl = condition.icon,
+            dateTime = timeEpoch,
+            windSpeed = Speed(unitsType, windKph, windMph),
+            windDegree = windDegree,
+            windDirection = WindDirection.valueOf(windDir),
+            vis = Distance(unitsType, visKm, visMiles),
+            gust = Speed(unitsType, gustKph, gustMph),
         )
     }
-
-    private fun asHourlyTemp(hour: Hour): ForecastItem.HourlyTemp {
-        return ForecastItem.HourlyTemp(
-            tempC = hour.tempC,
-            tempF = hour.tempF,
-            feelsLikeC = hour.feelsLikeC,
-            feelsLikeF = hour.feelsLikeF,
-            cloud = hour.cloud,
-            iconUrl = hour.condition.icon,
-            date = hour.timeEpoch,
-        )
-    }
-
-    private fun asHourlyHumidity(hour: Hour): ForecastItem.HourlyHumidity {
-        return ForecastItem.HourlyHumidity(
-            humidity = hour.humidity,
-            date = hour.timeEpoch,
-        )
-    }
-
-    private fun asHourlyPressure(hour: Hour): ForecastItem.HourlyPressure {
-        return ForecastItem.HourlyPressure(
-            pressureMb = hour.pressureMb,
-            pressureIn = hour.pressureIn,
-            date = hour.timeEpoch,
-        )
-    }
-
-    private fun asHourlyWind(hour: Hour): ForecastItem.HourlyWind {
-        return ForecastItem.HourlyWind(
-            windMph = hour.windMph,
-            windKph = hour.windKph,
-            windDegree = hour.windDegree,
-            windDirection = WindDirection.valueOf(hour.windDir),
-            date = hour.timeEpoch,
-        )
-    }
-
-    private fun asGroup(
-        forecastItems: List<ForecastItem>,
-        forecastGroupType: ForecastGroup.Type,
-    ): ForecastGroup {
-        return ForecastGroup(
-            forecastType = forecastGroupType,
-            forecast = forecastItems
-        )
-    }
-
-    companion object {
-        private const val HOURS_IN_DAY = 24
-    }
-
 }

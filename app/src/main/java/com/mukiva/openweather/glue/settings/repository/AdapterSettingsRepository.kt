@@ -1,8 +1,8 @@
 package com.mukiva.openweather.glue.settings.repository
 
+import com.github.mukiva.open_weather.core.domain.UnitsType
 import com.mukiva.feature.settings.domain.config.AppConfig
 import com.mukiva.feature.settings.domain.config.Theme
-import com.mukiva.feature.settings.domain.config.UnitsType
 import com.mukiva.feature.settings.domain.repository.IGeneralSettingsSetter
 import com.mukiva.feature.settings.domain.repository.ISettingsRepository
 import com.mukiva.core.data.repository.settings.ISettingsRepository as ICoreSettingsRepository

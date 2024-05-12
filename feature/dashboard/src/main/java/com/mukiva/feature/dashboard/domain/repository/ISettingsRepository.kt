@@ -1,6 +1,6 @@
 package com.mukiva.feature.dashboard.domain.repository
 
-import com.mukiva.feature.dashboard.domain.model.UnitsType
+import com.github.mukiva.open_weather.core.domain.UnitsType
 import kotlinx.coroutines.flow.Flow
 
 interface ISettingsRepository {

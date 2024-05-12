@@ -53,10 +53,11 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:navigation"))
     implementation(project(":core:ui"))
-    implementation(project(":core:network"))
     implementation(project(":core:data"))
+    implementation(project(":core:domain"))
+
+    implementation(project(":navigation"))
 
     implementation(project(":feature:dashboard"))
     implementation(project(":feature:forecast"))
@@ -66,8 +67,6 @@ dependencies {
     implementation(project(":weather-data"))
     implementation(project(":weather-api"))
     implementation(project(":database"))
-
-    implementation(project(":navigation"))
 
     implementation(libs.androidx.navigation.fragment)
     implementation(libs.androidx.navigation.ui)
@@ -82,7 +81,6 @@ dependencies {
     ksp(libs.hilt.compiler)
 
     implementation(libs.retrofit)
-//    implementation(libs.retrofit.converter.gson)
     implementation(libs.retrofit.converter.json)
     implementation(libs.kotlinx.datetime)
 

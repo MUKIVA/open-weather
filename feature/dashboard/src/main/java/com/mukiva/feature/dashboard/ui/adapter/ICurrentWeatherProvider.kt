@@ -1,7 +1,7 @@
 package com.mukiva.feature.dashboard.ui.adapter
 
+import com.github.mukiva.open_weather.core.domain.UnitsType
 import com.mukiva.feature.dashboard.domain.model.CurrentWeather
-import com.mukiva.feature.dashboard.domain.model.UnitsType
 import kotlinx.coroutines.flow.StateFlow
 
 interface ICurrentWeatherProvider {
@@ -10,7 +10,6 @@ interface ICurrentWeatherProvider {
 
     data class Current(
         val locationName: String,
-        val unitsType: UnitsType,
         val currentWeather: CurrentWeather
     )
 

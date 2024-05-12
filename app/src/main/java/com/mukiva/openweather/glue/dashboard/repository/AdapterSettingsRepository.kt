@@ -1,8 +1,7 @@
 package com.mukiva.openweather.glue.dashboard.repository
 
-import com.mukiva.feature.dashboard.domain.model.UnitsType
+import com.github.mukiva.open_weather.core.domain.UnitsType
 import com.mukiva.feature.dashboard.domain.repository.ISettingsRepository
-import com.mukiva.openweather.glue.dashboard.mapper.UnitsTypeMapper
 import com.mukiva.openweather.glue.settings.repository.AdapterSettingsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -13,6 +12,6 @@ class AdapterSettingsRepository @Inject constructor(
 ) : ISettingsRepository {
     override fun getUnitsTypeFlow(): Flow<UnitsType> {
         return coreRepo.asAppConfig()
-            .map { UnitsTypeMapper.map(it.unitsType) }
+            .map { it.unitsType }
     }
 }

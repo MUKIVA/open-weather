@@ -30,12 +30,7 @@ android {
 
 dependencies {
 
-    implementation(project(":core:presentation"))
-    implementation(project(":core:navigation"))
-    implementation(project(":core:usecase"))
     implementation(project(":core:ui"))
-    implementation(project(":core:network"))
-    implementation(project(":core:data"))
 
     implementation(project(":weather-data"))
 
