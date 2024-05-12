@@ -3,14 +3,16 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_gravity="end"
     android:columnCount="2">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-medium"
+        android:textColor="?attr/colorPrimary"
         android:text="@string/label_pressure" />
 
     <TextView
@@ -24,6 +26,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-medium"
+        android:textColor="?attr/colorPrimary"
         android:text="@string/label_precipitation" />
 
     <TextView
@@ -37,6 +40,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-medium"
+        android:textColor="?attr/colorPrimary"
         android:text="@string/label_vis" />
 
     <TextView
@@ -50,6 +54,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-medium"
+        android:textColor="?attr/colorPrimary"
         android:text="@string/label_gust" />
 
     <TextView
@@ -63,6 +68,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-medium"
+        android:textColor="?attr/colorPrimary"
         android:text="@string/label_humidity"
         />
 

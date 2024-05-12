@@ -64,6 +64,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
     }
 
     private fun initDashboard() = with(mBinding) {
+        dashboard.offscreenPageLimit = 2
         dashboard.children.find { child -> child is RecyclerView }?.apply {
             (this as RecyclerView).isNestedScrollingEnabled = false
         }

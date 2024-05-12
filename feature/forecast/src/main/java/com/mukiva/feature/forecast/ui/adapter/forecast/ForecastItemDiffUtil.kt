@@ -2,6 +2,7 @@ package com.mukiva.feature.forecast.ui.adapter.forecast
 
 import androidx.recyclerview.widget.DiffUtil
 import com.mukiva.feature.forecast.domain.ForecastItem
+import java.util.LinkedList
 
 object ForecastItemDiffUtil : DiffUtil.ItemCallback<ForecastItem>() {
     override fun areItemsTheSame(

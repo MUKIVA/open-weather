@@ -1,5 +1,6 @@
 package com.mukiva.feature.forecast.ui
 
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
@@ -7,9 +8,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import com.mukiva.core.ui.KEY_ARGS
 import com.mukiva.core.ui.getArgs
+import com.mukiva.core.ui.getDimen
 import com.mukiva.core.ui.uiLazy
 import com.mukiva.core.ui.viewBindings
 import com.mukiva.feature.forecast.R
@@ -25,6 +28,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import java.io.Serializable
+import com.mukiva.core.ui.R as CoreUiRes
 
 @AndroidEntryPoint
 class ForecastTimelineFragment : Fragment(R.layout.fragment_forecast_timeline) {
@@ -39,6 +43,22 @@ class ForecastTimelineFragment : Fragment(R.layout.fragment_forecast_timeline) {
     }
     private val mBinding by viewBindings(FragmentForecastTimelineBinding::bind)
     private val mHoursAdapter by uiLazy { ForecastItemAdapter() }
+    private val mItemDecoration = object : RecyclerView.ItemDecoration() {
+
+        private val mTopPadding by lazy { getDimen(CoreUiRes.dimen.def_v_padding) }
+
+        override fun getItemOffsets(
+            outRect: Rect,
+            view: View,
+            parent: RecyclerView,
+            state: RecyclerView.State
+        ) {
+            super.getItemOffsets(outRect, view, parent, state)
+            with(outRect) {
+                top = mTopPadding
+            }
+        }
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initList()
@@ -54,6 +74,7 @@ class ForecastTimelineFragment : Fragment(R.layout.fragment_forecast_timeline) {
 
     private fun initList() = with(mBinding) {
         list.setRecycledViewPool(mSharedViewPool)
+        list.addItemDecoration(mItemDecoration)
         list.adapter = mHoursAdapter
     }
 
@@ -75,6 +96,7 @@ class ForecastTimelineFragment : Fragment(R.layout.fragment_forecast_timeline) {
 
     companion object {
         private val mSharedViewPool = RecycledViewPool()
+
 
         fun newInstance(
             args: Args

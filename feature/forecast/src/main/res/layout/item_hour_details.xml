@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingTop="4dp">
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/weatherIcon"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:padding="8dp"
         android:background="@drawable/background_card"
         android:importantForAccessibility="no"
+        android:padding="8dp"
         app:layout_constraintBottom_toTopOf="@+id/windIcon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -23,9 +21,9 @@
         android:id="@+id/windIcon"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:padding="8dp"
         android:background="@drawable/background_card"
         android:importantForAccessibility="no"
+        android:padding="8dp"
         app:layout_constraintBottom_toTopOf="@+id/time"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/weatherIcon"
@@ -36,6 +34,7 @@
         android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:fontFamily="sans-serif"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/windIcon"
@@ -46,35 +45,37 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="end"
-        app:constraint_referenced_ids="time, windIcon, weatherIcon"/>
+        app:barrierMargin="8dp"
+        app:constraint_referenced_ids="time, windIcon, weatherIcon" />
 
-    <GridLayout
-        android:id="@+id/detailsContainer"
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
+        android:orientation="horizontal"
         android:background="@drawable/background_card"
-        android:columnCount="2"
-        android:rowCount="1"
-        android:padding="@dimen/def_radius"
         app:layout_constraintStart_toEndOf="@id/barrier"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        android:padding="16dp">
 
         <include
             android:id="@+id/firstDetails"
             layout="@layout/lay_first_details"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"/>
+        <Space
+            android:layout_width="16dp"
+            android:layout_gravity="end"
+            android:layout_height="match_parent" />
         <include
             android:id="@+id/secondDetails"
             layout="@layout/lay_second_details"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"/>
+            android:layout_weight="1.0"/>
 
-    </GridLayout>
+    </LinearLayout>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

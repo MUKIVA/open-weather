@@ -45,6 +45,7 @@ class ForecastItemViewHolder(
         updateTime(item.dateTime)
         updateWeatherIcon(item.weatherIconUrl)
     }
+
     private fun updateTemp(temp: Temp) = with(binding.firstDetails) {
         tempValue.text = itemView.getTempString(temp)
     }

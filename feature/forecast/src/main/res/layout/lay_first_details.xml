@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:columnCount="2">
 
@@ -11,6 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-medium"
+        android:textColor="?attr/colorPrimary"
         android:text="@string/temp_label" />
 
     <TextView
@@ -24,6 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-medium"
+        android:textColor="?attr/colorPrimary"
         android:text="@string/feels_like_label" />
 
     <TextView
@@ -37,6 +39,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-medium"
+        android:textColor="?attr/colorPrimary"
         android:text="@string/cloud_label" />
 
     <TextView
@@ -50,6 +53,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-medium"
+        android:textColor="?attr/colorPrimary"
         android:text="@string/wind_speed_label" />
 
     <TextView
@@ -63,6 +67,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-medium"
+        android:textColor="?attr/colorPrimary"
         android:text="@string/wind_degree_label"
         />
 
@@ -77,12 +82,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-medium"
+        android:textColor="?attr/colorPrimary"
         android:text="@string/label_wind_direction" />
 
     <TextView
         android:id="@+id/directionValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="end"
         tools:text="NNW" />
 
 
