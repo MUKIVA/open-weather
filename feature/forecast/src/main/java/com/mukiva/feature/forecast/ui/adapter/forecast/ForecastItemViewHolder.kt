@@ -1,7 +1,6 @@
 package com.mukiva.feature.forecast.ui.adapter.forecast
 
 import android.graphics.drawable.RotateDrawable
-import android.view.Gravity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide

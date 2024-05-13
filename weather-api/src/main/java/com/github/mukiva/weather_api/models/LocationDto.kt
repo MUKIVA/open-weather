@@ -1,10 +1,7 @@
 package com.github.mukiva.weather_api.models
 
 import com.github.mukiva.weather_api.utils.DateTimeUnixSerializer
-import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

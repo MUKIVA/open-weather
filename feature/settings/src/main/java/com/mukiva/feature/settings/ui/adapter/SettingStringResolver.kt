@@ -55,14 +55,6 @@ internal fun Fragment.asLocalTitle(type: KClass<*>): String {
     }
 }
 
-internal fun Context.asLocalTitle(type: KClass<*>): String {
-    return when(type) {
-        Theme::class -> getString(R.string.option_theme_name)
-        UnitsType::class -> getString(R.string.option_units_type_name)
-        else -> error("Not implemented")
-    }
-}
-
 internal fun Fragment.asLocalVariants(type: KClass<*>): List<String> {
     return when(type) {
         Theme::class -> Theme.entries.map(::themeLocal)

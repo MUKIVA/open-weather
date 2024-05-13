@@ -121,9 +121,11 @@ class ForecastRepository(
         database.forecastDao.insertCache(cache)
     }
 
-    private fun cacheValidate(cache: ForecastWithCurrentAndLocationDbo?): RequestResult<ForecastWithCurrentAndLocationDbo> {
+    private fun cacheValidate(
+        cache: ForecastWithCurrentAndLocationDbo?
+    ): RequestResult<ForecastWithCurrentAndLocationDbo> {
         return if (cache == null)
-            RequestResult.InProgress(cache)
+            RequestResult.InProgress(null)
         else
             RequestResult.Success(cache)
     }

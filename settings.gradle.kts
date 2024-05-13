@@ -1,11 +1,4 @@
 @file:Suppress("UnstableApiUsage")
-
-include(":weather-settings-data")
-
-
-include(":core:domain")
-
-
 pluginManagement {
     repositories {
         google {
@@ -31,8 +24,7 @@ rootProject.name = "open-weather"
 
 include(":app")
 include(":core:ui")
-include(":core:data")
-include(":core:presentation")
+include(":core:domain")
 
 include(":feature:settings")
 include(":feature:dashboard")

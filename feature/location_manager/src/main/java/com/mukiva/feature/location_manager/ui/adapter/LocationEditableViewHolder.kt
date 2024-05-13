@@ -12,7 +12,7 @@ class LocationEditableViewHolder(
     private val onSelect: (EditableLocation) -> Unit
 ) : RecyclerView.ViewHolder(bind.root) {
 
-    fun bind(item: EditableLocation) = with(bind) {
+    fun bind(item: EditableLocation) {
         setLocationData(item.location)
         setSelected(item.isSelected)
         setEditable(item.isEditable)
@@ -20,7 +20,7 @@ class LocationEditableViewHolder(
         setActions(item)
     }
 
-    private fun setActions(item: EditableLocation) = with(bind) {
+    private fun setActions(item: EditableLocation) {
         setLongTap(item)
         setClick(item)
     }

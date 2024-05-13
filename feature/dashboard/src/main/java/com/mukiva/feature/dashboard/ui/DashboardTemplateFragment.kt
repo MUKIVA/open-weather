@@ -224,8 +224,6 @@ class DashboardTemplateFragment
     }
 
     companion object {
-        private const val FROM_MBAR_TO_MMHG = 0.750062f
-
         private const val ROTATE_DRAWABLE_MAX_LEVEL = 10000
 
         fun newInstance(args: Args) = DashboardTemplateFragment().apply {

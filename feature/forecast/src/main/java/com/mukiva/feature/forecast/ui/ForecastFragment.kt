@@ -7,14 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
-import com.mukiva.core.ui.KEY_ARGS
 import com.mukiva.core.ui.getArgs
 import com.mukiva.core.ui.getAttrColor
 import com.mukiva.feature.forecast.R
@@ -160,16 +158,6 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast) {
                 emptyView.loading()
                 content.gone()
             }
-        }
-    }
-
-    companion object {
-        fun newInstance(
-            args: Args
-        ) = ForecastFragment().apply {
-            arguments = bundleOf(
-                KEY_ARGS to args
-            )
         }
     }
 }

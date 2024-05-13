@@ -292,8 +292,6 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
 
     companion object {
         private const val DEBOUNCE_EDIT_TEXT = 500L
-
-        fun newInstance() = LocationManagerFragment()
     }
 
 

@@ -46,11 +46,6 @@ class LocationRepository(
             .insert(location.toDbo())
     }
 
-    suspend fun removeLocalLocation(location: Location) {
-        database.locationDao
-            .delete(location.toDbo())
-    }
-
     suspend fun removeAllLocations() {
         database.locationDao.deleteAll()
     }

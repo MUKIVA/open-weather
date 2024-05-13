@@ -32,7 +32,6 @@ dependencies {
 
     implementation(project(":core:ui"))
     implementation(project(":core:domain"))
-    implementation(project(":core:presentation"))
 
     implementation(project(":weather-data"))
     

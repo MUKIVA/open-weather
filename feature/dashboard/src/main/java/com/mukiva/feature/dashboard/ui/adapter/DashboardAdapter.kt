@@ -27,7 +27,7 @@ class DashboardAdapter(
     override fun getItemCount(): Int = mDiffer.currentList.size
 
     override fun createFragment(position: Int): Fragment {
-        val location = mDiffer.currentList.get(position)
+        val location = mDiffer.currentList[position]
         val fragment = DashboardTemplateFragment
             .newInstance(DashboardTemplateFragment.Args(
                 locationName = location.name,
