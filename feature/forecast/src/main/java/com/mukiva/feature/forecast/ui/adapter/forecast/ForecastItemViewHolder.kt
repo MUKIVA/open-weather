@@ -1,15 +1,16 @@
 package com.mukiva.feature.forecast.ui.adapter.forecast
 
 import android.graphics.drawable.RotateDrawable
+import android.view.Gravity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.github.mukiva.open_weather.core.domain.Distance
-import com.github.mukiva.open_weather.core.domain.Precipitation
-import com.github.mukiva.open_weather.core.domain.Pressure
-import com.github.mukiva.open_weather.core.domain.Speed
-import com.github.mukiva.open_weather.core.domain.Temp
-import com.github.mukiva.open_weather.core.domain.WindDirection
+import com.github.mukiva.open_weather.core.domain.weather.Distance
+import com.github.mukiva.open_weather.core.domain.weather.Precipitation
+import com.github.mukiva.open_weather.core.domain.weather.Pressure
+import com.github.mukiva.open_weather.core.domain.weather.Speed
+import com.github.mukiva.open_weather.core.domain.weather.Temp
+import com.github.mukiva.open_weather.core.domain.weather.WindDirection
 import com.mukiva.feature.forecast.R
 import com.mukiva.feature.forecast.databinding.ItemHourDetailsBinding
 import com.mukiva.feature.forecast.domain.ForecastItem
@@ -72,6 +73,7 @@ class ForecastItemViewHolder(
 
         binding.windIcon.setImageDrawable(rotatedDrawable)
     }
+
     private fun updateWindDirection(windDirection: WindDirection) = with(binding.firstDetails) {
         directionValue.text = windDirection.toString()
     }

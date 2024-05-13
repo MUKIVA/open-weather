@@ -1,5 +1,8 @@
 @file:Suppress("UnstableApiUsage")
 
+include(":weather-settings-data")
+
+
 include(":core:domain")
 
 

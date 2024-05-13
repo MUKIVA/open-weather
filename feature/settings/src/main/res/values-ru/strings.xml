@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="fragment_settings_title">Настройки</string>
+    <string name="variant_unchecked">Не выбрано</string>
+
+    <string name="setting_group_general">Главные</string>
+
+    <string name="option_theme_name">Тема приложения</string>
+    <string name="option_theme_description">Смена темы приложения</string>
+    <string name="option_theme_system">Системная</string>
+    <string name="option_theme_dark">Темная</string>
+    <string name="option_theme_light">Светлая</string>
+
+    <string name="option_units_type_name">Система измерения</string>
+    <string name="option_units_type_description">Выбор системы измерения</string>
+    <string name="option_units_type_metric">Метрическая</string>
+    <string name="option_units_type_imperial">Империалистическая</string>
+
+</resources>

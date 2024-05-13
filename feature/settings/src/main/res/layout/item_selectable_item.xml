@@ -14,8 +14,17 @@
         android:textAppearance="@style/TextAppearance.Material3.LabelLarge"
         android:background="?attr/selectableItemBackground"
         android:drawablePadding="8dp"
+        android:gravity="center|start"
         android:paddingHorizontal="@dimen/def_h_padding"
         android:paddingVertical="@dimen/def_v_padding"
         tools:text="Variant"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/def_separator_h"
+        android:background="?attr/colorOutline"
+        android:layout_gravity="bottom"
+        android:layout_marginHorizontal="@dimen/def_h_padding"
+        android:alpha="0.1"/>
 
 </FrameLayout>

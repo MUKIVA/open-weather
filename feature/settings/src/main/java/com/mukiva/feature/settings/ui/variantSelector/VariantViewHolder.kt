@@ -4,18 +4,17 @@ import android.util.TypedValue
 import androidx.annotation.AttrRes
 import androidx.recyclerview.widget.RecyclerView
 import com.mukiva.feature.settings.databinding.ItemSelectableItemBinding
-import com.mukiva.feature.settings.domain.SettingVariant
 import com.google.android.material.R as MaterialRes
 
 class VariantViewHolder(
     private val binding: ItemSelectableItemBinding,
-    private val onClick: (SettingVariant) -> Unit
+    private val onClick: (Int) -> Unit
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(item: SettingVariant) = with(binding.variant) {
-        text = item.name
-        setSelection(item.isSelected)
-        setOnClickListener { onClick(item) }
+    fun bind(item: String, position: Int, isSelected: Boolean) = with(binding.variant) {
+        text = item
+        setSelection(isSelected)
+        setOnClickListener { onClick(position) }
     }
 
     private fun setSelection(isSelected: Boolean) = with(binding.variant) {
@@ -28,7 +27,6 @@ class VariantViewHolder(
                 it?.setTint(colorRes)
             }
         }
-
     }
 
     private fun getAttrColor(@AttrRes res: Int): Int {

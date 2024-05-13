@@ -2,7 +2,7 @@ package com.mukiva.feature.dashboard.ui.adapter
 
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.github.mukiva.open_weather.core.domain.Temp
+import com.github.mukiva.open_weather.core.domain.weather.Temp
 import com.mukiva.feature.dashboard.databinding.ItemMinForecastBinding
 import com.mukiva.feature.dashboard.domain.model.MinimalForecast
 import com.mukiva.openweather.ui.getTempString

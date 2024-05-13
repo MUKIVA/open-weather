@@ -3,22 +3,21 @@ package com.mukiva.navigation.ui
 import androidx.annotation.MainThread
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.FragmentActivity
-import com.mukiva.navigation.domain.repository.ISettingsRepository
-import com.mukiva.navigation.domain.Theme
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
+import com.github.mukiva.weather_data.SettingsRepository
+import com.github.mukiva.open_weather.core.domain.settings.Theme
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class SettingsHandler @Inject constructor(
-    private val settingsRepository: ISettingsRepository
+    private val settingsRepository: SettingsRepository
 ) : AbstractLifecycleHandler() {
 
     private var mActivity: FragmentActivity? = null
-    private var mJob: Job? = null
 
     @MainThread
     private fun updateAppTheme(theme: Theme) {
@@ -40,16 +39,14 @@ class SettingsHandler @Inject constructor(
         super.onCreated(activity)
         mActivity = activity
 
-        mJob = CoroutineScope(Job() + Dispatchers.Main).launch {
-            settingsRepository.getThemeFlow()
-                .collect(::updateAppTheme)
-        }
+        settingsRepository.getTheme()
+            .flowWithLifecycle(activity.lifecycle)
+            .onEach(::updateAppTheme)
+            .launchIn(activity.lifecycleScope)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mJob?.cancel()
-        mJob = null
         mActivity = null
     }
 

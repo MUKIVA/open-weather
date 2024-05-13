@@ -7,41 +7,26 @@
     android:background="@android:color/transparent"
     android:orientation="vertical">
 
-    <View
-        android:layout_width="@dimen/def_sheet_handle_w"
-        android:layout_height="@dimen/def_sheet_handle_h"
-        android:layout_gravity="center"
-        android:layout_marginVertical="@dimen/def_v_padding"
-        android:background="@drawable/background_bottom_sheet_handle"
-        android:alpha="@dimen/def_sheet_handle_alpha"/>
-
-    <com.google.android.material.appbar.AppBarLayout
+    <TextView
+        android:id="@+id/header"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent">
+        android:layout_height="?attr/actionBarSize"
+        android:gravity="center"
+        android:fontFamily="sans-serif-medium"
+        style="@style/TextAppearance.Material3.ActionBar.Title"
+        tools:text="Header"/>
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:title="SettingName"
-            app:titleCentered="true"
-            android:background="@android:color/transparent"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/def_separator_h"
-            android:background="?attr/colorOutline"
-            android:alpha="0.5"/>
-
-    </com.google.android.material.appbar.AppBarLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/def_separator_h"
+        android:background="?attr/colorOutline"
+        android:alpha="0.5"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/variantList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:paddingVertical="@dimen/def_v_padding"
         tools:listitem="@layout/item_selectable_item"/>
 
 </LinearLayout>

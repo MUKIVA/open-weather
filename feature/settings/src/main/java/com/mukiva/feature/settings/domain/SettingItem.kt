@@ -1,42 +1,25 @@
 package com.mukiva.feature.settings.domain
 
-abstract class SettingItem(
-    val id: Int,
-    val group: Group
+import com.github.mukiva.open_weather.core.domain.settings.Group
+import kotlin.enums.EnumEntries
+import kotlin.reflect.KClass
+
+sealed class SettingItem(
+    val id: Int
 ) {
-
-    data class Title(
-        val groupType: Group
-    ) : SettingItem(TITLE_ITEM_ID, groupType)
-
+    data class Title(val group: Group) : SettingItem(TITLE_ITEM_ID)
     data class Toggle(
-        val groupType: Group,
+        val key: KClass<*>,
         val isEnabled: Boolean
-    ) : SettingItem(TOGGLE_ITEM_ID, groupType)
-
+    ) : SettingItem(TOGGLE_ITEM_ID)
     data class Variant(
-        val groupType: Group,
-        val variants: List<SettingVariant>
-    ) : SettingItem(VARIANT_ITEM_ID, groupType)
-
+        val key: KClass<*>,
+        val selectedVariant: Enum<*>,
+        val variants: EnumEntries<*>,
+    ) : SettingItem(VARIANT_ITEM_ID)
     companion object {
         const val TITLE_ITEM_ID = 0
         const val TOGGLE_ITEM_ID = 1
         const val VARIANT_ITEM_ID = 2
     }
-
-    override fun equals(other: Any?): Boolean {
-        if (other !is SettingItem) return false
-        return when (this) {
-            is Title -> (other as Title) == this
-            is Variant -> (other as Variant) == this
-            is Toggle -> (other as Toggle) == this
-            else -> false
-        }
-    }
-
-    override fun hashCode(): Int {
-        return id
-    }
-
 }

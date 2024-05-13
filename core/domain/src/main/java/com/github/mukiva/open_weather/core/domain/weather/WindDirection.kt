@@ -1,4 +1,4 @@
-package com.github.mukiva.open_weather.core.domain
+package com.github.mukiva.open_weather.core.domain.weather
 
 /// See more on:
 // https://ambientweather.com/media/wysiwyg/smartwave/porto/ambient/faq/images/compass-rose.jpg

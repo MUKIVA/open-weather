@@ -12,10 +12,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import com.github.mukiva.open_weather.core.domain.Pressure
-import com.github.mukiva.open_weather.core.domain.Speed
-import com.github.mukiva.open_weather.core.domain.Temp
-import com.github.mukiva.open_weather.core.domain.WindDirection
+import com.github.mukiva.open_weather.core.domain.weather.Pressure
+import com.github.mukiva.open_weather.core.domain.weather.Speed
+import com.github.mukiva.open_weather.core.domain.weather.Temp
+import com.github.mukiva.open_weather.core.domain.weather.WindDirection
 import com.mukiva.core.ui.KEY_ARGS
 import com.mukiva.core.ui.getArgs
 import com.mukiva.core.ui.getPressureString

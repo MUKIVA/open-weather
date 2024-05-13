@@ -27,8 +27,10 @@ android {
 dependencies {
     implementation(project(":weather-api"))
     implementation(project(":database"))
+    implementation(project(":core:domain"))
 
     implementation(libs.kotlinx.datetime)
     implementation(libs.kotlinx.coroutines)
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.androidx.datastore)
 }

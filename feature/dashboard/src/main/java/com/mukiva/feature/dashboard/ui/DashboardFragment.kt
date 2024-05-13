@@ -13,8 +13,8 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import com.github.mukiva.open_weather.core.domain.Temp
-import com.github.mukiva.open_weather.core.domain.UnitsType
+import com.github.mukiva.open_weather.core.domain.weather.Temp
+import com.github.mukiva.open_weather.core.domain.settings.UnitsType
 import com.mukiva.core.ui.getDimen
 import com.mukiva.core.ui.getTempString
 import com.mukiva.feature.dashboard.R
@@ -87,12 +87,12 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
             val invOffsetRatio = 1 - abs(verticalOffset.toFloat() / maxOffset)
 
             val drawable = ResourcesCompat
-                .getDrawable(resources, R.drawable.background_dashboard, requireActivity().theme)
+                .getDrawable(resources, CoreUiRes.drawable.background_bottom_sheet, requireActivity().theme)
 
             val background = (drawable as LayerDrawable)
-                .findDrawableByLayerId(R.id.background) as GradientDrawable
+                .findDrawableByLayerId(CoreUiRes.id.background) as GradientDrawable
             val dragHandler = drawable
-                .findDrawableByLayerId(R.id.dragHandler) as GradientDrawable
+                .findDrawableByLayerId(CoreUiRes.id.dragHandler) as GradientDrawable
             val topPadding = Rect().let { background.getPadding(it); it.top }
 
             dragHandler.alpha = (ALPHA_MAX_VALUE * invOffsetRatio).toInt()

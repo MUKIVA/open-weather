@@ -1,6 +1,6 @@
 package com.mukiva.feature.dashboard.domain.model
 
-import com.github.mukiva.open_weather.core.domain.Temp
+import com.github.mukiva.open_weather.core.domain.weather.Temp
 import kotlinx.datetime.LocalDateTime
 
 data class MinimalForecast(

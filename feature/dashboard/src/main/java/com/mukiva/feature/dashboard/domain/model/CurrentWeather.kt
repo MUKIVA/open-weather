@@ -1,11 +1,11 @@
 package com.mukiva.feature.dashboard.domain.model
 
-import com.github.mukiva.open_weather.core.domain.Distance
-import com.github.mukiva.open_weather.core.domain.Precipitation
-import com.github.mukiva.open_weather.core.domain.Pressure
-import com.github.mukiva.open_weather.core.domain.Speed
-import com.github.mukiva.open_weather.core.domain.Temp
-import com.github.mukiva.open_weather.core.domain.WindDirection
+import com.github.mukiva.open_weather.core.domain.weather.Distance
+import com.github.mukiva.open_weather.core.domain.weather.Precipitation
+import com.github.mukiva.open_weather.core.domain.weather.Pressure
+import com.github.mukiva.open_weather.core.domain.weather.Speed
+import com.github.mukiva.open_weather.core.domain.weather.Temp
+import com.github.mukiva.open_weather.core.domain.weather.WindDirection
 import kotlinx.datetime.LocalDateTime
 
 

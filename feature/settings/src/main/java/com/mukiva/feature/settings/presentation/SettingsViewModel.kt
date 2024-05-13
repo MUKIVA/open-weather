@@ -1,99 +1,105 @@
 package com.mukiva.feature.settings.presentation
 
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.mukiva.open_weather.core.domain.UnitsType
-import com.mukiva.feature.settings.domain.config.Theme
-import com.mukiva.feature.settings.domain.repository.ISettingsRepository
+import com.github.mukiva.weather_data.SettingsRepository
+import com.github.mukiva.open_weather.core.domain.settings.Config
+import com.github.mukiva.open_weather.core.domain.settings.Group
+import com.github.mukiva.open_weather.core.domain.settings.Theme
+import com.github.mukiva.open_weather.core.domain.settings.UnitsType
 import com.mukiva.feature.settings.domain.SettingItem
-import com.mukiva.feature.settings.domain.SettingVariant
-import com.mukiva.feature.settings.domain.Group
-import com.mukiva.feature.settings.domain.config.AppConfig
-import com.mukiva.feature.settings.domain.repository.IGeneralSettingsSetter
-import com.mukiva.openweather.presentation.SingleStateViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.enums.EnumEntries
+import kotlin.reflect.KClass
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    initialState: SettingsState,
-    config: ISettingsRepository,
-    private val configSetter: IGeneralSettingsSetter
-) : SingleStateViewModel<SettingsState, Nothing>(initialState) {
+    private val settingsRepository: SettingsRepository
+) : ViewModel() {
 
-    private val mAppConfig = config.asAppConfig()
+    val state: StateFlow<SettingsState>
+        get() = mState.asStateFlow()
 
-    init {
-        mAppConfig
-            .onEach { updateStruct(it) }
+    private val mState = MutableStateFlow<SettingsState>(SettingsState.Init)
+
+    fun loadConfiguration() {
+        settingsRepository.getConfiguration()
+            .map(::asState)
+            .onEach(mState::emit)
             .launchIn(viewModelScope)
     }
 
-    fun onSelectOptionVariant(
-        item: SettingItem.Variant,
-        variant: SettingVariant
-    ) = withViewModelScope {
-        when (item.group) {
-            is Group.General -> when(item.group) {
-                Group.General.Theme -> {
-                    configSetter.setTheme(Theme.valueOf(variant.name))
-                }
-                Group.General.UnitsType -> {
-                    configSetter.setUnitsType(UnitsType.valueOf(variant.name))
-                }
-                else -> {}
-            }
+    fun toggleOption() {
+
+    }
+
+    fun selectVariant(key: KClass<*>, variants: EnumEntries<*>, selectedVariant: Enum<*>) {
+        val selectedPosition = variants.indexOf(selectedVariant)
+        mState.update { state ->
+            if (state is SettingsState.Content)
+                state.copy(bottomSheetState = BottomSheetState.Show(key, variants, selectedPosition))
+            else
+                state
         }
     }
 
-    private fun withViewModelScope(block: suspend() -> Unit) {
+    fun commitSelection(position: Int) {
+        val state = mState.value
+        if (state !is SettingsState.Content) return
+        if (state.bottomSheetState !is BottomSheetState.Show) return
+        val variant = state.bottomSheetState.variants[position]
         viewModelScope.launch {
-            block()
+            when(state.bottomSheetState.key) {
+                Theme::class ->
+                    settingsRepository.setTheme(variant as Theme)
+                UnitsType::class ->
+                    settingsRepository.setUnitsType(variant as UnitsType)
+            }
         }
     }
 
-    fun onToggleOption() {
-        // TODO(Impl toggle)
+    fun closeBottomSheet() {
+        mState.update { state ->
+            if (state is SettingsState.Content)
+                state.copy(bottomSheetState = BottomSheetState.Hide)
+            else
+                state
+        }
     }
 
-    private fun updateStruct(cfg: AppConfig) = modifyState {
-        copy(
-            settingsList = buildList {
-                add(SettingItem.Title(Group.General()))
-                add(generateVariantItem(
-                    group = Group.General.Theme,
-                    enum = Theme::class.java,
-                    configPropName = { cfg.theme.name }
-                ))
-                add(generateVariantItem(
-                    group = Group.General.UnitsType,
-                    enum = UnitsType::class.java,
-                    configPropName = { cfg.unitsType.name }
-                ))
-            }
+    private fun asState(config: Config): SettingsState {
+        return SettingsState.Content(
+            bottomSheetState = BottomSheetState.Hide,
+            list = configurationAsState(config)
         )
     }
 
-    private fun generateVariantItem(
-        group: Group,
-        enum: Class<out Enum<*>>,
-        configPropName: () -> String
-    ): SettingItem.Variant {
-        return SettingItem.Variant(
-            groupType = group,
-            variants = buildList {
-                enum.enumConstants.forEach {
-                    add(
-                        SettingVariant(
-                        name = it.name,
-                        isSelected = it.name == configPropName()
-                    )
-                    )
+    private fun configurationAsState(config: Config) = buildList {
+        config.groups.onEach { group ->
+            when(group) {
+                is Group.General -> {
+                    add(SettingItem.Title(group))
+                    add(SettingItem.Variant(
+                        Theme::class,
+                        group.theme,
+                        Theme.entries
+                    ))
+                    add(SettingItem.Variant(
+                        UnitsType::class,
+                        group.unitsType,
+                        UnitsType.entries
+                    ))
                 }
             }
-        )
+        }
     }
-
 }

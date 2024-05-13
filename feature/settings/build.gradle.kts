@@ -34,6 +34,8 @@ dependencies {
     implementation(project(":core:domain"))
     implementation(project(":core:presentation"))
 
+    implementation(project(":weather-data"))
+    
     implementation(libs.androidx.core)
     implementation(libs.android.material)
     implementation(libs.androidx.lifecycle)

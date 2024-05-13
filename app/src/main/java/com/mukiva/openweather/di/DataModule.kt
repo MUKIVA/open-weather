@@ -5,6 +5,7 @@ import com.github.mukiva.weather_api.IWeatherApi
 import com.github.mukiva.weather_api.weatherApi
 import com.github.mukiva.weather_data.ForecastRepository
 import com.github.mukiva.weather_data.LocationRepository
+import com.github.mukiva.weather_data.SettingsRepository
 import com.github.mukiva.weather_database.WeatherDatabase
 import com.github.mukiva.weather_database.weatherDatabase
 import com.mukiva.openweather.BuildConfig
@@ -69,4 +70,10 @@ class DataModule {
         database: WeatherDatabase,
         api: IWeatherApi,
     ): ForecastRepository = ForecastRepository(database, api)
+
+    @Provides
+    @Singleton
+    fun provideSettingsRepository(
+        @ApplicationContext applicationContext: Context
+    ): SettingsRepository = SettingsRepository(applicationContext)
 }

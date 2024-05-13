@@ -1,7 +1,5 @@
 package com.github.mukiva.weather_data.utils
 
-import android.util.Log
-
 sealed class RequestResult<out E : Any>(val data: E? = null) {
     class InProgress<E : Any>(data: E? = null) : RequestResult<E>(data)
     class Success<E : Any>(data: E) : RequestResult<E>(data)

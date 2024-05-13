@@ -1,23 +1,23 @@
 package com.mukiva.feature.dashboard.domain.usecase
 
-import com.github.mukiva.open_weather.core.domain.Distance
-import com.github.mukiva.open_weather.core.domain.Precipitation
-import com.github.mukiva.open_weather.core.domain.Pressure
-import com.github.mukiva.open_weather.core.domain.Speed
-import com.github.mukiva.open_weather.core.domain.Temp
-import com.github.mukiva.open_weather.core.domain.UnitsType
-import com.github.mukiva.open_weather.core.domain.WindDirection
+import com.github.mukiva.open_weather.core.domain.weather.Distance
+import com.github.mukiva.open_weather.core.domain.weather.Precipitation
+import com.github.mukiva.open_weather.core.domain.weather.Pressure
+import com.github.mukiva.open_weather.core.domain.weather.Speed
+import com.github.mukiva.open_weather.core.domain.weather.Temp
+import com.github.mukiva.open_weather.core.domain.weather.WindDirection
 import com.github.mukiva.weather_data.ForecastRepository
+import com.github.mukiva.weather_data.SettingsRepository
 import com.github.mukiva.weather_data.models.Current
 import com.github.mukiva.weather_data.models.ForecastDay
 import com.github.mukiva.weather_data.models.ForecastWithCurrentAndLocation
+import com.github.mukiva.open_weather.core.domain.settings.UnitsType
 import com.github.mukiva.weather_data.utils.RequestResult
 import com.github.mukiva.weather_data.utils.map
 import com.mukiva.feature.dashboard.domain.model.Condition
 import com.mukiva.feature.dashboard.domain.model.CurrentWeather
 import com.mukiva.feature.dashboard.domain.model.Forecast
 import com.mukiva.feature.dashboard.domain.model.MinimalForecast
-import com.mukiva.feature.dashboard.domain.repository.ISettingsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
@@ -26,11 +26,11 @@ import com.github.mukiva.weather_data.models.Forecast as DataForecast
 
 class GetForecastUseCase @Inject constructor(
     private val forecastRepository: ForecastRepository,
-    private val settings: ISettingsRepository
+    private val settingsRepository: SettingsRepository,
 ) {
     operator fun invoke(location: String): Flow<RequestResult<Forecast>> {
         val request = forecastRepository.getForecast(location)
-        val settings = settings.getUnitsTypeFlow()
+        val settings = settingsRepository.getUnitsType()
 
         return settings.combine(request) { unitsType, requestResult ->
             requestResult.map { forecast -> toForecast(unitsType, forecast) }
