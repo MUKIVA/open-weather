@@ -135,11 +135,12 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast) {
     }
 
     private fun updateType(state: ForecastState) = with(mBinding) {
-        Log.d("FRAGMENT", "$state")
         when(state) {
             is ForecastState.Content -> {
                 emptyView.hide()
                 content.visible()
+                viewPager.setCurrentItem(getArgs(Args::class.java).dayPosition, false)
+
             }
             ForecastState.Error -> {
                 content.gone()
