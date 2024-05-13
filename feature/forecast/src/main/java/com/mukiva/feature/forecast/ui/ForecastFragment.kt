@@ -35,6 +35,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.format.DayOfWeekNames
 import java.io.Serializable
+import com.mukiva.core.ui.R as CoreUiRes
 
 @AndroidEntryPoint
 class ForecastFragment : Fragment(R.layout.fragment_forecast) {
@@ -143,8 +144,8 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast) {
             ForecastState.Error -> {
                 content.gone()
                 emptyView.error(
-                    getString(R.string.get_forecast_error),
-                    getString(R.string.refresh)
+                    getString(CoreUiRes.string.error_msg),
+                    getString(CoreUiRes.string.refresh)
                 ) {
                     mViewModel.loadForecast(getArgs(Args::class.java).locationName)
                 }

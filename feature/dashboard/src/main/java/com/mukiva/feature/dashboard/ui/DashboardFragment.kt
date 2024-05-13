@@ -161,8 +161,8 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
                 mBinding.toolbarLayout.gone()
                 mBinding.dashboardContainer.gone()
                 mBinding.mainEmptyView.notify(
-                    msg = "TODO(ADD LOCATION)",
-                    buttonMsg = "TODO(Add)",
+                    msg = getString(R.string.main_empty_view_msg),
+                    buttonMsg = getString(R.string.select_locations),
                     action = mViewModel::goSelectLocations
                 )
             }
@@ -170,8 +170,8 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
                 mBinding.toolbarLayout.gone()
                 mBinding.dashboardContainer.gone()
                 mBinding.mainEmptyView.error(
-                    msg = "TODO(ERROR)",
-                    buttonText = "TODO(REFRESH)",
+                    msg = getString(CoreUiRes.string.error_msg),
+                    buttonText = getString(CoreUiRes.string.refresh),
                     onButtonClick = mViewModel::loadLocations
                 )
             }

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="get_forecast_error">Не удалось получить прогноз</string>
+    <string name="forecast_title">Прогноз</string>
+
+    <string name="label_temp">Температура: </string>
+    <string name="label_feels_like">Ощущается: </string>
+    <string name="label_cloud">Облачность: </string>
+    <string name="label_wind_speed">Скорость ветра: </string>
+    <string name="label_wind_degree">Направление ветра: </string>
+    <string name="label_wind_direction">Направление ветра: </string>
+    <string name="label_pressure">Давление:</string>
+    <string name="label_precipitation">Осадки:</string>
+    <string name="label_vis">Видимость:</string>
+    <string name="label_gust">Порыв ветра:</string>
+    <string name="label_humidity">Влажность:</string>
+</resources>

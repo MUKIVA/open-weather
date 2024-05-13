@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="search_hint">Введите название города…</string>
+    <string name="add_content_description">Добавить</string>
+    <string name="search_locations_title">Поиск местоположения</string>
+    <string name="search_empty">Мы ничего не нашли</string>
+    <string name="search_clear_field_description">Отчистить поле</string>
+    <string name="remove_selected_locations_description">Удалить локации</string>
+    <string name="select_all_description">Выбрать всё</string>
+    <string name="saved_locatios_empty_view">Нет сохраненных локаций</string>
+</resources>

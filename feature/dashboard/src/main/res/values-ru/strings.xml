@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="select_locations">Выбор местоположения</string>
+    <string name="settings">Настройки</string>
+
+    <string name="field_is_day_subtitle">Время суток</string>
+    <string name="is_day_true">День</string>
+    <string name="is_day_false">Ночь</string>
+
+    <string name="field_feels_like_subtitle">Ощучается</string>
+    <string name="field_condition_subtitle">Облачность</string>
+
+    <string name="field_wind_speed_subtitle">Скорость ветра</string>
+    <string name="field_wind_dir_subtitle">Направление ветра</string>
+
+    <string name="field_humidity_subtitle">Влажность</string>
+
+    <string name="field_pressure_subtitle">Давление</string>
+    <string name="dashboard_title_current">Текущая погода</string>
+    <string name="dashboard_title_forecast">Прогноз</string>
+
+    <string name="main_empty_view_msg">Список локаций пуст</string>
+
+</resources>

@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-medium"
         android:textColor="?attr/colorPrimary"
-        android:text="@string/temp_label" />
+        android:text="@string/label_temp" />
 
     <TextView
         android:id="@+id/tempValue"
@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-medium"
         android:textColor="?attr/colorPrimary"
-        android:text="@string/feels_like_label" />
+        android:text="@string/label_feels_like" />
 
     <TextView
         android:id="@+id/feelsLikeValue"
@@ -40,7 +40,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-medium"
         android:textColor="?attr/colorPrimary"
-        android:text="@string/cloud_label" />
+        android:text="@string/label_cloud" />
 
     <TextView
         android:id="@+id/cloudValue"
@@ -54,7 +54,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-medium"
         android:textColor="?attr/colorPrimary"
-        android:text="@string/wind_speed_label" />
+        android:text="@string/label_wind_speed" />
 
     <TextView
         android:id="@+id/windSpeedValue"
@@ -68,7 +68,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-medium"
         android:textColor="?attr/colorPrimary"
-        android:text="@string/wind_degree_label"
+        android:text="@string/label_wind_degree"
         />
 
     <TextView

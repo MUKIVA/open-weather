@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="template_kmh">%1$d Км/ч</string>
+    <string name="template_mph">%1$d Миль/ч</string>
+
+    <string name="template_km">%1$d км</string>
+    <plurals name="template_miles">
+        <item quantity="one">%1$d миля</item>
+        <item quantity="many">%1$d мили</item>
+        <item quantity="few">%1$d миль</item>
+        <item quantity="other">%1$d миль</item>
+    </plurals>
+
+    <string name="template_mmhg">%1$d мм рт. ст.</string>
+    <string name="template_mb">%1$d мб</string>
+
+    <string name="template_mm">%1$d мм</string>
+    <string name="template_in">%1$d in</string>
+
+    <string name="refresh">Обновить</string>
+
+    <string name="error_msg">Что-то пошло не так</string>
+</resources>

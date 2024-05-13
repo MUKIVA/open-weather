@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <declare-styleable name="GraphicListView">
-        <attr name="graphic_text_color" format="color" />
-        <attr name="graphic_line_color" format="color" />
-        <attr name="graphic_grid_color" format="color" />
-        <attr name="graphic_text_size" format="dimension" />
-    </declare-styleable>
-</resources>

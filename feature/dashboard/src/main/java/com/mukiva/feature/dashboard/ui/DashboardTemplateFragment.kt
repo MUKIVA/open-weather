@@ -45,6 +45,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import java.io.Serializable
+import com.mukiva.core.ui.R as CoreUiRes
 
 @AndroidEntryPoint
 class DashboardTemplateFragment
@@ -127,7 +128,7 @@ class DashboardTemplateFragment
 
     private fun updateHumidity(humidity: Int) = with(mBinding.humidityField) {
         subtitle.text = getString(R.string.field_humidity_subtitle)
-        fieldValue.text = getString(R.string.template_percent, humidity.toString())
+        fieldValue.text = getString(CoreUiRes.string.template_percent, humidity)
         fieldValue.setDrawable(R.drawable.ic_humidity)
     }
 
@@ -182,8 +183,8 @@ class DashboardTemplateFragment
             }
             LocationWeatherState.Error -> with(mBinding) {
                 emptyView.error(
-                    msg = "TODO(ERROR)",
-                    buttonText = "TODO(Refresh)",
+                    msg = getString(CoreUiRes.string.error_msg),
+                    buttonText = getString(CoreUiRes.string.refresh),
                     onButtonClick = loadAction
                 )
                 root.gone()

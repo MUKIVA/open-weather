@@ -222,7 +222,7 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
             }
             SavedLocationsState.Empty -> with(mBinding) {
                 addedList.gone()
-                addedEmptyView.emptyView("TODO(EMPTY)")
+                addedEmptyView.emptyView(getString(R.string.saved_locatios_empty_view))
                 toolbar.animate()
                     .alpha(0.0f)
                 searchBar.animate()
@@ -233,8 +233,8 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
             SavedLocationsState.Error -> with(mBinding) {
                 addedList.gone()
                 addedEmptyView.error(
-                    msg = "TODO(ERROR)",
-                    buttonText = "TODO(REFRESH)",
+                    msg = getString(CoreUiRes.string.error_msg),
+                    buttonText = getString(CoreUiRes.string.refresh),
                     onButtonClick = mViewModel::fetchAddedLocations
                 )
             }
@@ -270,13 +270,13 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
                 mSearchAdapter.submitList(state.data)
             }
             SearchLocationsState.Empty -> with(mBinding) {
-                searchEmptyView.emptyView("TODO(EMPTY)")
+                searchEmptyView.emptyView(getString(R.string.search_empty))
                 searchViewList.gone()
             }
             SearchLocationsState.Error -> with(mBinding) {
                 searchEmptyView.error(
-                    msg = "TODO(ERROR)",
-                    buttonText = "TODO(REFRESH)",
+                    msg = getString(CoreUiRes.string.error_msg),
+                    buttonText = getString(CoreUiRes.string.refresh),
                     onButtonClick = { mViewModel.executeSearch(searchView.text.toString()) }
                 )
                 searchViewList.gone()

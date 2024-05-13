@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <string name="list_states_image_description">Image to display messages</string>
-
-    <string name="template_celsius">%1$d℃</string>
-    <string name="template_fahrenheit">%1$d℉</string>
+    <string name="template_celsius" translatable="false">%1$d℃</string>
+    <string name="template_fahrenheit" translatable="false">%1$d℉</string>
 
     <string name="template_kmh">%1$d kph</string>
     <string name="template_mph">%1$d mph</string>
 
-    <string name="template_km">%1$d Km/h</string>
+    <string name="template_km">%1$d Km</string>
     <plurals name="template_miles">
         <item quantity="one">%1$d mile</item>
         <item quantity="other">%1$d miles</item>
@@ -21,7 +18,10 @@
     <string name="template_mm">%1$d mm</string>
     <string name="template_in">%1$d in</string>
 
-    <string name="template_percent">%1$d%%</string>
-    <string name="template_degree">%d°</string>
+    <string name="template_percent" translatable="false">%1$d%%</string>
+    <string name="template_degree" translatable="false">%d°</string>
+
+    <string name="refresh">Refresh</string>
+    <string name="error_msg">Oops, something went wrong</string>
 
 </resources>
