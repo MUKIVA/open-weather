@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.children
+import androidx.core.view.doOnLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
@@ -44,6 +45,8 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
     private val mViewModel by viewModels<DashboardViewModel>()
     private val mBinding by viewBindings(FragmentDashboardBinding::bind)
     private val mDashboardAdapter by uiLazy { DashboardAdapter(childFragmentManager, lifecycle) }
+    private var mIsAppbarExpanded: Boolean = true
+    private var mCurrentPage: Int = 0
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -63,11 +66,25 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         dashboard.adapter = mDashboardAdapter
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(KEY_EXPANDED, mIsAppbarExpanded)
+        outState.putInt(KEY_CURRENT_PAGE, mCurrentPage)
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        mIsAppbarExpanded = savedInstanceState?.getBoolean(KEY_EXPANDED) ?: true
+        mCurrentPage = savedInstanceState?.getInt(KEY_CURRENT_PAGE) ?: 0
+    }
+
     private fun initDashboard() = with(mBinding) {
         dashboard.offscreenPageLimit = 2
         dashboard.children.find { child -> child is RecyclerView }?.apply {
             (this as RecyclerView).isNestedScrollingEnabled = false
         }
+        toolbarLayout.setExpanded(mIsAppbarExpanded, false)
+        dashboard.doOnLayout { dashboard.setCurrentItem(mCurrentPage, false) }
     }
 
     private fun initAppbar() = with(mBinding) {
@@ -75,6 +92,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         dashboard.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
+                mCurrentPage = position
                 mDashboardAdapter.requestCurrent(position)
                     .flowWithLifecycle(lifecycle)
                     .onEach(::updateMainCard)
@@ -99,6 +117,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
             background.cornerRadius = invOffsetRatio * getDimen(CoreUiRes.dimen.def_radius)
             mBinding.dashboardContainer.background = drawable
             mBinding.dashboard.translationY = topPadding * invOffsetRatio
+            mIsAppbarExpanded = invOffsetRatio > 0.9
         }
     }
 
@@ -200,6 +219,9 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
 
     companion object {
         private const val ALPHA_MAX_VALUE = 255
+
+        private const val KEY_EXPANDED = "KEY_EXPANDED"
+        private const val KEY_CURRENT_PAGE = "KEY_CURRENT_PAGE"
     }
 }
 
