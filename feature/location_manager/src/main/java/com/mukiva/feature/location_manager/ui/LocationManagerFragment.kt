@@ -18,9 +18,13 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mukiva.core.ui.getInteger
+import com.mukiva.core.ui.uiLazy
+import com.mukiva.core.ui.viewBindings
 import com.mukiva.feature.location_manager.R
 import com.mukiva.feature.location_manager.databinding.FragmentLocationManagerBinding
 import com.mukiva.feature.location_manager.presentation.LocationManagerViewModel
+import com.mukiva.feature.location_manager.presentation.SavedLocationsState
+import com.mukiva.feature.location_manager.presentation.SearchLocationsState
 import com.mukiva.feature.location_manager.ui.adapter.DragDropItemTouchHelper
 import com.mukiva.feature.location_manager.ui.adapter.LocationManagerSavedAdapter
 import com.mukiva.feature.location_manager.ui.adapter.LocationManagerSearchAdapter
@@ -30,10 +34,6 @@ import com.mukiva.openweather.ui.gone
 import com.mukiva.openweather.ui.hide
 import com.mukiva.openweather.ui.loading
 import com.mukiva.openweather.ui.recycler.PaddingItemDecorator
-import com.mukiva.core.ui.uiLazy
-import com.mukiva.core.ui.viewBindings
-import com.mukiva.feature.location_manager.presentation.SavedLocationsState
-import com.mukiva.feature.location_manager.presentation.SearchLocationsState
 import com.mukiva.openweather.ui.visible
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.FlowPreview
@@ -53,15 +53,17 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
         LocationManagerSavedAdapter(
             onEnterEditMode = { item -> mViewModel.enterEditMode(item) },
             onSelectEditable = { item -> mViewModel.switchEditableSelect(item) },
-            onItemRemove =  { item -> mViewModel.removeLocation(item) },
+            onItemRemove = { item -> mViewModel.removeLocation(item) },
             onItemMoveCallback = { from, to -> mViewModel.moveLocation(from, to) }
         )
     }
-    private val mTouchHelperCallback by uiLazy { DragDropItemTouchHelper(mAddedAdapter).apply {
-        isEnabled = false
-        swipeIsEnabled = false
-        dragDropIsEnabled = true
-    } }
+    private val mTouchHelperCallback by uiLazy {
+        DragDropItemTouchHelper(mAddedAdapter).apply {
+            isEnabled = false
+            swipeIsEnabled = false
+            dragDropIsEnabled = true
+        }
+    }
 
     private val mSearchViewBackgroundColorAnimator by uiLazy {
         ValueAnimator.ofObject(ArgbEvaluator(), Color.TRANSPARENT, Color.BLACK).apply {
@@ -108,7 +110,7 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
         searchBar.setNavigationOnClickListener { mViewModel.goBack() }
 
         toolbar.setOnMenuItemClickListener { item ->
-            when(item.itemId) {
+            when (item.itemId) {
                 R.id.remove -> {
                     mViewModel.removeSelectedLocations()
                     true
@@ -183,15 +185,18 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
             insets
         }
 
-        searchViewList.addItemDecoration(PaddingItemDecorator.byDirections(
-            h = resources.getDimensionPixelOffset(R.dimen.def_h_padding),
-            v = resources.getDimensionPixelOffset(R.dimen.def_v_padding)
-        ))
-        searchViewList.addItemDecoration(DividerItemDecoration(
-            requireContext(),
-            LinearLayoutManager.VERTICAL)
+        searchViewList.addItemDecoration(
+            PaddingItemDecorator.byDirections(
+                h = resources.getDimensionPixelOffset(R.dimen.def_h_padding),
+                v = resources.getDimensionPixelOffset(R.dimen.def_v_padding)
+            )
         )
-
+        searchViewList.addItemDecoration(
+            DividerItemDecoration(
+                requireContext(),
+                LinearLayoutManager.VERTICAL
+            )
+        )
     }
 
     private fun subscribeOnViewModel() {
@@ -203,11 +208,10 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
             .flowWithLifecycle(lifecycle)
             .onEach(::updateSearchLocationsState)
             .launchIn(lifecycleScope)
-
     }
 
     private fun updateSavedLocationsState(state: SavedLocationsState) {
-        when(state) {
+        when (state) {
             is SavedLocationsState.Content -> with(mBinding) {
                 addedEmptyView.hide()
                 addedList.visible()
@@ -263,7 +267,7 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
     }
 
     private fun updateSearchLocationsState(state: SearchLocationsState) {
-        when(state) {
+        when (state) {
             is SearchLocationsState.Content -> with(mBinding) {
                 searchEmptyView.hide()
                 searchViewList.visible()
@@ -284,15 +288,11 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
             SearchLocationsState.Loading -> with(mBinding) {
                 searchEmptyView.loading()
                 searchViewList.gone()
-
             }
         }
     }
 
-
     companion object {
         private const val DEBOUNCE_EDIT_TEXT = 500L
     }
-
-
 }

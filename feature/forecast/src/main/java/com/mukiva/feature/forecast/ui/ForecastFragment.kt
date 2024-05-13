@@ -2,7 +2,6 @@ package com.mukiva.feature.forecast.ui
 
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -15,19 +14,19 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import com.mukiva.core.ui.getArgs
 import com.mukiva.core.ui.getAttrColor
+import com.mukiva.core.ui.uiLazy
+import com.mukiva.core.ui.viewBindings
 import com.mukiva.feature.forecast.R
 import com.mukiva.feature.forecast.databinding.FragmentForecastBinding
+import com.mukiva.feature.forecast.databinding.ItemDayTabBinding
 import com.mukiva.feature.forecast.presentation.ForecastState
 import com.mukiva.feature.forecast.presentation.ForecastViewModel
+import com.mukiva.feature.forecast.presentation.HourlyForecast
 import com.mukiva.feature.forecast.ui.adapter.forecast.HourlyForecastAdapter
 import com.mukiva.openweather.ui.error
 import com.mukiva.openweather.ui.gone
 import com.mukiva.openweather.ui.hide
 import com.mukiva.openweather.ui.loading
-import com.mukiva.core.ui.uiLazy
-import com.mukiva.core.ui.viewBindings
-import com.mukiva.feature.forecast.databinding.ItemDayTabBinding
-import com.mukiva.feature.forecast.presentation.HourlyForecast
 import com.mukiva.openweather.ui.visible
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
@@ -58,7 +57,6 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast) {
         initViewPager()
 
         subscribeOnViewModel()
-
     }
 
     private fun initAppbar() = with(mBinding) {
@@ -87,7 +85,6 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast) {
             view.dayOfWeek.text = dayOfWeekFormatter.format(mHourlyForecastAdapter[index].date)
         }.attach()
 
-
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
@@ -96,7 +93,6 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast) {
                     getAttrColor(com.google.android.material.R.attr.colorPrimary)
                 val selectedTextColor =
                     getAttrColor(com.google.android.material.R.attr.colorSurface)
-
 
                 for (i in 0 until tabLayout.tabCount) {
                     val tab = tabLayout.getTabAt(i)
@@ -135,12 +131,11 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast) {
     }
 
     private fun updateType(state: ForecastState) = with(mBinding) {
-        when(state) {
+        when (state) {
             is ForecastState.Content -> {
                 emptyView.hide()
                 content.visible()
                 viewPager.setCurrentItem(getArgs(Args::class.java).dayPosition, false)
-
             }
             ForecastState.Error -> {
                 content.gone()

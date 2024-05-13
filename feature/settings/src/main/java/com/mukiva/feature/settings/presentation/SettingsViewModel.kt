@@ -2,11 +2,11 @@ package com.mukiva.feature.settings.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.mukiva.weather_data.SettingsRepository
 import com.github.mukiva.open_weather.core.domain.settings.Config
 import com.github.mukiva.open_weather.core.domain.settings.Group
 import com.github.mukiva.open_weather.core.domain.settings.Theme
 import com.github.mukiva.open_weather.core.domain.settings.UnitsType
+import com.github.mukiva.weather_data.SettingsRepository
 import com.mukiva.feature.settings.domain.SettingItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,17 +38,14 @@ class SettingsViewModel @Inject constructor(
             .launchIn(viewModelScope)
     }
 
-    fun toggleOption() {
-
-    }
-
     fun selectVariant(key: KClass<*>, variants: EnumEntries<*>, selectedVariant: Enum<*>) {
         val selectedPosition = variants.indexOf(selectedVariant)
         mState.update { state ->
-            if (state is SettingsState.Content)
+            if (state is SettingsState.Content) {
                 state.copy(bottomSheetState = BottomSheetState.Show(key, variants, selectedPosition))
-            else
+            } else {
                 state
+            }
         }
     }
 
@@ -58,7 +55,7 @@ class SettingsViewModel @Inject constructor(
         if (state.bottomSheetState !is BottomSheetState.Show) return
         val variant = state.bottomSheetState.variants[position]
         viewModelScope.launch {
-            when(state.bottomSheetState.key) {
+            when (state.bottomSheetState.key) {
                 Theme::class ->
                     settingsRepository.setTheme(variant as Theme)
                 UnitsType::class ->
@@ -69,10 +66,11 @@ class SettingsViewModel @Inject constructor(
 
     fun closeBottomSheet() {
         mState.update { state ->
-            if (state is SettingsState.Content)
+            if (state is SettingsState.Content) {
                 state.copy(bottomSheetState = BottomSheetState.Hide)
-            else
+            } else {
                 state
+            }
         }
     }
 
@@ -85,19 +83,23 @@ class SettingsViewModel @Inject constructor(
 
     private fun configurationAsState(config: Config) = buildList {
         config.groups.onEach { group ->
-            when(group) {
+            when (group) {
                 is Group.General -> {
                     add(SettingItem.Title(group))
-                    add(SettingItem.Variant(
-                        Theme::class,
-                        group.theme,
-                        Theme.entries
-                    ))
-                    add(SettingItem.Variant(
-                        UnitsType::class,
-                        group.unitsType,
-                        UnitsType.entries
-                    ))
+                    add(
+                        SettingItem.Variant(
+                            Theme::class,
+                            group.theme,
+                            Theme.entries
+                        )
+                    )
+                    add(
+                        SettingItem.Variant(
+                            UnitsType::class,
+                            group.unitsType,
+                            UnitsType.entries
+                        )
+                    )
                 }
             }
         }

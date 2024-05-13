@@ -1,5 +1,6 @@
 package com.mukiva.feature.dashboard.domain.usecase
 
+import com.github.mukiva.open_weather.core.domain.settings.UnitsType
 import com.github.mukiva.open_weather.core.domain.weather.Distance
 import com.github.mukiva.open_weather.core.domain.weather.Precipitation
 import com.github.mukiva.open_weather.core.domain.weather.Pressure
@@ -11,7 +12,6 @@ import com.github.mukiva.weather_data.SettingsRepository
 import com.github.mukiva.weather_data.models.Current
 import com.github.mukiva.weather_data.models.ForecastDay
 import com.github.mukiva.weather_data.models.ForecastWithCurrentAndLocation
-import com.github.mukiva.open_weather.core.domain.settings.UnitsType
 import com.github.mukiva.weather_data.utils.RequestResult
 import com.github.mukiva.weather_data.utils.map
 import com.mukiva.feature.dashboard.domain.model.Condition
@@ -101,5 +101,4 @@ class GetForecastUseCase @Inject constructor(
             code = condition.code,
         )
     }
-
 }

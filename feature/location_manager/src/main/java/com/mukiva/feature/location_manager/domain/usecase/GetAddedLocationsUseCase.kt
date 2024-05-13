@@ -25,7 +25,7 @@ class GetAddedLocationsUseCase @Inject constructor(
     private fun toEditable(location: DataLocation) = EditableLocation(
         location = toLocation(location),
         isSelected = false,
-        isEditable = false //state.value.type == LocationManagerState.Type.EDIT
+        isEditable = false
     )
 
     private fun toLocation(dataLocation: DataLocation): Location {
@@ -38,5 +38,4 @@ class GetAddedLocationsUseCase @Inject constructor(
             isAdded = true
         )
     }
-
 }

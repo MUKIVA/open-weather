@@ -14,5 +14,4 @@ interface IGlueDashboardBinds {
     fun bindDashboardRouter(
         router: DashboardRouter
     ): IDashboardRouter
-
 }

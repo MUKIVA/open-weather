@@ -8,7 +8,7 @@ data class Precipitation(
     private val inch: Double,
 ) {
     val value
-        get() = when(unitsType) {
+        get() = when (unitsType) {
             UnitsType.METRIC -> mm
             UnitsType.IMPERIAL -> inch
         }

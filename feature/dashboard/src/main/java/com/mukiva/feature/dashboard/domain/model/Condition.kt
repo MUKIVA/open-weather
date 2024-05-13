@@ -5,5 +5,3 @@ data class Condition(
     val icon: String,
     val code: Int,
 )
-
-

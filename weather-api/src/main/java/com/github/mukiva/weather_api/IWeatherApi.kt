@@ -23,7 +23,6 @@ interface IWeatherApi {
     suspend fun search(
         @Query(value = "q") q: String,
     ): Result<List<LocationDto>>
-
 }
 
 fun weatherApi(

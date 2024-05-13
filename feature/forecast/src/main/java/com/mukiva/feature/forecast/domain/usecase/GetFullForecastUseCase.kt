@@ -1,5 +1,6 @@
 package com.mukiva.feature.forecast.domain.usecase
 
+import com.github.mukiva.open_weather.core.domain.settings.UnitsType
 import com.github.mukiva.open_weather.core.domain.weather.Distance
 import com.github.mukiva.open_weather.core.domain.weather.Precipitation
 import com.github.mukiva.open_weather.core.domain.weather.Pressure
@@ -10,7 +11,6 @@ import com.github.mukiva.weather_data.ForecastRepository
 import com.github.mukiva.weather_data.SettingsRepository
 import com.github.mukiva.weather_data.models.Forecast
 import com.github.mukiva.weather_data.models.Hour
-import com.github.mukiva.open_weather.core.domain.settings.UnitsType
 import com.github.mukiva.weather_data.utils.RequestResult
 import com.github.mukiva.weather_data.utils.map
 import com.mukiva.feature.forecast.domain.ForecastItem
@@ -36,7 +36,7 @@ class GetFullForecastUseCase @Inject constructor(
     private fun toHourlyForecast(
         forecast: Forecast,
         unitsType: UnitsType
-    ): List<HourlyForecast.Content>  {
+    ): List<HourlyForecast.Content> {
         return forecast.forecastDay.mapIndexed { index, forecastDay ->
             HourlyForecast.Content(
                 index = index,
@@ -46,7 +46,6 @@ class GetFullForecastUseCase @Inject constructor(
                 }
             )
         }
-
     }
 
     private fun asForecastItem(

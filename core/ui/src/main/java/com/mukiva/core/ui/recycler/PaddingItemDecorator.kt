@@ -37,10 +37,5 @@ class PaddingItemDecorator(
                 b = v
             )
         }
-
-        fun byAll(@Px value: Int): PaddingItemDecorator {
-            return PaddingItemDecorator(value, value, value, value)
-        }
     }
-
 }

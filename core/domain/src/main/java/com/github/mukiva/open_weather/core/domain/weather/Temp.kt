@@ -8,7 +8,7 @@ data class Temp(
     private val tempF: Double,
 ) {
     val value: Double
-        get() = when(unitsType) {
+        get() = when (unitsType) {
             UnitsType.METRIC -> tempC
             UnitsType.IMPERIAL -> tempF
         }

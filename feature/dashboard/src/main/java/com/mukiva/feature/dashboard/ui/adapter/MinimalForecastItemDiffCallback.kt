@@ -13,6 +13,4 @@ object MinimalForecastItemDiffCallback : DiffUtil.ItemCallback<MinimalForecast>(
     override fun areContentsTheSame(oldItem: MinimalForecast, newItem: MinimalForecast): Boolean {
         return oldItem == newItem
     }
-
 }
-

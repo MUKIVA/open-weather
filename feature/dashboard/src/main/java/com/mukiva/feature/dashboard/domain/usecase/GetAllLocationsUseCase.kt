@@ -17,7 +17,7 @@ class GetAllLocationsUseCase @Inject constructor(
             .map { requestResult -> requestResult.map(::toLocation) }
     }
 
-    private fun toLocation(dataList: List<DataLocation>) : List<Location> {
+    private fun toLocation(dataList: List<DataLocation>): List<Location> {
         return dataList.map(::toLocation)
     }
 

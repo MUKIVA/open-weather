@@ -37,7 +37,10 @@ class LocationEditableViewHolder(
         if (item.isEditable) {
             root.setOnLongClickListener(null)
         } else {
-            root.setOnLongClickListener { onEdit(item); true }
+            root.setOnLongClickListener {
+                onEdit(item)
+                true
+            }
         }
     }
 
@@ -56,6 +59,4 @@ class LocationEditableViewHolder(
         selectCheckBox.isChecked = isSelected
         selectCheckBox.isEnabled = false
     }
-
-
 }

@@ -27,9 +27,11 @@ class DataModule {
     @Provides
     @Singleton
     fun provideOkHttpClient() = OkHttpClient.Builder()
-        .addInterceptor(HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
-        })
+        .addInterceptor(
+            HttpLoggingInterceptor().apply {
+                level = HttpLoggingInterceptor.Level.BODY
+            }
+        )
         .build()
 
     @Provides

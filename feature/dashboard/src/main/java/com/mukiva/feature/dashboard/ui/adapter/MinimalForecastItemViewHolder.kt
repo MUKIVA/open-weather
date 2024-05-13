@@ -44,7 +44,6 @@ class MinimalForecastItemViewHolder(
         dayTemp: Temp,
         nightTemp: Temp,
     ) = with(bindings) {
-
         this.nightTemp.text = itemView.getTempString(nightTemp)
         this.dayTemp.text = itemView.getTempString(dayTemp)
     }
@@ -54,11 +53,10 @@ class MinimalForecastItemViewHolder(
         dayOfWeek.text = dayOfWeekFormatter.format(date)
     }
 
-    private fun updateCondition(iconUrl: String) = with (bindings) {
+    private fun updateCondition(iconUrl: String) = with(bindings) {
         Glide.with(bindings.root)
             .load("https:$iconUrl")
             .centerCrop()
             .into(this.condition)
     }
-
 }

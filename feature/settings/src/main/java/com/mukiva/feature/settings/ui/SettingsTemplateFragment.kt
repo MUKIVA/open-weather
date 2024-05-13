@@ -8,15 +8,15 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.appbar.CollapsingToolbarLayout.TITLE_COLLAPSE_MODE_SCALE
+import com.mukiva.core.ui.uiLazy
+import com.mukiva.core.ui.viewBindings
 import com.mukiva.feature.settings.R
 import com.mukiva.feature.settings.databinding.FragmentSettingsTemplateBinding
+import com.mukiva.feature.settings.presentation.BottomSheetState
 import com.mukiva.feature.settings.presentation.SettingsState
 import com.mukiva.feature.settings.presentation.SettingsViewModel
 import com.mukiva.feature.settings.ui.adapter.SettingsAdapter
 import com.mukiva.feature.settings.ui.variantSelector.VariantSelectorBottomSheet
-import com.mukiva.core.ui.uiLazy
-import com.mukiva.core.ui.viewBindings
-import com.mukiva.feature.settings.presentation.BottomSheetState
 import com.mukiva.openweather.ui.visible
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
@@ -30,7 +30,7 @@ class SettingsTemplateFragment : Fragment(R.layout.fragment_settings_template) {
     private val mAdapter by uiLazy {
         SettingsAdapter(
             onSelectVariant = { mViewModel.selectVariant(it.key, it.variants, it.selectedVariant) },
-            onToggleOption = { mViewModel.toggleOption() }
+            onToggleOption = { }
         )
     }
 
@@ -49,7 +49,7 @@ class SettingsTemplateFragment : Fragment(R.layout.fragment_settings_template) {
             .launchIn(lifecycleScope)
     }
     private fun updateState(state: SettingsState) {
-        when(state) {
+        when (state) {
             is SettingsState.Content -> {
                 mBinding.settingsList.visible()
                 mAdapter.submitList(state.list)
@@ -63,7 +63,7 @@ class SettingsTemplateFragment : Fragment(R.layout.fragment_settings_template) {
         bottomSheetState: BottomSheetState
     ) {
         val oldBottomSheet = childFragmentManager.findFragmentByTag(VariantSelectorBottomSheet.TAG)
-        when(bottomSheetState) {
+        when (bottomSheetState) {
             BottomSheetState.Hide -> {
                 (oldBottomSheet as? VariantSelectorBottomSheet)?.dismiss()
             }
@@ -87,5 +87,4 @@ class SettingsTemplateFragment : Fragment(R.layout.fragment_settings_template) {
         settingsList.itemAnimator = null
         settingsList.adapter = mAdapter
     }
-
 }

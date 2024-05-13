@@ -8,7 +8,7 @@ data class Distance(
     private val miles: Double,
 ) {
     val value: Double
-        get() = when(unitsType) {
+        get() = when (unitsType) {
             UnitsType.METRIC -> km
             UnitsType.IMPERIAL -> miles
         }

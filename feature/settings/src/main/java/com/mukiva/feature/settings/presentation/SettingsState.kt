@@ -9,4 +9,3 @@ sealed class SettingsState {
         val bottomSheetState: BottomSheetState
     ) : SettingsState()
 }
-

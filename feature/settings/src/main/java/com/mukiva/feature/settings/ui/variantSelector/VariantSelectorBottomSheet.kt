@@ -7,10 +7,10 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.mukiva.feature.settings.R
-import com.mukiva.feature.settings.databinding.BottomsheetVariantSelectorBinding
 import com.mukiva.core.ui.uiLazy
 import com.mukiva.core.ui.viewBindings
+import com.mukiva.feature.settings.R
+import com.mukiva.feature.settings.databinding.BottomsheetVariantSelectorBinding
 import com.mukiva.feature.settings.presentation.BottomSheetState
 import com.mukiva.feature.settings.presentation.SettingsState
 import com.mukiva.feature.settings.presentation.SettingsViewModel
@@ -31,7 +31,7 @@ class VariantSelectorBottomSheet : BottomSheetDialogFragment(R.layout.bottomshee
     )
     private val mAdapter by uiLazy {
         VariantAdapter(
-            selectedPosition = { mSelectedPosition } ,
+            selectedPosition = { mSelectedPosition },
             onVariantSelect = mViewModel::commitSelection
         )
     }
@@ -61,7 +61,7 @@ class VariantSelectorBottomSheet : BottomSheetDialogFragment(R.layout.bottomshee
     }
 
     private fun updateState(state: BottomSheetState) {
-        when(state) {
+        when (state) {
             BottomSheetState.Hide -> { dismiss() }
             is BottomSheetState.Show -> {
                 mBinding.header.text = asLocalTitle(state.key)
@@ -71,10 +71,8 @@ class VariantSelectorBottomSheet : BottomSheetDialogFragment(R.layout.bottomshee
         }
     }
 
-
     companion object {
         const val TAG = "VARIANT_SELECTOR"
         fun newInstance() = VariantSelectorBottomSheet()
     }
 }
-

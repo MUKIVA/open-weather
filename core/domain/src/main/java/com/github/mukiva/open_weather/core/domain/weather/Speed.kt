@@ -8,7 +8,7 @@ data class Speed(
     private val mph: Double,
 ) {
     val value: Double
-        get() = when(unitsType) {
+        get() = when (unitsType) {
             UnitsType.METRIC -> kph
             UnitsType.IMPERIAL -> mph
         }

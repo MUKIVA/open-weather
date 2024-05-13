@@ -1,20 +1,17 @@
 package com.github.mukiva.weather_data
 
 import com.github.mukiva.weather_api.IWeatherApi
-import com.github.mukiva.weather_api.models.LocationDto
 import com.github.mukiva.weather_data.models.Location
 import com.github.mukiva.weather_data.utils.RequestResult
 import com.github.mukiva.weather_data.utils.asRequestResult
 import com.github.mukiva.weather_data.utils.map
+import com.github.mukiva.weather_data.utils.toDbo
+import com.github.mukiva.weather_data.utils.toLocation
 import com.github.mukiva.weather_database.WeatherDatabase
-import com.github.mukiva.weather_database.models.LocationDbo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 
 class LocationRepository(
     private val database: WeatherDatabase,
@@ -49,46 +46,4 @@ class LocationRepository(
     suspend fun removeAllLocations() {
         database.locationDao.deleteAll()
     }
-}
-
-internal fun LocationDto.toLocation(): Location {
-    return Location(
-        id = id.toLong(),
-        name = name,
-        region = region,
-        country = country,
-        lat = lat,
-        lon = lon,
-        tzId = tzId ?: "",
-        localtimeEpoch = localtimeEpoch ?: Clock.System.now().toLocalDateTime(TimeZone.UTC),
-        priority = 0,
-    )
-}
-
-internal fun Location.toDbo(): LocationDbo {
-    return LocationDbo(
-        id = id,
-        name = name,
-        region = region,
-        country = country,
-        lat = lat,
-        lon = lon,
-        tzId = tzId,
-        localtimeEpoch = localtimeEpoch,
-        priority = priority,
-    )
-}
-
-internal fun LocationDbo.toLocation(): Location {
-    return Location(
-        id = id,
-        name = name,
-        region = region,
-        country = country,
-        lat = lat,
-        lon = lon,
-        tzId = tzId,
-        localtimeEpoch = localtimeEpoch,
-        priority = priority,
-    )
 }

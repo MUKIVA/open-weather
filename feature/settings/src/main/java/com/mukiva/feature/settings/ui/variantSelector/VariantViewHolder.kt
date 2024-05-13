@@ -18,7 +18,7 @@ class VariantViewHolder(
     }
 
     private fun setSelection(isSelected: Boolean) = with(binding.variant) {
-        when(isSelected) {
+        when (isSelected) {
             true -> getAttrColor(MaterialRes.attr.colorPrimary)
             false -> getAttrColor(MaterialRes.attr.colorOnSurface)
         }.let { colorRes ->

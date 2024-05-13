@@ -14,28 +14,28 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import com.github.mukiva.open_weather.core.domain.weather.Temp
 import com.github.mukiva.open_weather.core.domain.settings.UnitsType
+import com.github.mukiva.open_weather.core.domain.weather.Temp
 import com.mukiva.core.ui.getDimen
 import com.mukiva.core.ui.getTempString
-import com.mukiva.feature.dashboard.R
-import com.mukiva.feature.dashboard.presentation.DashboardViewModel
-import com.mukiva.feature.dashboard.ui.adapter.DashboardAdapter
-import com.mukiva.openweather.ui.error
-import com.mukiva.openweather.ui.gone
-import com.mukiva.openweather.ui.loading
-import com.mukiva.openweather.ui.notify
 import com.mukiva.core.ui.uiLazy
 import com.mukiva.core.ui.viewBindings
+import com.mukiva.feature.dashboard.R
+import com.mukiva.feature.dashboard.databinding.FragmentDashboardBinding
 import com.mukiva.feature.dashboard.presentation.DashboardState
+import com.mukiva.feature.dashboard.presentation.DashboardViewModel
+import com.mukiva.feature.dashboard.ui.adapter.DashboardAdapter
+import com.mukiva.feature.dashboard.ui.adapter.ICurrentWeatherProvider
+import com.mukiva.openweather.ui.error
+import com.mukiva.openweather.ui.gone
 import com.mukiva.openweather.ui.hide
+import com.mukiva.openweather.ui.loading
+import com.mukiva.openweather.ui.notify
 import com.mukiva.openweather.ui.visible
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlin.math.abs
-import com.mukiva.feature.dashboard.databinding.FragmentDashboardBinding
-import com.mukiva.feature.dashboard.ui.adapter.ICurrentWeatherProvider
 import kotlin.math.roundToInt
 import com.mukiva.core.ui.R as CoreUiRes
 
@@ -88,7 +88,6 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
     }
 
     private fun initAppbar() = with(mBinding) {
-
         dashboard.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
@@ -111,13 +110,16 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
                 .findDrawableByLayerId(CoreUiRes.id.background) as GradientDrawable
             val dragHandler = drawable
                 .findDrawableByLayerId(CoreUiRes.id.dragHandler) as GradientDrawable
-            val topPadding = Rect().let { background.getPadding(it); it.top }
+            val topPadding = Rect().let {
+                background.getPadding(it)
+                it.top
+            }
 
             dragHandler.alpha = (ALPHA_MAX_VALUE * invOffsetRatio).toInt()
             background.cornerRadius = invOffsetRatio * getDimen(CoreUiRes.dimen.def_radius)
             mBinding.dashboardContainer.background = drawable
             mBinding.dashboard.translationY = topPadding * invOffsetRatio
-            mIsAppbarExpanded = invOffsetRatio > 0.9
+            mIsAppbarExpanded = invOffsetRatio > EXPAND_CHANGE_TRIGGER_OFFSET
         }
     }
 
@@ -169,7 +171,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
     }
 
     private fun updateState(state: DashboardState) {
-        when(state) {
+        when (state) {
             is DashboardState.Content -> {
                 mBinding.toolbarLayout.visible()
                 mBinding.dashboardContainer.visible()
@@ -219,6 +221,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
 
     companion object {
         private const val ALPHA_MAX_VALUE = 255
+        private const val EXPAND_CHANGE_TRIGGER_OFFSET = 0.9
 
         private const val KEY_EXPANDED = "KEY_EXPANDED"
         private const val KEY_CURRENT_PAGE = "KEY_CURRENT_PAGE"
@@ -229,7 +232,7 @@ internal fun Fragment.getMainTitle(
     locationName: String,
     temp: Temp,
 ): String {
-    return when(temp.unitsType) {
+    return when (temp.unitsType) {
         UnitsType.METRIC ->
             getString(R.string.template_celsius_main_title, temp.value.roundToInt(), locationName)
         UnitsType.IMPERIAL ->

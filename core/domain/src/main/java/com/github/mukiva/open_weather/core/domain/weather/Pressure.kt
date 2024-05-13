@@ -8,7 +8,7 @@ data class Pressure(
     private val pressureIn: Double,
 ) {
     val value: Double
-        get() = when(unitsType) {
+        get() = when (unitsType) {
             UnitsType.METRIC -> pressureMb
             UnitsType.IMPERIAL -> pressureIn
         }

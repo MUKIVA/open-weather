@@ -10,5 +10,4 @@ interface INavigationResourcesProvider {
 
     @NavigationRes
     fun provideNavigationGraph(): Int
-
 }

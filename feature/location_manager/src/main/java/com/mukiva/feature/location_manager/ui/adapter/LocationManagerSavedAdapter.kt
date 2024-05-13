@@ -34,5 +34,4 @@ class LocationManagerSavedAdapter(
     override fun onItemDismiss(position: Int) {
         onItemRemove(getItem(position))
     }
-
 }

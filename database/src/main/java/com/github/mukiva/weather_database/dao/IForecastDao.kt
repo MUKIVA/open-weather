@@ -16,14 +16,17 @@ import kotlinx.coroutines.flow.Flow
 interface IForecastDao {
     @Insert
     suspend fun insertForecast(forecast: ForecastDbo): Long
+
     @Insert
     suspend fun insertForecastDay(forecastDay: ForecastDayDbo): Long
+
     @Insert
     suspend fun insertHour(hour: List<HourDbo>)
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCache(cache: ForecastRequestCacheDbo): Long
+
     @Transaction
     @Query("SELECT * FROM ForecastRequestCacheDbo WHERE request_query LIKE :queryRequest")
     fun getCache(queryRequest: String): Flow<ForecastWithCurrentAndLocation?>
-
 }

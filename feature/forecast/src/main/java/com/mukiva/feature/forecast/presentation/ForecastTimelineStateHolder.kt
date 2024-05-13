@@ -20,11 +20,11 @@ class ForecastTimelineStateHolder(
     fun loadHours(position: Int) {
         mainViewModel.state
             .takeWhile { state ->
-                if (state is ForecastState.Content)
+                if (state is ForecastState.Content) {
                     mState.emit(state.hourlyForecast[position])
+                }
                 state is ForecastState.Init || state is ForecastState.Loading
             }
             .launchIn(viewModelScope)
     }
-
 }

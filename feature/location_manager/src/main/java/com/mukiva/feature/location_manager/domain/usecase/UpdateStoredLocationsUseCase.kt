@@ -1,6 +1,5 @@
 package com.mukiva.feature.location_manager.domain.usecase
 
-import android.util.Log
 import com.github.mukiva.weather_data.LocationRepository
 import com.github.mukiva.weather_data.utils.RequestResult
 import com.mukiva.feature.location_manager.presentation.EditableLocation
@@ -15,16 +14,11 @@ class UpdateStoredLocationsUseCase @Inject constructor(
 ) {
 
     suspend operator fun invoke(newList: List<EditableLocation>): RequestResult<Unit> {
-        return try {
-            repository.removeAllLocations()
-            newList.onEachIndexed { index, editableLocation ->
-                repository.addLocalLocation(editableLocation.toDataLocation(index))
-            }
-            RequestResult.Success(Unit)
-        } catch (e: Exception) {
-            Log.e("ERROR","Update location error: ${e.message}")
-            RequestResult.Error()
+        repository.removeAllLocations()
+        newList.onEachIndexed { index, editableLocation ->
+            repository.addLocalLocation(editableLocation.toDataLocation(index))
         }
+        return RequestResult.Success(Unit)
     }
 
     private fun EditableLocation.toDataLocation(

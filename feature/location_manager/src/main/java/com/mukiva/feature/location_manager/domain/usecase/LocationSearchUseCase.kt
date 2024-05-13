@@ -29,7 +29,7 @@ class LocationSearchUseCase @Inject constructor(
             id = dataLocation.id.toInt(),
             position = dataLocation.priority,
             cityName = dataLocation.name,
-            regionName = dataLocation.region ,
+            regionName = dataLocation.region,
             countryName = dataLocation.country,
             isAdded = false
         )
@@ -42,23 +42,17 @@ class LocationSearchUseCase @Inject constructor(
         return when {
             local is RequestResult.InProgress && remote is RequestResult.InProgress ->
                 RequestResult.InProgress(data = null)
-            local is RequestResult.InProgress && remote is RequestResult.Success ->
-                mergeStrategy()
-            local is RequestResult.Success && remote is RequestResult.InProgress ->
-                mergeStrategy()
             local is RequestResult.Success && remote is RequestResult.Success ->
                 mergeStrategy(local, remote)
             local is RequestResult.InProgress && remote is RequestResult.Error ->
                 mergeStrategy(remote)
-            local is RequestResult.Error && remote is RequestResult.InProgress ->
-                mergeStrategy()
             local is RequestResult.Success && remote is RequestResult.Error ->
                 mergeStrategy(remote)
             local is RequestResult.Error && remote is RequestResult.Success ->
                 mergeStrategy(local)
             local is RequestResult.Error && remote is RequestResult.Error ->
                 mergeStrategy(local)
-            else -> error("Unreachable code")
+            else -> mergeStrategy()
         }
     }
 

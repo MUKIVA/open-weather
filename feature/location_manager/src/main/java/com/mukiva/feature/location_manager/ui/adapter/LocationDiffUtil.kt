@@ -10,7 +10,6 @@ object LocationDiffUtil : DiffUtil.ItemCallback<Location>() {
     }
 
     override fun areContentsTheSame(oldItem: Location, newItem: Location): Boolean {
-        return  oldItem == newItem
+        return oldItem == newItem
     }
-
 }

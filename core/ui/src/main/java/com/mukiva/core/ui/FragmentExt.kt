@@ -18,7 +18,6 @@ import com.github.mukiva.open_weather.core.domain.weather.Speed
 import com.github.mukiva.open_weather.core.domain.weather.Temp
 import com.github.mukiva.open_weather.core.domain.settings.UnitsType
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.mukiva.openweather.ui.getComaptSerializable
 import java.io.Serializable
 import kotlin.math.roundToInt
 import kotlin.properties.ReadOnlyProperty

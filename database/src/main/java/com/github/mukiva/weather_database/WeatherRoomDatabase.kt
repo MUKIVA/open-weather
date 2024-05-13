@@ -16,7 +16,6 @@ import com.github.mukiva.weather_database.models.HourDbo
 import com.github.mukiva.weather_database.models.LocationDbo
 import com.github.mukiva.weather_database.utils.Converters
 
-
 class WeatherDatabase internal constructor(
     private val weatherRoomDatabase: WeatherRoomDatabase
 ) {
@@ -28,14 +27,18 @@ class WeatherDatabase internal constructor(
         get() = weatherRoomDatabase.forecastDao()
 }
 
-@Database(entities = [
-    CurrentDbo::class,
-    ForecastDayDbo::class,
-    ForecastDbo::class,
-    ForecastRequestCacheDbo::class,
-    HourDbo::class,
-    LocationDbo::class,
-], version = 1, exportSchema = true)
+@Database(
+    entities = [
+        CurrentDbo::class,
+        ForecastDayDbo::class,
+        ForecastDbo::class,
+        ForecastRequestCacheDbo::class,
+        HourDbo::class,
+        LocationDbo::class,
+    ],
+    version = 1,
+    exportSchema = true
+)
 @TypeConverters(Converters::class)
 internal abstract class WeatherRoomDatabase : RoomDatabase() {
     abstract fun locationDao(): ILocationDao

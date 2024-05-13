@@ -27,8 +27,9 @@ class ForecastViewModel @Inject constructor(
     fun loadForecast(locationName: String) {
         getFullForecastUseCase(locationName)
             .takeWhile { requestResult ->
-                if (requestResult is RequestResult.Success)
+                if (requestResult is RequestResult.Success) {
                     updateStateHolders(checkNotNull(requestResult.data).size)
+                }
                 mState.emit(asState(requestResult))
                 requestResult is RequestResult.InProgress
             }
@@ -46,7 +47,7 @@ class ForecastViewModel @Inject constructor(
     private fun asState(
         requestResult: RequestResult<List<HourlyForecast.Content>>
     ): ForecastState {
-        return when(requestResult) {
+        return when (requestResult) {
             is RequestResult.Error -> ForecastState.Error
             is RequestResult.InProgress -> ForecastState.Loading
             is RequestResult.Success -> ForecastState.Content(
@@ -54,5 +55,4 @@ class ForecastViewModel @Inject constructor(
             )
         }
     }
-
 }

@@ -8,7 +8,6 @@ import com.github.mukiva.open_weather.core.domain.weather.Temp
 import com.github.mukiva.open_weather.core.domain.weather.WindDirection
 import kotlinx.datetime.LocalDateTime
 
-
 data class CurrentWeather(
     val lastUpdatedEpoch: LocalDateTime,
     val temp: Temp,

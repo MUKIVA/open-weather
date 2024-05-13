@@ -55,7 +55,6 @@ fun LayListStatesBinding.notify(
     message.apply {
         text = msg
         visible()
-
     }
     button.apply {
         setOnClickListener { action() }

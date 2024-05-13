@@ -1,6 +1,5 @@
 package com.mukiva.feature.location_manager.domain.usecase
 
-import android.util.Log
 import com.github.mukiva.weather_data.LocationRepository
 import com.github.mukiva.weather_data.utils.RequestResult
 import com.mukiva.feature.location_manager.domain.model.Location
@@ -14,15 +13,10 @@ class AddLocationUseCase @Inject constructor(
     private val repository: LocationRepository
 ) {
     suspend operator fun invoke(location: Location): RequestResult<Unit> {
-        return try {
-            repository.addLocalLocation(
-                location = location.toData()
-            )
-            RequestResult.Success(Unit)
-        } catch (e: Exception) {
-            Log.e("ERROR","Add location error: ${e.message}")
-            RequestResult.Error()
-        }
+        repository.addLocalLocation(
+            location = location.toData()
+        )
+        return RequestResult.Success(Unit)
     }
 
     private fun Location.toData(): DataLocation {

@@ -21,20 +21,20 @@ import com.mukiva.core.ui.getArgs
 import com.mukiva.core.ui.getPressureString
 import com.mukiva.core.ui.getSpeedString
 import com.mukiva.core.ui.getTempString
+import com.mukiva.core.ui.uiLazy
+import com.mukiva.core.ui.viewBindings
 import com.mukiva.feature.dashboard.R
 import com.mukiva.feature.dashboard.databinding.FragmentDashboardTemplateBinding
 import com.mukiva.feature.dashboard.domain.model.Condition
-import com.mukiva.openweather.ui.gone
-import com.mukiva.openweather.ui.loading
-import com.mukiva.core.ui.uiLazy
-import com.mukiva.core.ui.viewBindings
 import com.mukiva.feature.dashboard.domain.model.MinimalForecast
 import com.mukiva.feature.dashboard.presentation.ForecastViewModel
 import com.mukiva.feature.dashboard.presentation.LocationWeatherState
 import com.mukiva.feature.dashboard.ui.adapter.ICurrentWeatherProvider
 import com.mukiva.feature.dashboard.ui.adapter.MinimalForecastAdapter
 import com.mukiva.openweather.ui.error
+import com.mukiva.openweather.ui.gone
 import com.mukiva.openweather.ui.hide
+import com.mukiva.openweather.ui.loading
 import com.mukiva.openweather.ui.visible
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -48,14 +48,13 @@ import java.io.Serializable
 import com.mukiva.core.ui.R as CoreUiRes
 
 @AndroidEntryPoint
-class DashboardTemplateFragment
-    : Fragment(R.layout.fragment_dashboard_template)
-    ,  ICurrentWeatherProvider {
+class DashboardTemplateFragment :
+    Fragment(R.layout.fragment_dashboard_template), ICurrentWeatherProvider {
 
     data class Args(
         val locationName: String,
         val region: String,
-    ): Serializable
+    ) : Serializable
 
     override val currentStateFlow: StateFlow<ICurrentWeatherProvider.Current?>
         get() = mCurrentWeatherFlow.asStateFlow()
@@ -93,7 +92,6 @@ class DashboardTemplateFragment
             .filterIsInstance<LocationWeatherState.Content>()
             .onEach(::updateContent)
             .launchIn(lifecycleScope)
-
     }
 
     private fun updateContent(state: LocationWeatherState.Content) {
@@ -103,7 +101,7 @@ class DashboardTemplateFragment
             ICurrentWeatherProvider.Current(
                 locationName = getArgs(Args::class.java).locationName,
                 currentWeather = current,
-                )
+            )
         }
         updateForecast(forecast.forecastState)
         updateHumidity(current.humidity)
@@ -152,7 +150,6 @@ class DashboardTemplateFragment
         subtitle.text = getString(R.string.field_wind_speed_subtitle)
         fieldValue.text = getSpeedString(windSpeed)
         fieldValue.setDrawable(R.drawable.ic_wind_speed)
-
     }
 
     private fun updateConditionField(
@@ -176,7 +173,7 @@ class DashboardTemplateFragment
             mViewModel.loadForecast(locationName)
         }
 
-        when(state) {
+        when (state) {
             is LocationWeatherState.Content -> with(mBinding) {
                 emptyView.hide()
                 root.visible()
@@ -199,7 +196,6 @@ class DashboardTemplateFragment
                 root.gone()
             }
         }
-
     }
 
     private fun updateDayStatus(isDay: Boolean) = with(mBinding.isDayField) {

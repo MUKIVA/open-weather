@@ -27,7 +27,9 @@ class ForecastItemViewHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
 
     private val mTimeFormatter = LocalDateTime.Format {
-        hour();char(':');minute()
+        hour()
+        char(':')
+        minute()
     }
 
     fun bind(item: ForecastItem) {

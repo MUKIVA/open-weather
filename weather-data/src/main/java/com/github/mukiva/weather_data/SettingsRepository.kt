@@ -66,6 +66,5 @@ class SettingsRepository(
 
         private val THEME_MODE_KEY = intPreferencesKey("THEME_MODE_KEY")
         private val UNITS_TYPE_KEY = intPreferencesKey("UNITS_TYPE_KEY")
-
     }
 }

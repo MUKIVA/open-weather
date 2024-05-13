@@ -28,7 +28,7 @@ class ForecastViewModel @Inject constructor(
 
     fun loadForecast(name: String) {
         getForecastUseCase(name)
-            .map { requestResult -> asState(requestResult)}
+            .map { requestResult -> asState(requestResult) }
             .onEach(mState::emit)
             .launchIn(viewModelScope)
     }
@@ -38,7 +38,7 @@ class ForecastViewModel @Inject constructor(
     }
 
     private fun asState(requestResult: RequestResult<Forecast>): LocationWeatherState {
-        return when(requestResult) {
+        return when (requestResult) {
             is RequestResult.Error -> LocationWeatherState.Error
             is RequestResult.InProgress -> LocationWeatherState.Loading
             is RequestResult.Success -> LocationWeatherState.Content(

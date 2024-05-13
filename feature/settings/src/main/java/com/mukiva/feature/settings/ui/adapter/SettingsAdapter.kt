@@ -33,7 +33,7 @@ class SettingsAdapter(
                     onClick = onToggleOption
                 )
             }
-            else -> throw IllegalStateException("Сan't create a holder with $viewType type")
+            else -> error("Сan not create a holder with $viewType type")
         }
     }
 

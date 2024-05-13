@@ -3,9 +3,9 @@ package com.mukiva.feature.dashboard.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.mukiva.weather_data.utils.RequestResult
-import com.mukiva.feature.dashboard.navigation.IDashboardRouter
 import com.mukiva.feature.dashboard.domain.model.Location
 import com.mukiva.feature.dashboard.domain.usecase.GetAllLocationsUseCase
+import com.mukiva.feature.dashboard.navigation.IDashboardRouter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -41,7 +41,7 @@ class DashboardViewModel @Inject constructor(
     }
 
     private fun asState(requestResult: RequestResult<List<Location>>): DashboardState {
-        return when(requestResult) {
+        return when (requestResult) {
             is RequestResult.Error -> DashboardState.Error
             is RequestResult.InProgress -> DashboardState.Loading
             is RequestResult.Success -> stateContentFactory(checkNotNull(requestResult.data))
@@ -54,5 +54,4 @@ class DashboardViewModel @Inject constructor(
             else -> DashboardState.Content(locations = locations)
         }
     }
-
 }

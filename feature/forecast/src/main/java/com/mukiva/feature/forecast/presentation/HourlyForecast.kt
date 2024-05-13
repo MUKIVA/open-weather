@@ -11,7 +11,4 @@ sealed class HourlyForecast {
         val date: LocalDateTime,
         val hours: List<ForecastItem>,
     ) : HourlyForecast()
-
 }
-
-

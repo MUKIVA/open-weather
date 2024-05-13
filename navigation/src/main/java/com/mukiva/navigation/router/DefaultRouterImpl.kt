@@ -11,9 +11,9 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
-import com.mukiva.navigation.domain.IRouter
-import com.mukiva.navigation.ui.AbstractLifecycleHandler
 import com.mukiva.core.ui.KEY_ARGS
+import com.mukiva.navigation.domain.IRouter
+import com.mukiva.navigation.ui.IOnCreateHandler
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -24,7 +24,7 @@ class DefaultRouterImpl @AssistedInject constructor(
     private val destinationResourcesProvider: INavigationResourcesProvider,
     private val globalRouter: GlobalRouter,
     private val activity: FragmentActivity
-) : AbstractLifecycleHandler(), IRouter {
+) : IOnCreateHandler, IRouter {
 
     private val mFragmentCallbacks = object : FragmentManager.FragmentLifecycleCallbacks() {
 
@@ -39,10 +39,7 @@ class DefaultRouterImpl @AssistedInject constructor(
             if (activity.supportActionBar == null) return
 
             NavigationUI.setupActionBarWithNavController(activity, currentNavController, appBarConfiguration)
-
-
         }
-
     }
 
     override fun launch(destination: Int, args: Serializable?) {
@@ -61,7 +58,6 @@ class DefaultRouterImpl @AssistedInject constructor(
     }
 
     override fun onCreated(activity: FragmentActivity) {
-        super.onCreated(activity)
         setupNavigationGraph()
         setupActionBarConfiguration()
     }
@@ -95,5 +91,4 @@ class DefaultRouterImpl @AssistedInject constructor(
             @IdRes fragmentContainerId: Int
         ): DefaultRouterImpl
     }
-
 }

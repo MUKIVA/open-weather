@@ -30,5 +30,4 @@ class CustomSearchView @JvmOverloads constructor(
         mOnHideListener()
         super.hide()
     }
-
 }

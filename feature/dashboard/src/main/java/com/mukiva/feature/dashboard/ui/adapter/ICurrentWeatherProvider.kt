@@ -11,5 +11,4 @@ interface ICurrentWeatherProvider {
         val locationName: String,
         val currentWeather: CurrentWeather
     )
-
 }

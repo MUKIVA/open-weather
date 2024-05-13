@@ -17,7 +17,4 @@ class ForecastItemAdapter : ListAdapter<ForecastItem, ForecastItemViewHolder>(Fo
     override fun onBindViewHolder(holder: ForecastItemViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
-
 }
-
-

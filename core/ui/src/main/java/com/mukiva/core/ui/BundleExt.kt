@@ -1,6 +1,6 @@
 @file:Suppress("UNCHECKED_CAST", "DEPRECATION")
 
-package com.mukiva.openweather.ui
+package com.mukiva.core.ui
 
 import android.os.Build
 import android.os.Bundle

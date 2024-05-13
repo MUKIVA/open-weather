@@ -11,9 +11,10 @@ import kotlinx.coroutines.flow.Flow
 interface ICurrentDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(current: CurrentDbo): Long
+
     @Query("SELECT * FROM CurrentDbo WHERE id = :id")
     fun getById(id: Int): Flow<CurrentDbo>
+
     @Query("DELETE FROM CurrentDbo")
     fun clear()
-
 }
