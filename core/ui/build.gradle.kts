@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.mukiva.core.ui"
+    namespace = "com.github.mukiva.core.ui"
     compileSdk = 34
     defaultConfig {
         minSdk = 26

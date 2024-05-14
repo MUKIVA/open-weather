@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.github.mukiva.weather_data"
+    namespace = "com.github.mukiva.weatherdata"
     compileSdk = 34
 
     defaultConfig {
@@ -26,7 +26,7 @@ android {
 
 dependencies {
     implementation(project(":weather-api"))
-    implementation(project(":database"))
+    implementation(project(":weather-database"))
     implementation(project(":core:domain"))
 
     implementation(libs.kotlinx.datetime)

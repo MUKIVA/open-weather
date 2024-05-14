@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.mukiva.feature.dashboard"
+    namespace = "com.github.mukiva.feature.dashboard"
     compileSdk = 34
     defaultConfig {
         minSdk = 26

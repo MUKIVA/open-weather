@@ -6,14 +6,14 @@
 
     <fragment
         android:id="@+id/dashboardFragment"
-        android:name="com.mukiva.feature.dashboard.ui.DashboardFragment" />
+        android:name="com.github.mukiva.feature.dashboard.ui.DashboardFragment" />
     <fragment
         android:id="@+id/locationManagerFragment"
-        android:name="com.mukiva.feature.location_manager.ui.LocationManagerFragment" />
+        android:name="com.github.mukiva.feature.locationmanager.ui.LocationManagerFragment" />
     <fragment
         android:id="@+id/settingsTemplateFragment"
-        android:name="com.mukiva.feature.settings.ui.SettingsTemplateFragment" />
+        android:name="com.github.mukiva.feature.settings.ui.SettingsTemplateFragment" />
     <fragment
         android:id="@+id/forecastFragment"
-        android:name="com.mukiva.feature.forecast.ui.ForecastFragment" />
+        android:name="com.github.mukiva.feature.forecast.ui.ForecastFragment" />
 </navigation>

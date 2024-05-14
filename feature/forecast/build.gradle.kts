@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.mukiva.feature.forecast"
+    namespace = "com.github.mukiva.feature.forecast"
     compileSdk = 34
     defaultConfig {
         minSdk = 26

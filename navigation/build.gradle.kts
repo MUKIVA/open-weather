@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.mukiva.navigation"
+    namespace = "com.github.mukiva.navigation"
     compileSdk = 34
     defaultConfig {
         minSdk = 26
@@ -44,6 +44,4 @@ dependencies {
 
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
-
-
 }

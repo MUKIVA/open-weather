@@ -8,11 +8,11 @@ plugins {
 }
 
 android {
-    namespace = "com.mukiva.openweather"
+    namespace = "com.github.mukiva.openweather"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.mukiva.openweather"
+        applicationId = "com.github.mukiva.openweather"
         versionCode = 1
         versionName = "1.0"
         minSdk = 26
@@ -60,12 +60,12 @@ dependencies {
 
     implementation(project(":feature:dashboard"))
     implementation(project(":feature:forecast"))
-    implementation(project(":feature:location_manager"))
+    implementation(project(":feature:location-manager"))
     implementation(project(":feature:settings"))
 
     implementation(project(":weather-data"))
     implementation(project(":weather-api"))
-    implementation(project(":database"))
+    implementation(project(":weather-database"))
 
     implementation(libs.androidx.navigation.fragment)
     implementation(libs.androidx.navigation.ui)
@@ -94,5 +94,4 @@ secrets {
     // A properties file containing default secret values. This file can be checked in version
     // control.
     defaultPropertiesFileName = "secrets.defaults.properties"
-
 }

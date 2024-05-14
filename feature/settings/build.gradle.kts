@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.mukiva.feature.settings"
+    namespace = "com.github.mukiva.feature.settings"
     compileSdk = 34
     defaultConfig {
         minSdk = 26
