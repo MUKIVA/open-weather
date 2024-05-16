@@ -1,0 +1,752 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "93b12ac68fae3992f9d4e6086b9e67fc",
+    "entities": [
+      {
+        "tableName": "CurrentDbo",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `last_updated_epoch` INTEGER NOT NULL, `temp_c` REAL NOT NULL, `temp_f` REAL NOT NULL, `is_day` INTEGER NOT NULL, `wind_mph` REAL NOT NULL, `wind_kph` REAL NOT NULL, `wind_degree` INTEGER NOT NULL, `wind_dir` TEXT NOT NULL, `pressure_mb` REAL NOT NULL, `pressure_in` REAL NOT NULL, `precip_mm` REAL NOT NULL, `precip_in` REAL NOT NULL, `humidity` INTEGER NOT NULL, `cloud` INTEGER NOT NULL, `feelslike_c` REAL NOT NULL, `feelslike_f` REAL NOT NULL, `vis_km` REAL NOT NULL, `vis_miles` REAL NOT NULL, `uv` REAL NOT NULL, `gust_mph` REAL NOT NULL, `gust_kph` REAL NOT NULL, `conditiontext` TEXT NOT NULL, `conditionicon` TEXT NOT NULL, `conditioncode` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastUpdatedEpoch",
+            "columnName": "last_updated_epoch",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tempC",
+            "columnName": "temp_c",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tempF",
+            "columnName": "temp_f",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isDay",
+            "columnName": "is_day",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "windMph",
+            "columnName": "wind_mph",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "windKph",
+            "columnName": "wind_kph",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "windDegree",
+            "columnName": "wind_degree",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "windDir",
+            "columnName": "wind_dir",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pressureMb",
+            "columnName": "pressure_mb",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pressureIn",
+            "columnName": "pressure_in",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "precipMm",
+            "columnName": "precip_mm",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "precipIn",
+            "columnName": "precip_in",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "humidity",
+            "columnName": "humidity",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cloud",
+            "columnName": "cloud",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "feelslikeC",
+            "columnName": "feelslike_c",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "feelslikeF",
+            "columnName": "feelslike_f",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "visKm",
+            "columnName": "vis_km",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "visMiles",
+            "columnName": "vis_miles",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "uv",
+            "columnName": "uv",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gustMph",
+            "columnName": "gust_mph",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gustKph",
+            "columnName": "gust_kph",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "condition.text",
+            "columnName": "conditiontext",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "condition.icon",
+            "columnName": "conditionicon",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "condition.code",
+            "columnName": "conditioncode",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "ForecastDayDbo",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `date_epoch` INTEGER NOT NULL, `forecast_id` INTEGER NOT NULL, `daymaxtemp_c` REAL NOT NULL, `daymaxtemp_f` REAL NOT NULL, `daymintemp_c` REAL NOT NULL, `daymintemp_f` REAL NOT NULL, `dayavgtemp_c` REAL NOT NULL, `dayavgtemp_f` REAL NOT NULL, `daymaxwind_mph` REAL NOT NULL, `daymaxwind_kph` REAL NOT NULL, `daytotalprecip_mm` REAL NOT NULL, `daytotalprecip_in` REAL NOT NULL, `daytotalsnow_cm` REAL NOT NULL, `dayavgvis_km` REAL NOT NULL, `dayavgvis_miles` REAL NOT NULL, `dayavghumidity` INTEGER NOT NULL, `daydaily_will_it_rain` INTEGER NOT NULL, `daydaily_chance_of_rain` INTEGER NOT NULL, `daydaily_will_it_snow` INTEGER NOT NULL, `daydaily_chance_of_snow` INTEGER NOT NULL, `dayuv` REAL NOT NULL, `dayconditiontext` TEXT NOT NULL, `dayconditionicon` TEXT NOT NULL, `dayconditioncode` INTEGER NOT NULL, `astrosunrise` TEXT NOT NULL, `astrosunset` TEXT NOT NULL, `astromoonrise` TEXT NOT NULL, `astromoonset` TEXT NOT NULL, `astromoon_phase` TEXT NOT NULL, `astromoon_illumination` INTEGER NOT NULL, `astrois_moon_up` INTEGER NOT NULL, `astrois_sun_up` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dateEpoch",
+            "columnName": "date_epoch",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "forecastId",
+            "columnName": "forecast_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "day.maxTempC",
+            "columnName": "daymaxtemp_c",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "day.maxTempF",
+            "columnName": "daymaxtemp_f",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "day.minTempC",
+            "columnName": "daymintemp_c",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "day.minTempF",
+            "columnName": "daymintemp_f",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "day.avgTempC",
+            "columnName": "dayavgtemp_c",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "day.avgTempF",
+            "columnName": "dayavgtemp_f",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "day.maxWindMph",
+            "columnName": "daymaxwind_mph",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "day.maxWindKph",
+            "columnName": "daymaxwind_kph",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "day.totalPrecipMm",
+            "columnName": "daytotalprecip_mm",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "day.totalPrecipIn",
+            "columnName": "daytotalprecip_in",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "day.totalSnowCm",
+            "columnName": "daytotalsnow_cm",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "day.avgVisKm",
+            "columnName": "dayavgvis_km",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "day.avgVisMiles",
+            "columnName": "dayavgvis_miles",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "day.avgHumidity",
+            "columnName": "dayavghumidity",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "day.dailyWillItRain",
+            "columnName": "daydaily_will_it_rain",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "day.dailyChanceOfRain",
+            "columnName": "daydaily_chance_of_rain",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "day.dailyWillItSnow",
+            "columnName": "daydaily_will_it_snow",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "day.dailyChanceOfSnow",
+            "columnName": "daydaily_chance_of_snow",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "day.uv",
+            "columnName": "dayuv",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "day.condition.text",
+            "columnName": "dayconditiontext",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "day.condition.icon",
+            "columnName": "dayconditionicon",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "day.condition.code",
+            "columnName": "dayconditioncode",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "astro.sunrise",
+            "columnName": "astrosunrise",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "astro.sunset",
+            "columnName": "astrosunset",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "astro.moonrise",
+            "columnName": "astromoonrise",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "astro.moonset",
+            "columnName": "astromoonset",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "astro.moonPhase",
+            "columnName": "astromoon_phase",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "astro.moonIllumination",
+            "columnName": "astromoon_illumination",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "astro.isMoonUp",
+            "columnName": "astrois_moon_up",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "astro.isSunUp",
+            "columnName": "astrois_sun_up",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "ForecastDbo",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "ForecastRequestCacheDbo",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`request_query` TEXT NOT NULL, `current_id` INTEGER NOT NULL, `location_id` INTEGER NOT NULL, `forecast_id` INTEGER NOT NULL, PRIMARY KEY(`request_query`))",
+        "fields": [
+          {
+            "fieldPath": "requestQuery",
+            "columnName": "request_query",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "currentId",
+            "columnName": "current_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "locationId",
+            "columnName": "location_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "forecastId",
+            "columnName": "forecast_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "request_query"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "HourDbo",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `time_epoch` INTEGER NOT NULL, `temp_c` REAL NOT NULL, `temp_f` REAL NOT NULL, `is_day` INTEGER NOT NULL, `wind_mph` REAL NOT NULL, `wind_kph` REAL NOT NULL, `wind_degree` INTEGER NOT NULL, `wind_dir` TEXT NOT NULL, `pressure_mb` REAL NOT NULL, `pressure_in` REAL NOT NULL, `precip_mm` REAL NOT NULL, `precip_in` REAL NOT NULL, `snow_cm` REAL NOT NULL, `humidity` INTEGER NOT NULL, `cloud` INTEGER NOT NULL, `feelslike_c` REAL NOT NULL, `feelslike_f` REAL NOT NULL, `windchill_c` REAL NOT NULL, `windchill_f` REAL NOT NULL, `heatindex_c` REAL NOT NULL, `heatindex_f` REAL NOT NULL, `dewpoint_c` REAL NOT NULL, `dewpoint_f` REAL NOT NULL, `will_it_rain` INTEGER NOT NULL, `chance_of_rain` INTEGER NOT NULL, `will_it_snow` INTEGER NOT NULL, `chance_of_snow` INTEGER NOT NULL, `vis_km` REAL NOT NULL, `vis_miles` REAL NOT NULL, `gust_mph` REAL NOT NULL, `gust_kph` REAL NOT NULL, `uv` REAL NOT NULL, `forecast_day_id` INTEGER NOT NULL, `conditiontext` TEXT NOT NULL, `conditionicon` TEXT NOT NULL, `conditioncode` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "timeEpoch",
+            "columnName": "time_epoch",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tempC",
+            "columnName": "temp_c",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tempF",
+            "columnName": "temp_f",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isDay",
+            "columnName": "is_day",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "windMph",
+            "columnName": "wind_mph",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "windKph",
+            "columnName": "wind_kph",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "windDegree",
+            "columnName": "wind_degree",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "windDir",
+            "columnName": "wind_dir",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pressureMb",
+            "columnName": "pressure_mb",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pressureIn",
+            "columnName": "pressure_in",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "precipMm",
+            "columnName": "precip_mm",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "precipIn",
+            "columnName": "precip_in",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "snowCm",
+            "columnName": "snow_cm",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "humidity",
+            "columnName": "humidity",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cloud",
+            "columnName": "cloud",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "feelsLikeC",
+            "columnName": "feelslike_c",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "feelsLikeF",
+            "columnName": "feelslike_f",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "windChillC",
+            "columnName": "windchill_c",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "windChillF",
+            "columnName": "windchill_f",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "heatIndexC",
+            "columnName": "heatindex_c",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "heatIndexF",
+            "columnName": "heatindex_f",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dewPointC",
+            "columnName": "dewpoint_c",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dewPointF",
+            "columnName": "dewpoint_f",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "willItRain",
+            "columnName": "will_it_rain",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "chanceOfRain",
+            "columnName": "chance_of_rain",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "willItSnow",
+            "columnName": "will_it_snow",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "chanceOfSnow",
+            "columnName": "chance_of_snow",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "visKm",
+            "columnName": "vis_km",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "visMiles",
+            "columnName": "vis_miles",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gustMph",
+            "columnName": "gust_mph",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gustKph",
+            "columnName": "gust_kph",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "uv",
+            "columnName": "uv",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "forecastDayId",
+            "columnName": "forecast_day_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "condition.text",
+            "columnName": "conditiontext",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "condition.icon",
+            "columnName": "conditionicon",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "condition.code",
+            "columnName": "conditioncode",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "LocationDbo",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `region` TEXT NOT NULL, `country` TEXT NOT NULL, `lat` REAL NOT NULL, `lon` REAL NOT NULL, `tz_id` TEXT NOT NULL, `localtime_epoch` INTEGER NOT NULL, `priority` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "region",
+            "columnName": "region",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "country",
+            "columnName": "country",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lat",
+            "columnName": "lat",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lon",
+            "columnName": "lon",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tzId",
+            "columnName": "tz_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "localtimeEpoch",
+            "columnName": "localtime_epoch",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "priority",
+            "columnName": "priority",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '93b12ac68fae3992f9d4e6086b9e67fc')"
+    ]
+  }
+}
