@@ -6,7 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:foreground="?attr/selectableItemBackground"
-    android:background="@android:color/transparent">
+    android:background="@android:color/transparent"
+    android:paddingHorizontal="@dimen/def_h_padding"
+    android:paddingVertical="@dimen/def_v_padding">
 
     <TextView
         android:id="@+id/cityName"

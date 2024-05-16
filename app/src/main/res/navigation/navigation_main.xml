@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/navigation_main"
-    app:startDestination="@id/dashboardFragment">
+    app:startDestination="@id/splashFragment">
 
     <fragment
         android:id="@+id/dashboardFragment"
@@ -16,4 +16,8 @@
     <fragment
         android:id="@+id/forecastFragment"
         android:name="com.github.mukiva.feature.forecast.ui.ForecastFragment" />
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="com.github.mukiva.feature.splash.ui.SplashFragment"
+        android:label="SplashFragment" />
 </navigation>

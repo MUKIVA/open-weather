@@ -4,12 +4,16 @@ import android.graphics.Rect
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.children
-import androidx.core.view.doOnLayout
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
@@ -19,17 +23,17 @@ import com.github.mukiva.core.ui.getDimen
 import com.github.mukiva.core.ui.getTempString
 import com.github.mukiva.core.ui.gone
 import com.github.mukiva.core.ui.hide
+import com.github.mukiva.core.ui.lazyAdapter
 import com.github.mukiva.core.ui.loading
 import com.github.mukiva.core.ui.notify
-import com.github.mukiva.core.ui.uiLazy
 import com.github.mukiva.core.ui.viewBindings
 import com.github.mukiva.core.ui.visible
 import com.github.mukiva.feature.dashboard.R
 import com.github.mukiva.feature.dashboard.databinding.FragmentDashboardBinding
 import com.github.mukiva.feature.dashboard.presentation.DashboardState
-import com.github.mukiva.feature.dashboard.presentation.DashboardViewModel
+import com.github.mukiva.feature.dashboard.presentation.MainCardState
+import com.github.mukiva.feature.dashboard.presentation.SharedDashboardViewModel
 import com.github.mukiva.feature.dashboard.ui.adapter.DashboardAdapter
-import com.github.mukiva.feature.dashboard.ui.adapter.ICurrentWeatherProvider
 import com.github.mukiva.openweather.core.domain.settings.UnitsType
 import com.github.mukiva.openweather.core.domain.weather.Temp
 import dagger.hilt.android.AndroidEntryPoint
@@ -42,55 +46,40 @@ import com.github.mukiva.core.ui.R as CoreUiRes
 @AndroidEntryPoint
 class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
 
-    private val mViewModel by viewModels<DashboardViewModel>()
+    private val mViewModel by viewModels<SharedDashboardViewModel>()
     private val mBinding by viewBindings(FragmentDashboardBinding::bind)
-    private val mDashboardAdapter by uiLazy {
-        DashboardAdapter(childFragmentManager, viewLifecycleOwner.lifecycle)
+    private val mDashboardAdapter by lazyAdapter {
+        DashboardAdapter(childFragmentManager, lifecycle)
     }
     private var mIsAppbarExpanded: Boolean = true
-    private var mCurrentPage: Int = 0
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         initTitle()
-        initAppbar()
         initDashboard()
+        initAppbar()
         observeViewModel()
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putBoolean(KEY_EXPANDED, mIsAppbarExpanded)
-        outState.putInt(KEY_CURRENT_PAGE, mCurrentPage)
-    }
-
-    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        super.onViewStateRestored(savedInstanceState)
-        mIsAppbarExpanded = savedInstanceState?.getBoolean(KEY_EXPANDED) ?: true
-        mCurrentPage = savedInstanceState?.getInt(KEY_CURRENT_PAGE) ?: 0
-    }
-
     private fun initDashboard() = with(mBinding) {
-        if (dashboard.adapter == null) {
-            dashboard.adapter = mDashboardAdapter
-        }
+        dashboard.adapter = mDashboardAdapter
         dashboard.offscreenPageLimit = 2
         dashboard.children.find { child -> child is RecyclerView }?.apply {
             (this as RecyclerView).isNestedScrollingEnabled = false
         }
         toolbarLayout.setExpanded(mIsAppbarExpanded, false)
-        dashboard.doOnLayout { dashboard.setCurrentItem(mCurrentPage, false) }
+        ViewCompat.setOnApplyWindowInsetsListener(mBinding.root) { _, insets ->
+            val systemBarsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            dashboard.updatePadding(bottom = systemBarsInsets.bottom)
+            insets
+        }
     }
 
     private fun initAppbar() = with(mBinding) {
         dashboard.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                mCurrentPage = position
-                mDashboardAdapter.requestCurrent(position)
-                    .flowWithLifecycle(lifecycle)
-                    .onEach(::updateMainCard)
-                    .launchIn(lifecycleScope)
+                mViewModel.requestMainCardState(position)
             }
         })
 
@@ -112,9 +101,11 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
 
             dragHandler.alpha = (ALPHA_MAX_VALUE * invOffsetRatio).toInt()
             background.cornerRadius = invOffsetRatio * getDimen(CoreUiRes.dimen.def_radius)
-            mBinding.dashboardContainer.background = drawable
-            mBinding.dashboard.translationY = topPadding * invOffsetRatio
-            mIsAppbarExpanded = invOffsetRatio > EXPAND_CHANGE_TRIGGER_OFFSET
+            if (lifecycle.currentState == Lifecycle.State.RESUMED) {
+                mBinding.dashboardContainer.background = drawable
+                mBinding.dashboard.translationY = topPadding * invOffsetRatio
+                mIsAppbarExpanded = invOffsetRatio > EXPAND_CHANGE_TRIGGER_OFFSET
+            }
         }
     }
 
@@ -122,7 +113,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         toolbar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.select_locations -> {
-                    mViewModel.goSelectLocations()
+                    mViewModel.goLocationManager()
                     return@setOnMenuItemClickListener true
                 }
                 R.id.settings -> {
@@ -135,32 +126,36 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
     }
 
     private fun observeViewModel() {
-        mViewModel.state
-            .flowWithLifecycle(lifecycle)
+        mViewModel.mainCardState
+            .flowWithLifecycle(viewLifecycleOwner.lifecycle)
+            .onEach(::updateMainCard)
+            .launchIn(lifecycleScope)
+        mViewModel.locationListState
+            .flowWithLifecycle(lifecycle, Lifecycle.State.CREATED)
             .onEach(::updateState)
             .launchIn(lifecycleScope)
     }
 
     private fun updateMainCard(
-        current: ICurrentWeatherProvider.Current?
+        state: MainCardState
     ) = with(mBinding) {
-        when {
-            current == null -> {
-                mainCard.emptyView.loading()
-                mainCard.mainTemp.gone()
-                mainCard.cityName.gone()
-            }
-            else -> {
+        when (state) {
+            is MainCardState.Content -> {
                 mainCard.emptyView.hide()
                 mainCard.mainTemp.visible()
                 mainCard.cityName.visible()
                 mainCard.mainTemp.text =
-                    getTempString(current.currentWeather.temp)
-                mainCard.cityName.text = current.locationName
+                    getTempString(state.currentTemp)
+                mainCard.cityName.text = state.locationName
                 updateMainTitle(
-                    current.currentWeather.temp,
-                    current.locationName,
+                    state.currentTemp,
+                    state.locationName,
                 )
+            }
+            MainCardState.Loading -> {
+                mainCard.emptyView.loading()
+                mainCard.mainTemp.gone()
+                mainCard.cityName.gone()
             }
         }
     }
@@ -179,7 +174,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
                 mBinding.mainEmptyView.notify(
                     msg = getString(R.string.main_empty_view_msg),
                     buttonMsg = getString(R.string.select_locations),
-                    action = mViewModel::goSelectLocations
+                    action = mViewModel::goLocationManager
                 )
             }
             DashboardState.Error -> {
@@ -217,9 +212,6 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
     companion object {
         private const val ALPHA_MAX_VALUE = 255
         private const val EXPAND_CHANGE_TRIGGER_OFFSET = 0.9
-
-        private const val KEY_EXPANDED = "KEY_EXPANDED"
-        private const val KEY_CURRENT_PAGE = "KEY_CURRENT_PAGE"
     }
 }
 

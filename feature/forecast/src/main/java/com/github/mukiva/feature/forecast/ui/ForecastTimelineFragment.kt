@@ -4,6 +4,9 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
@@ -67,7 +70,7 @@ class ForecastTimelineFragment : Fragment(R.layout.fragment_forecast_timeline) {
 
     private fun subscribeOnViewModel() {
         mViewModel.state
-            .flowWithLifecycle(lifecycle)
+            .flowWithLifecycle(viewLifecycleOwner.lifecycle)
             .onEach(::updateState)
             .launchIn(lifecycleScope)
     }
@@ -76,6 +79,12 @@ class ForecastTimelineFragment : Fragment(R.layout.fragment_forecast_timeline) {
         list.setRecycledViewPool(mSharedViewPool)
         list.addItemDecoration(mItemDecoration)
         list.adapter = mHoursAdapter
+
+        ViewCompat.setOnApplyWindowInsetsListener(list) { v, insets ->
+            val systemBarsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.updatePadding(bottom = systemBarsInsets.bottom)
+            insets
+        }
     }
 
     private fun updateState(state: HourlyForecast) {

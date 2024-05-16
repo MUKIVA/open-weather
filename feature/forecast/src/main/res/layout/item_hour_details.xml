@@ -15,7 +15,7 @@
         app:layout_constraintBottom_toTopOf="@+id/windIcon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="spread_inside" />
+        app:layout_constraintVertical_chainStyle="packed" />
 
     <ImageView
         android:id="@+id/windIcon"
@@ -24,6 +24,7 @@
         android:background="@drawable/background_card"
         android:importantForAccessibility="no"
         android:padding="8dp"
+        android:layout_marginTop="@dimen/def_v_padding"
         app:layout_constraintBottom_toTopOf="@+id/time"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/weatherIcon"
@@ -33,9 +34,9 @@
         android:id="@+id/time"
         android:layout_width="50dp"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:fontFamily="sans-serif"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/def_v_padding"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/windIcon"
         tools:text="10:00" />
@@ -48,34 +49,157 @@
         app:barrierMargin="8dp"
         app:constraint_referenced_ids="time, windIcon, weatherIcon" />
 
-    <LinearLayout
+    <GridLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:background="@drawable/background_card"
-        app:layout_constraintStart_toEndOf="@id/barrier"
+        android:padding="16dp"
+        android:columnCount="2"
         app:layout_constraintEnd_toEndOf="parent"
-        android:padding="16dp">
+        app:layout_constraintStart_toEndOf="@id/barrier">
 
-        <include
-            android:id="@+id/firstDetails"
-            layout="@layout/lay_first_details"
-            android:layout_width="0dp"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1.0"/>
-        <Space
-            android:layout_width="16dp"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="?attr/colorPrimary"
+            android:text="@string/label_temp" />
+
+        <TextView
+            android:id="@+id/tempValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:layout_height="match_parent" />
-        <include
-            android:id="@+id/secondDetails"
-            layout="@layout/lay_second_details"
-            android:layout_width="0dp"
+            tools:text="16" />
+
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1.0"/>
+            android:fontFamily="sans-serif-medium"
+            android:textColor="?attr/colorPrimary"
+            android:text="@string/label_feels_like" />
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/feelsLikeValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            tools:text="23" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="?attr/colorPrimary"
+            android:text="@string/label_cloud" />
+
+        <TextView
+            android:id="@+id/cloudValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            tools:text="100%" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="?attr/colorPrimary"
+            android:text="@string/label_wind_speed" />
+
+        <TextView
+            android:id="@+id/windSpeedValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            tools:text="16" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="?attr/colorPrimary"
+            android:text="@string/label_wind_direction" />
+
+        <TextView
+            android:id="@+id/directionValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            tools:text="NNW" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="?attr/colorPrimary"
+            android:text="@string/label_pressure" />
+
+        <TextView
+            android:id="@+id/pressureValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            tools:text="16" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="?attr/colorPrimary"
+            android:text="@string/label_precipitation" />
+
+        <TextView
+            android:id="@+id/precipitationValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            tools:text="23" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="?attr/colorPrimary"
+            android:text="@string/label_vis" />
+
+        <TextView
+            android:id="@+id/visValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            tools:text="100%" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="?attr/colorPrimary"
+            android:text="@string/label_gust" />
+
+        <TextView
+            android:id="@+id/gustValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            tools:text="16" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="?attr/colorPrimary"
+            android:text="@string/label_humidity"
+            />
+
+        <TextView
+            android:id="@+id/humidityValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            tools:text="23" />
+
+    </GridLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

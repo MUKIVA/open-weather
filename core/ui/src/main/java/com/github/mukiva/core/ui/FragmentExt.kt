@@ -5,6 +5,7 @@ import android.view.View
 import androidx.annotation.DimenRes
 import androidx.annotation.IntegerRes
 import androidx.annotation.MainThread
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
@@ -94,10 +95,73 @@ fun <T : ViewBinding> BottomSheetDialogFragment.viewBindings(viewBindingFactory:
     FragmentViewBindingDelegate(this, viewBindingFactory)
 
 @MainThread
-inline fun <reified T> uiLazy(
-    noinline objProvider: () -> T
-): Lazy<T> {
-    return lazy(LazyThreadSafetyMode.NONE) { objProvider() }
+fun <T> Fragment.uiLazy(factory: () -> T) =
+    UiLazyDelegate(this, factory)
+
+@MainThread
+fun <T> AppCompatActivity.uiLazy(factory: () -> T) =
+    UiLazyDelegate(this, factory)
+
+class UiLazyDelegate<T>(
+    lifecycleOwner: LifecycleOwner,
+    private val valueFactory: () -> T
+) : ReadOnlyProperty<LifecycleOwner, T> {
+
+    private var mValue: T? = null
+
+    init {
+        lifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
+            override fun onDestroy(owner: LifecycleOwner) {
+                super.onDestroy(owner)
+                mValue = null
+                owner.lifecycle.removeObserver(this)
+            }
+        })
+    }
+
+    override fun getValue(thisRef: LifecycleOwner, property: KProperty<*>): T = when (val value = mValue) {
+        null -> valueFactory().apply {
+            mValue = this
+        }
+        else -> value
+    }
+}
+
+@MainThread
+fun <T> Fragment.lazyAdapter(factory: () -> T) =
+    LazyAdapterDelegate(this, factory)
+
+@MainThread
+fun <T> AppCompatActivity.lazyAdapter(factory: () -> T) =
+    LazyAdapterDelegate(this, factory)
+
+class LazyAdapterDelegate<T>(
+    lifecycleOwner: LifecycleOwner,
+    private val valueFactory: () -> T
+) : ReadOnlyProperty<LifecycleOwner, T> {
+
+    private var mValue: T? = null
+
+    init {
+        lifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
+            override fun onStop(owner: LifecycleOwner) {
+                super.onStop(owner)
+                mValue = null
+            }
+
+            override fun onDestroy(owner: LifecycleOwner) {
+                super.onDestroy(owner)
+                owner.lifecycle.removeObserver(this)
+            }
+        })
+    }
+
+    override fun getValue(thisRef: LifecycleOwner, property: KProperty<*>): T = when (val value = mValue) {
+        null -> valueFactory().apply {
+            mValue = this
+        }
+        else -> value
+    }
 }
 
 fun Fragment.getSpeedString(speed: Speed): String = with(speed) {

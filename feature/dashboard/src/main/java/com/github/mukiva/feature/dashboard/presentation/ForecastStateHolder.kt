@@ -4,9 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.mukiva.feature.dashboard.domain.model.Forecast
 import com.github.mukiva.feature.dashboard.domain.usecase.GetForecastUseCase
-import com.github.mukiva.feature.dashboard.navigation.IDashboardRouter
 import com.github.mukiva.weatherdata.utils.RequestResult
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,26 +13,19 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
-@HiltViewModel
-class ForecastViewModel @Inject constructor(
+class ForecastStateHolder @Inject constructor(
     private val getForecastUseCase: GetForecastUseCase,
-    private val router: IDashboardRouter,
-) : ViewModel() {
+) : ViewModel(), IForecastStateHolder {
 
-    val state: StateFlow<LocationWeatherState>
+    override val forecastState: StateFlow<LocationWeatherState>
         get() = mState.asStateFlow()
 
     private val mState = MutableStateFlow<LocationWeatherState>(LocationWeatherState.Init)
-
-    fun loadForecast(name: String) {
+    override fun loadForecast(name: String) {
         getForecastUseCase(name)
             .map { requestResult -> asState(requestResult) }
             .onEach(mState::emit)
             .launchIn(viewModelScope)
-    }
-
-    fun goForecast(locationName: String, position: Int) {
-        router.goFullForecast(locationName, position)
     }
 
     private fun asState(requestResult: RequestResult<Forecast>): LocationWeatherState {

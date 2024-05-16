@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -44,16 +45,18 @@ class DefaultRouterImpl @AssistedInject constructor(
 
     override fun launch(destination: Int, args: Serializable?) {
         requireNavController().apply {
-            if (args == null) {
-                navigate(destination)
-            } else {
-                navigate(
-                    resId = destination,
-                    args = Bundle().apply {
-                        putSerializable(KEY_ARGS, args)
-                    }
-                )
-            }
+            navigate(
+                resId = destination,
+                args = Bundle().apply {
+                    args?.let { putSerializable(KEY_ARGS, args) }
+                },
+                navOptions = NavOptions.Builder()
+                    .setExitAnim(android.R.anim.fade_out)
+                    .setEnterAnim(android.R.anim.fade_in)
+                    .setPopExitAnim(android.R.anim.fade_out)
+                    .setPopEnterAnim(android.R.anim.fade_in)
+                    .build()
+            )
         }
     }
 

@@ -16,7 +16,7 @@
         android:drawablePadding="8dp"
         android:gravity="center|start"
         android:paddingHorizontal="@dimen/def_h_padding"
-        android:paddingVertical="@dimen/def_v_padding"
+        android:paddingVertical="16dp"
         tools:text="Variant"/>
 
     <View

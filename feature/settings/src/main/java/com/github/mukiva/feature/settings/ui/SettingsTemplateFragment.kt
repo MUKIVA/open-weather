@@ -84,7 +84,6 @@ class SettingsTemplateFragment : Fragment(R.layout.fragment_settings_template) {
     }
 
     private fun initList() = with(mBinding) {
-        settingsList.itemAnimator = null
         settingsList.adapter = mAdapter
     }
 }

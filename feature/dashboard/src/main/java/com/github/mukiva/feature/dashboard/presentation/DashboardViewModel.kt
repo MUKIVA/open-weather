@@ -2,11 +2,10 @@ package com.github.mukiva.feature.dashboard.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.mukiva.weatherdata.utils.RequestResult
 import com.github.mukiva.feature.dashboard.domain.model.Location
 import com.github.mukiva.feature.dashboard.domain.usecase.GetAllLocationsUseCase
 import com.github.mukiva.feature.dashboard.navigation.IDashboardRouter
-import dagger.hilt.android.lifecycle.HiltViewModel
+import com.github.mukiva.weatherdata.utils.RequestResult
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,29 +14,23 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
-@HiltViewModel
 class DashboardViewModel @Inject constructor(
     private val getAllLocationsUseCase: GetAllLocationsUseCase,
     private val router: IDashboardRouter,
-) : ViewModel() {
+) : ViewModel(),
+    IDashboardRouter by router,
+    IDashboardViewModel {
 
-    val state: StateFlow<DashboardState>
+    override val locationListState: StateFlow<DashboardState>
         get() = mState.asStateFlow()
 
     private val mState = MutableStateFlow<DashboardState>(DashboardState.Init)
 
-    fun loadLocations() {
+    override fun loadLocations() {
         getAllLocationsUseCase()
             .map(::asState)
             .onEach { mState.emit(it) }
             .launchIn(viewModelScope)
-    }
-
-    fun goSelectLocations() {
-        router.goLocationManager()
-    }
-    fun goSettings() {
-        router.goSettings()
     }
 
     private fun asState(requestResult: RequestResult<List<Location>>): DashboardState {

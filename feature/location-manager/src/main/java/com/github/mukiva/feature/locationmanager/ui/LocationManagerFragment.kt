@@ -3,7 +3,9 @@ package com.github.mukiva.feature.locationmanager.ui
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
 import android.graphics.Color
+import android.graphics.Rect
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.core.view.ViewCompat
@@ -14,16 +16,15 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.github.mukiva.core.ui.emptyView
 import com.github.mukiva.core.ui.error
+import com.github.mukiva.core.ui.getDimen
 import com.github.mukiva.core.ui.getInteger
 import com.github.mukiva.core.ui.gone
 import com.github.mukiva.core.ui.hide
 import com.github.mukiva.core.ui.loading
-import com.github.mukiva.core.ui.recycler.PaddingItemDecorator
 import com.github.mukiva.core.ui.uiLazy
 import com.github.mukiva.core.ui.viewBindings
 import com.github.mukiva.core.ui.visible
@@ -163,40 +164,27 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
 
         ViewCompat.setOnApplyWindowInsetsListener(searchView) { v, insets ->
             val ime = insets.getInsets(WindowInsetsCompat.Type.ime())
-
-            v.updatePadding(
-                top = ime.top,
-                bottom = ime.bottom,
-                left = ime.left,
-                right = ime.right
-            )
-
+            v.updatePadding(bottom = ime.bottom)
             insets
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(addedList) { v, insets ->
             val nav = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
-
-            v.updatePadding(
-                top = nav.top,
-                bottom = nav.bottom
-            )
-
+            v.updatePadding(bottom = nav.bottom)
             insets
         }
 
-        searchViewList.addItemDecoration(
-            PaddingItemDecorator.byDirections(
-                h = resources.getDimensionPixelOffset(R.dimen.def_h_padding),
-                v = resources.getDimensionPixelOffset(R.dimen.def_v_padding)
-            )
-        )
-        searchViewList.addItemDecoration(
-            DividerItemDecoration(
-                requireContext(),
-                LinearLayoutManager.VERTICAL
-            )
-        )
+        addedList.addItemDecoration(object : RecyclerView.ItemDecoration() {
+            override fun getItemOffsets(
+                outRect: Rect,
+                view: View,
+                parent: RecyclerView,
+                state: RecyclerView.State
+            ) {
+                super.getItemOffsets(outRect, view, parent, state)
+                outRect.top = getDimen(R.dimen.def_v_padding)
+            }
+        })
     }
 
     private fun subscribeOnViewModel() {
