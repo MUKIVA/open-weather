@@ -24,7 +24,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         tools:text="Some Description"
-        android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+        android:textAppearance="@style/TextAppearance.Material3.BodySmall"
         android:textColor="?attr/colorSecondary"
         app:layout_constraintEnd_toStartOf="@id/switcher"
         app:layout_constraintTop_toBottomOf="@id/settingName"

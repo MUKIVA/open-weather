@@ -2,10 +2,10 @@ package com.github.mukiva.feature.locationmanager.ui
 
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
+import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Rect
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.core.view.ViewCompat
@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.github.mukiva.core.ui.emptyView
