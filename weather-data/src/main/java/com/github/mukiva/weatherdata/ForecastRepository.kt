@@ -1,6 +1,5 @@
 package com.github.mukiva.weatherdata
 
-import android.util.Log
 import com.github.mukiva.weatherapi.IWeatherApi
 import com.github.mukiva.weatherapi.models.ForecastWithCurrentAndLocationDto
 import com.github.mukiva.weatherdata.models.ForecastWithCurrentAndLocation
@@ -39,7 +38,6 @@ class ForecastRepository(
                     cache.toDomain()
                 }
             }
-        Log.d("DATA", "FORECAST")
         return local.combine(remote, forecastMergeStrategy::merge)
     }
 
