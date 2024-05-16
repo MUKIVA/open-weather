@@ -3,26 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/navigation_main"
-    app:startDestination="@id/splashFragment">
+    app:startDestination="@id/dashboardFragment">
 
     <fragment
         android:id="@+id/dashboardFragment"
-        android:name="com.github.mukiva.feature.dashboard.ui.DashboardFragment" >
-        <action
-            android:id="@+id/action_dashboardFragment_to_locationManagerFragment"
-            app:destination="@id/locationManagerFragment"
-            app:popUpToSaveState="true"
-            app:popUpToInclusive="true"
-            app:popUpTo="@id/navigation_main"/>
-        <action
-            android:id="@+id/action_dashboardFragment_to_settingsTemplateFragment"
-            app:destination="@id/settingsTemplateFragment"
-            app:popUpToSaveState="true" />
-        <action
-            android:id="@+id/action_dashboardFragment_to_forecastFragment"
-            app:destination="@id/forecastFragment"
-            app:popUpToSaveState="true" />
-    </fragment>
+        android:name="com.github.mukiva.feature.dashboard.ui.DashboardFragment" />
     <fragment
         android:id="@+id/locationManagerFragment"
         android:name="com.github.mukiva.feature.locationmanager.ui.LocationManagerFragment" />
@@ -35,11 +20,6 @@
     <fragment
         android:id="@+id/splashFragment"
         android:name="com.github.mukiva.feature.splash.ui.SplashFragment"
-        android:label="SplashFragment">
-        <action
-            android:id="@+id/action_splashFragment_to_dashboardFragment"
-            app:destination="@id/dashboardFragment"
-            app:popUpTo="@+id/navigation_main"
-            app:popUpToInclusive="true" />
-    </fragment>
+        android:label="SplashFragment" />
+
 </navigation>

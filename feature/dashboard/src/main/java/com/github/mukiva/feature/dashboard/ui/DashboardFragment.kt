@@ -190,7 +190,6 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
                 mBinding.toolbarLayout.gone()
                 mBinding.dashboardContainer.gone()
                 mBinding.mainCard.emptyView.loading()
-                mViewModel.loadLocations()
             }
             DashboardState.Loading -> {
                 mBinding.toolbarLayout.gone()

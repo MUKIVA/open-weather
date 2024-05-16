@@ -1,11 +1,10 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.OpenWeather" parent="Theme.Material3.DynamicColors.DayNight">
-        <!-- Customize your light theme here. -->
+        <!-- Customize your dark theme here. -->
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
-
-    <style name="Theme.OpenWeather" parent="Base.Theme.OpenWeather" />
 </resources>

@@ -1,7 +1,10 @@
 package com.github.mukiva.navigation.ui
 
+import android.animation.ValueAnimator
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.animation.doOnEnd
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import com.github.mukiva.core.ui.uiLazy
 import com.github.mukiva.navigation.R
@@ -32,8 +35,17 @@ class MainActivity : AppCompatActivity(), IRouterHolder {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        installSplashScreen().apply {
+            var isNotEndOfAnimation = true
+            ValueAnimator.ofInt(0, 1).apply {
+                duration = ANIMATED_DRAWABLE_DURATION
+                doOnEnd {
+                    isNotEndOfAnimation = false
+                }
+            }.start()
+            setKeepOnScreenCondition { isNotEndOfAnimation }
+        }
         WindowCompat.setDecorFitsSystemWindows(window, false)
-
         setContentView(R.layout.activity_main)
         mRouter.onCreated(this)
 
@@ -46,5 +58,9 @@ class MainActivity : AppCompatActivity(), IRouterHolder {
 
     override fun onSupportNavigateUp(): Boolean {
         return mRouter.navigateUp() || super.onSupportNavigateUp()
+    }
+
+    companion object {
+        private const val ANIMATED_DRAWABLE_DURATION = 1000L
     }
 }

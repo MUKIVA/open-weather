@@ -26,6 +26,10 @@ class DashboardViewModel @Inject constructor(
 
     private val mState = MutableStateFlow<DashboardState>(DashboardState.Init)
 
+    init {
+        loadLocations()
+    }
+
     override fun loadLocations() {
         getAllLocationsUseCase()
             .map(::asState)
