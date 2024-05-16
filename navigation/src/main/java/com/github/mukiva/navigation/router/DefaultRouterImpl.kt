@@ -1,23 +1,29 @@
 package com.github.mukiva.navigation.router
 
 import android.os.Bundle
+import android.util.Log
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navOptions
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.github.mukiva.core.ui.KEY_ARGS
+import com.github.mukiva.navigation.R
 import com.github.mukiva.navigation.domain.IRouter
 import com.github.mukiva.navigation.ui.IOnCreateHandler
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import java.io.Serializable
 
 class DefaultRouterImpl @AssistedInject constructor(
@@ -43,19 +49,27 @@ class DefaultRouterImpl @AssistedInject constructor(
         }
     }
 
-    override fun launch(destination: Int, args: Serializable?) {
+    override fun launch(destination: Int, args: Serializable?, setMainPage: Boolean) {
         requireNavController().apply {
             navigate(
                 resId = destination,
                 args = Bundle().apply {
                     args?.let { putSerializable(KEY_ARGS, args) }
                 },
-                navOptions = NavOptions.Builder()
-                    .setExitAnim(android.R.anim.fade_out)
-                    .setEnterAnim(android.R.anim.fade_in)
-                    .setPopExitAnim(android.R.anim.fade_out)
-                    .setPopEnterAnim(android.R.anim.fade_in)
-                    .build()
+                navOptions = navOptions {
+                    anim {
+                        exit = android.R.anim.fade_out
+                        enter = android.R.anim.fade_in
+                        popExit = android.R.anim.fade_out
+                        popEnter = android.R.anim.fade_in
+
+                    }
+                    launchSingleTop = true
+                    if (setMainPage)
+                        popUpTo(this@apply.graph.id) {
+                            inclusive = true
+                        }
+                }
             )
         }
     }
@@ -66,8 +80,7 @@ class DefaultRouterImpl @AssistedInject constructor(
     }
 
     override fun navigateUp(): Boolean {
-        activity.onBackPressedDispatcher.onBackPressed()
-        globalRouter.onCreated(activity)
+        requireNavController().popBackStack()
         return true
     }
 

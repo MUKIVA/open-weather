@@ -9,6 +9,6 @@ class SplashRouter @Inject constructor(
     private val globalRouter: GlobalRouter
 ) : ISplashRouter {
     override fun goDashboard() {
-        globalRouter.launch(R.id.dashboardFragment)
+        globalRouter.launch(R.id.dashboardFragment, setMainPage = true)
     }
 }

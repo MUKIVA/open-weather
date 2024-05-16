@@ -1,5 +1,6 @@
 package com.github.mukiva.navigation.router
 
+import androidx.annotation.IdRes
 import androidx.fragment.app.FragmentActivity
 import com.github.mukiva.navigation.domain.IRouter
 import com.github.mukiva.navigation.domain.IRouterHolder
@@ -29,9 +30,9 @@ class GlobalRouter @Inject constructor() :
         mActivity = null
     }
 
-    override fun launch(destination: Int, args: Serializable?) {
+    override fun launch(@IdRes destination: Int, args: Serializable?, setMainPage: Boolean) {
         val router = mRouterHolder?.requireRouter() ?: return
-        router.launch(destination, args)
+        router.launch(destination, args, setMainPage)
     }
 
     override fun navigateUp(): Boolean {
