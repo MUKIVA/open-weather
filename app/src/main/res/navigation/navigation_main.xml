@@ -17,9 +17,5 @@
     <fragment
         android:id="@+id/forecastFragment"
         android:name="com.github.mukiva.feature.forecast.ui.ForecastFragment" />
-    <fragment
-        android:id="@+id/splashFragment"
-        android:name="com.github.mukiva.feature.splash.ui.SplashFragment"
-        android:label="SplashFragment" />
 
 </navigation>

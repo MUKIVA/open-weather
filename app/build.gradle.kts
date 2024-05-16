@@ -62,7 +62,6 @@ dependencies {
     implementation(project(":feature:forecast"))
     implementation(project(":feature:location-manager"))
     implementation(project(":feature:settings"))
-    implementation(project(":feature:splash"))
 
     implementation(project(":weather-data"))
     implementation(project(":weather-api"))
