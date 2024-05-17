@@ -1,35 +1,28 @@
 package com.github.mukiva.navigation.router
 
 import android.os.Bundle
-import android.util.Log
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
-import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import com.github.mukiva.core.ui.KEY_ARGS
-import com.github.mukiva.navigation.R
 import com.github.mukiva.navigation.domain.IRouter
 import com.github.mukiva.navigation.ui.IOnCreateHandler
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import java.io.Serializable
 
 class DefaultRouterImpl @AssistedInject constructor(
     @Assisted @IdRes private val fragmentContainerId: Int,
     private val destinationResourcesProvider: INavigationResourcesProvider,
-    private val globalRouter: GlobalRouter,
     private val activity: FragmentActivity
 ) : IOnCreateHandler, IRouter {
 
@@ -62,13 +55,14 @@ class DefaultRouterImpl @AssistedInject constructor(
                         enter = android.R.anim.fade_in
                         popExit = android.R.anim.fade_out
                         popEnter = android.R.anim.fade_in
-
                     }
                     launchSingleTop = true
-                    if (setMainPage)
+                    if (setMainPage) {
                         popUpTo(this@apply.graph.id) {
                             inclusive = true
+                            saveState = true
                         }
+                    }
                 }
             )
         }

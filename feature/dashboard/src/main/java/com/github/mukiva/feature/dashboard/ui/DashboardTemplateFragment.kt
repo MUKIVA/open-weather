@@ -11,8 +11,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.flowWithLifecycle
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.github.mukiva.core.ui.KEY_ARGS
 import com.github.mukiva.core.ui.error
@@ -29,6 +27,7 @@ import com.github.mukiva.core.ui.viewBindings
 import com.github.mukiva.core.ui.visible
 import com.github.mukiva.feature.dashboard.R
 import com.github.mukiva.feature.dashboard.databinding.FragmentDashboardTemplateBinding
+import com.github.mukiva.feature.dashboard.domain.model.MinimalForecast
 import com.github.mukiva.feature.dashboard.presentation.LocationWeatherState
 import com.github.mukiva.feature.dashboard.presentation.SharedDashboardViewModel
 import com.github.mukiva.feature.dashboard.ui.adapter.MinimalForecastAdapter
@@ -37,7 +36,6 @@ import com.github.mukiva.openweather.core.domain.weather.Speed
 import com.github.mukiva.openweather.core.domain.weather.Temp
 import com.github.mukiva.openweather.core.domain.weather.WindDirection
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import java.io.Serializable
 import com.github.mukiva.core.ui.R as CoreUiRes
@@ -87,9 +85,8 @@ class DashboardTemplateFragment :
     private fun subscribeOnViewModel() {
         mViewModel.getForecastStateHolder(getArgs(Args::class.java).locationName)
             .forecastState
-            .flowWithLifecycle(viewLifecycleOwner.lifecycle)
             .onEach(::updateState)
-            .launchIn(lifecycleScope)
+            .launchInWithLifecycle(viewLifecycleOwner)
     }
 
     private fun updateContent(state: LocationWeatherState.Content) {
@@ -105,7 +102,7 @@ class DashboardTemplateFragment :
         updateWindSpeed(current.windSpeed)
     }
 
-    private fun updateForecast(state: Collection<com.github.mukiva.feature.dashboard.domain.model.MinimalForecast>) {
+    private fun updateForecast(state: Collection<MinimalForecast>) {
         mMinimalForecastAdapter.submitList(state.toList())
     }
 
@@ -160,13 +157,6 @@ class DashboardTemplateFragment :
     }
 
     private fun updateState(state: LocationWeatherState) {
-        val loadAction = {
-            val locationName = getArgs(Args::class.java).locationName
-            mViewModel
-                .getForecastStateHolder(locationName)
-                .loadForecast(locationName)
-        }
-
         when (state) {
             is LocationWeatherState.Content -> with(mBinding) {
                 emptyView.hide()
@@ -177,14 +167,13 @@ class DashboardTemplateFragment :
                 emptyView.error(
                     msg = getString(CoreUiRes.string.error_msg),
                     buttonText = getString(CoreUiRes.string.refresh),
-                    onButtonClick = loadAction
+                    onButtonClick = {  }
                 )
                 root.gone()
             }
             LocationWeatherState.Init -> with(mBinding) {
                 emptyView.loading()
                 root.gone()
-                loadAction()
             }
             LocationWeatherState.Loading -> with(mBinding) {
                 emptyView.loading()

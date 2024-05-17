@@ -4,7 +4,6 @@ import android.graphics.Rect
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
@@ -13,7 +12,9 @@ import androidx.core.view.children
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
@@ -37,6 +38,7 @@ import com.github.mukiva.feature.dashboard.ui.adapter.DashboardAdapter
 import com.github.mukiva.openweather.core.domain.settings.UnitsType
 import com.github.mukiva.openweather.core.domain.weather.Temp
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlin.math.abs
@@ -49,7 +51,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
     private val mViewModel by viewModels<SharedDashboardViewModel>()
     private val mBinding by viewBindings(FragmentDashboardBinding::bind)
     private val mDashboardAdapter by lazyAdapter {
-        DashboardAdapter(childFragmentManager, lifecycle)
+        DashboardAdapter(childFragmentManager, viewLifecycleOwner.lifecycle)
     }
     private var mIsAppbarExpanded: Boolean = true
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -127,13 +129,11 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
 
     private fun observeViewModel() {
         mViewModel.mainCardState
-            .flowWithLifecycle(viewLifecycleOwner.lifecycle)
             .onEach(::updateMainCard)
-            .launchIn(lifecycleScope)
+            .launchInWithLifecycle(viewLifecycleOwner)
         mViewModel.locationListState
-            .flowWithLifecycle(lifecycle, Lifecycle.State.CREATED)
             .onEach(::updateState)
-            .launchIn(lifecycleScope)
+            .launchInWithLifecycle(viewLifecycleOwner)
     }
 
     private fun updateMainCard(
@@ -183,7 +183,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
                 mBinding.mainEmptyView.error(
                     msg = getString(CoreUiRes.string.error_msg),
                     buttonText = getString(CoreUiRes.string.refresh),
-                    onButtonClick = mViewModel::loadLocations
+                    onButtonClick = { }
                 )
             }
             DashboardState.Init -> {
@@ -223,5 +223,17 @@ internal fun Fragment.getMainTitle(
             getString(R.string.template_celsius_main_title, temp.value.roundToInt(), locationName)
         UnitsType.IMPERIAL ->
             getString(R.string.template_fahrenheit_main_title, temp.value.roundToInt(), locationName)
+    }
+}
+
+internal fun <T> Flow<T>.launchInWithLifecycle(owner: LifecycleOwner) {
+    val job = flowWithLifecycle(owner.lifecycle, Lifecycle.State.CREATED)
+        .launchIn(owner.lifecycleScope)
+
+    object : DefaultLifecycleObserver {
+        override fun onDestroy(owner: LifecycleOwner) {
+            super.onDestroy(owner)
+            job.cancel()
+        }
     }
 }

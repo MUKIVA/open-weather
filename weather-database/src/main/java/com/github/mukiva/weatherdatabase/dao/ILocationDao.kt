@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ILocationDao {
-    @Query("SELECT * FROM LocationDbo")
+    @Query("SELECT * FROM LocationDbo ORDER BY priority ASC")
     fun getAll(): Flow<List<LocationDbo>>
 
     @Query("SELECT * FROM LocationDbo WHERE id = :locationId")

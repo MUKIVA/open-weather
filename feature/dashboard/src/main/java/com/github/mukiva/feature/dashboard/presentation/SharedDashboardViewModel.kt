@@ -10,9 +10,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,19 +33,21 @@ class SharedDashboardViewModel @Inject constructor(
     private val mForecastStateHolders = HashMap<String, ForecastStateHolder>()
 
     fun requestMainCardState(position: Int) {
-        locationListState
-            .filterIsInstance<DashboardState.Content>()
-            .map { dashboardState -> dashboardState.locations[position].name }
-            .map { locationName -> locationName to getForecastStateHolder(locationName) }
-            .map { (name, holder) -> name to holder.forecastState }
-            .onEach { (name, flow) -> requestMainCardState(name, flow) }
-            .launchIn(viewModelScope)
+        viewModelScope.launch {
+            locationListState
+                .filterIsInstance<DashboardState.Content>()
+                .mapNotNull { dashboardState -> dashboardState.locations.getOrNull(position)?.name }
+                .map { locationName -> locationName to getForecastStateHolder(locationName) }
+                .map { (name, holder) -> name to holder.forecastState }
+                .onEach { (name, flow) -> requestMainCardState(name, flow) }
+                .first()
+        }
+//            .launchIn(viewModelScope)
     }
 
     fun getForecastStateHolder(name: String): ForecastStateHolder {
-        val holder = mForecastStateHolders[name] ?: ForecastStateHolder(getForecastUseCase).apply {
-            mForecastStateHolders[name] = this
-        }
+        val holder = mForecastStateHolders[name] ?: ForecastStateHolder(getForecastUseCase, name)
+            .apply { mForecastStateHolders[name] = this }
         return holder
     }
 
