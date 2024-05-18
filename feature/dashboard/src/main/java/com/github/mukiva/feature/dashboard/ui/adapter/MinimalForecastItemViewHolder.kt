@@ -3,6 +3,7 @@ package com.github.mukiva.feature.dashboard.ui.adapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.github.mukiva.core.ui.getTempString
+import com.github.mukiva.core.ui.getWeatherDrawable
 import com.github.mukiva.feature.dashboard.databinding.ItemMinForecastBinding
 import com.github.mukiva.feature.dashboard.domain.model.MinimalForecast
 import com.github.mukiva.openweather.core.domain.weather.Temp
@@ -28,7 +29,7 @@ class MinimalForecastItemViewHolder(
     }
 
     fun bind(item: MinimalForecast) = with(bindings) {
-        updateCondition(item.conditionIconUrl)
+        updateCondition(item.conditionIconCode, item.isDay)
         updateDate(item.date)
         updateTempInfo(
             dayTemp = item.maxTemp,
@@ -53,9 +54,9 @@ class MinimalForecastItemViewHolder(
         dayOfWeek.text = dayOfWeekFormatter.format(date)
     }
 
-    private fun updateCondition(iconUrl: String) = with(bindings) {
+    private fun updateCondition(iconCode: Int, isDay: Boolean) = with(bindings) {
         Glide.with(bindings.root)
-            .load("https:$iconUrl")
+            .load(itemView.context.getWeatherDrawable(iconCode, isDay))
             .centerCrop()
             .into(this.condition)
     }

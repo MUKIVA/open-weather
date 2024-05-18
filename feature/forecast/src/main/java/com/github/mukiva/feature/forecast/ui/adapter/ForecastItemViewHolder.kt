@@ -36,7 +36,7 @@ class ForecastItemViewHolder(
         updateGust(item.gust)
         updateHumidity(item.humidity)
         updateTime(item.dateTime)
-        updateWeatherIcon(item.weatherIconUrl)
+        updateWeatherIcon(item.weatherIconCode, item.isDay)
     }
 
     private fun updateDegree(degree: Int) = with(binding) {

@@ -1,8 +1,8 @@
 package com.github.mukiva.feature.dashboard.domain.usecase
 
-import android.util.Log
 import com.github.mukiva.feature.dashboard.domain.model.Condition
 import com.github.mukiva.feature.dashboard.domain.model.Forecast
+import com.github.mukiva.feature.dashboard.domain.model.MinimalForecast
 import com.github.mukiva.openweather.core.domain.settings.UnitsType
 import com.github.mukiva.openweather.core.domain.weather.Distance
 import com.github.mukiva.openweather.core.domain.weather.Precipitation
@@ -17,16 +17,8 @@ import com.github.mukiva.weatherdata.models.ForecastDay
 import com.github.mukiva.weatherdata.models.ForecastWithCurrentAndLocation
 import com.github.mukiva.weatherdata.utils.RequestResult
 import com.github.mukiva.weatherdata.utils.map
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.filterNot
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.github.mukiva.weatherdata.models.Condition as DataCondition
 import com.github.mukiva.weatherdata.models.Forecast as DataForecast
@@ -50,30 +42,33 @@ class GetForecastUseCase @Inject constructor(
         return Forecast(
             locationName = forecast.location.name,
             currentWeather = toCurrent(forecast.current, unitsType),
-            forecastState = toForecast(forecast.forecast, unitsType),
+            forecastState = toForecast(forecast.current.isDay, forecast.forecast, unitsType),
         )
     }
 
     private fun toForecast(
+        isDay: Int,
         forecast: DataForecast,
         unitsType: UnitsType,
-    ): List<com.github.mukiva.feature.dashboard.domain.model.MinimalForecast> {
+    ): List<MinimalForecast> {
         return forecast.forecastDay.mapIndexed { index, forecastDay ->
-            toMinimalForecast(index, forecastDay, unitsType)
+            toMinimalForecast(index, isDay, forecastDay, unitsType)
         }
     }
 
     private fun toMinimalForecast(
         index: Int,
+        isDay: Int,
         forecastDay: ForecastDay,
         unitsType: UnitsType,
-    ): com.github.mukiva.feature.dashboard.domain.model.MinimalForecast = with(forecastDay) {
-        return com.github.mukiva.feature.dashboard.domain.model.MinimalForecast(
+    ): MinimalForecast = with(forecastDay) {
+        return MinimalForecast(
             id = index,
             avgTemp = Temp(unitsType, day.avgTempC, day.avgTempC),
             minTemp = Temp(unitsType, day.minTempC, day.minTempF),
             maxTemp = Temp(unitsType, day.maxTempC, day.maxTempF),
-            conditionIconUrl = forecastDay.day.condition.icon,
+            conditionIconCode = forecastDay.day.condition.code,
+            isDay = isDay == 1,
             date = forecastDay.dateEpoch,
         )
     }

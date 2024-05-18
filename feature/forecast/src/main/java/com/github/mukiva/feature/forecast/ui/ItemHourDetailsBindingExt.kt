@@ -2,12 +2,12 @@ package com.github.mukiva.feature.forecast.ui
 
 import android.graphics.drawable.Drawable
 import com.bumptech.glide.Glide
-import com.github.mukiva.core.ui.R as CoreUiRes
 import com.github.mukiva.core.ui.getDistanceString
 import com.github.mukiva.core.ui.getPrecipitationString
 import com.github.mukiva.core.ui.getPressureString
 import com.github.mukiva.core.ui.getSpeedString
 import com.github.mukiva.core.ui.getTempString
+import com.github.mukiva.core.ui.getWeatherDrawable
 import com.github.mukiva.feature.forecast.databinding.ItemHourDetailsBinding
 import com.github.mukiva.openweather.core.domain.weather.Distance
 import com.github.mukiva.openweather.core.domain.weather.Precipitation
@@ -17,6 +17,7 @@ import com.github.mukiva.openweather.core.domain.weather.Temp
 import com.github.mukiva.openweather.core.domain.weather.WindDirection
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.format.char
+import com.github.mukiva.core.ui.R as CoreUiRes
 
 internal fun ItemHourDetailsBinding.updateFeelsLike(feelsLike: Temp) {
     feelsLikeValue.text = root.getTempString(feelsLike)
@@ -58,9 +59,9 @@ internal fun ItemHourDetailsBinding.updateHumidity(humidity: Int) {
 internal fun ItemHourDetailsBinding.updateTime(date: LocalDateTime) {
     time.text = mTimeFormatter.format(date)
 }
-internal fun ItemHourDetailsBinding.updateWeatherIcon(url: String) {
+internal fun ItemHourDetailsBinding.updateWeatherIcon(code: Int, isDay: Boolean) {
     Glide.with(root)
-        .load("https:$url")
+        .load(root.context.getWeatherDrawable(code, isDay))
         .into(weatherIcon)
 }
 

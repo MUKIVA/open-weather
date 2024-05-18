@@ -8,6 +8,7 @@ data class MinimalForecast(
     val avgTemp: Temp,
     val minTemp: Temp,
     val maxTemp: Temp,
-    val conditionIconUrl: String,
+    val conditionIconCode: Int,
+    val isDay: Boolean,
     val date: LocalDateTime,
 )
