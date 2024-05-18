@@ -10,11 +10,11 @@ class DashboardRouter @Inject constructor(
     private val globalRouter: GlobalRouter
 ) : IDashboardRouter {
 
-    override fun goFullForecast(locationName: String, dayPosition: Int) {
+    override fun goFullForecast(locationId: Long, dayPosition: Int) {
         globalRouter.launch(
             R.id.forecastFragment,
             ForecastFragment.Args(
-                locationName = locationName,
+                locationId = locationId,
                 dayPosition = dayPosition
             )
         )

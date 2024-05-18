@@ -2,14 +2,14 @@ package com.github.mukiva.feature.forecast.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.mukiva.weatherdata.utils.RequestResult
 import com.github.mukiva.feature.forecast.domain.usecase.GetFullForecastUseCase
+import com.github.mukiva.weatherdata.utils.RequestResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.takeWhile
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @HiltViewModel
@@ -18,34 +18,18 @@ class ForecastViewModel @Inject constructor(
 ) : ViewModel() {
 
     val state: StateFlow<ForecastState>
-        get() = mState.asStateFlow()
+        get() = mState
 
-    private val mState =
-        MutableStateFlow<ForecastState>(ForecastState.Init)
-
-    private var mTimelineStateHolders = emptyList<ForecastTimelineStateHolder>()
-    fun loadForecast(locationName: String) {
-        getFullForecastUseCase(locationName)
-            .takeWhile { requestResult ->
-                if (requestResult is RequestResult.Success) {
-                    updateStateHolders(checkNotNull(requestResult.data).size)
-                }
-                mState.emit(asState(requestResult))
-                requestResult is RequestResult.InProgress
-            }
+    private val mState = MutableStateFlow<ForecastState>(ForecastState.Init)
+    fun loadForecast(id: Long, cached: Boolean) {
+        getFullForecastUseCase(id, cached)
+            .map(::asState)
+            .onEach(mState::emit)
             .launchIn(viewModelScope)
-    }
-    fun getStateHolder(position: Int): ForecastTimelineStateHolder {
-        return mTimelineStateHolders[position]
-    }
-    private fun updateStateHolders(size: Int) {
-        mTimelineStateHolders = buildList(size) {
-            repeat(size) { add(ForecastTimelineStateHolder(this@ForecastViewModel)) }
-        }
     }
 
     private fun asState(
-        requestResult: RequestResult<List<HourlyForecast.Content>>
+        requestResult: RequestResult<List<HourlyForecast>>
     ): ForecastState {
         return when (requestResult) {
             is RequestResult.Error -> ForecastState.Error

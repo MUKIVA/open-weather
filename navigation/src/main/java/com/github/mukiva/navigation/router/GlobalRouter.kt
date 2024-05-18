@@ -1,12 +1,12 @@
 package com.github.mukiva.navigation.router
 
+import android.os.Parcelable
 import androidx.annotation.IdRes
 import androidx.fragment.app.FragmentActivity
 import com.github.mukiva.navigation.domain.IRouter
 import com.github.mukiva.navigation.domain.IRouterHolder
 import com.github.mukiva.navigation.ui.IOnCreateHandler
 import com.github.mukiva.navigation.ui.IOnDestroyHandler
-import java.io.Serializable
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -30,7 +30,7 @@ class GlobalRouter @Inject constructor() :
         mActivity = null
     }
 
-    override fun launch(@IdRes destination: Int, args: Serializable?, setMainPage: Boolean) {
+    override fun launch(@IdRes destination: Int, args: Parcelable?, setMainPage: Boolean) {
         val router = mRouterHolder?.requireRouter() ?: return
         router.launch(destination, args, setMainPage)
     }

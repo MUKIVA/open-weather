@@ -6,35 +6,40 @@ import com.github.mukiva.feature.dashboard.domain.model.Location
 import com.github.mukiva.feature.dashboard.domain.usecase.GetAllLocationsUseCase
 import com.github.mukiva.feature.dashboard.navigation.IDashboardRouter
 import com.github.mukiva.weatherdata.utils.RequestResult
-import kotlinx.coroutines.flow.MutableStateFlow
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
+@HiltViewModel
 class DashboardViewModel @Inject constructor(
     private val getAllLocationsUseCase: GetAllLocationsUseCase,
-    private val router: IDashboardRouter,
-) : ViewModel(),
-    IDashboardRouter by router,
-    IDashboardViewModel {
+    private val weatherStatesHolder: ForecastStatesHolder,
+    router: IDashboardRouter
+) : ViewModel(), IDashboardRouter by router {
 
-    override val locationListState: StateFlow<DashboardState>
-        get() = mState.asStateFlow()
+    val state: StateFlow<DashboardState> = getAllLocationsUseCase()
+        .map(::asState)
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Lazily,
+            DashboardState.Init
+        ).apply {
+            onEach { state ->
+                if (state is DashboardState.Content) {
+                    weatherStatesHolder.clear()
+                }
+            }
+        }
 
-    private val mState = MutableStateFlow<DashboardState>(DashboardState.Init)
+    fun loadLocations() { getAllLocationsUseCase() }
 
-    init {
-        loadLocations()
-    }
-
-    override fun loadLocations() {
-        getAllLocationsUseCase()
-            .map(::asState)
-            .onEach { mState.emit(it) }
-            .launchIn(viewModelScope)
+    fun requestWeatherState(id: Long): Flow<MainCardState> {
+        return weatherStatesHolder[id].map(::asMainCardState)
     }
 
     private fun asState(requestResult: RequestResult<List<Location>>): DashboardState {
@@ -42,6 +47,18 @@ class DashboardViewModel @Inject constructor(
             is RequestResult.Error -> DashboardState.Error
             is RequestResult.InProgress -> DashboardState.Loading
             is RequestResult.Success -> stateContentFactory(checkNotNull(requestResult.data))
+        }
+    }
+
+    private fun asMainCardState(
+        locationWeatherState: LocationWeatherState
+    ): MainCardState {
+        return when (locationWeatherState) {
+            is LocationWeatherState.Content -> MainCardState.Content(
+                locationName = locationWeatherState.forecast.locationName,
+                currentTemp = locationWeatherState.forecast.currentWeather.temp,
+            )
+            else -> MainCardState.Loading
         }
     }
 

@@ -10,14 +10,11 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ILocationDao {
-    @Query("SELECT * FROM LocationDbo")
+    @Query("SELECT * FROM LocationDbo ORDER BY priority ASC")
     fun getAll(): Flow<List<LocationDbo>>
 
     @Query("SELECT * FROM LocationDbo WHERE id = :locationId")
-    fun getById(locationId: Int): Flow<LocationDbo>
-
-    @Query("SELECT * FROM LocationDbo WHERE name LIKE :cityName AND region LIKE :region")
-    suspend fun getByLocationName(cityName: String, region: String): LocationDbo
+    fun getById(locationId: Long): LocationDbo
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(location: LocationDbo): Long

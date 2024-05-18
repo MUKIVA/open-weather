@@ -27,6 +27,6 @@ interface IForecastDao {
     suspend fun insertCache(cache: ForecastRequestCacheDbo): Long
 
     @Transaction
-    @Query("SELECT * FROM ForecastRequestCacheDbo WHERE request_query LIKE :queryRequest")
-    fun getCache(queryRequest: String): Flow<ForecastWithCurrentAndLocation?>
+    @Query("SELECT * FROM ForecastRequestCacheDbo WHERE location_id = :locationId")
+    fun getCache(locationId: Long): Flow<ForecastWithCurrentAndLocation?>
 }

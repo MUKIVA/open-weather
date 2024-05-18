@@ -6,13 +6,11 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class ForecastRequestCacheDbo(
-    @ColumnInfo("request_query")
+    @ColumnInfo("location_id")
     @PrimaryKey
-    val requestQuery: String,
+    val locationId: Long,
     @ColumnInfo("current_id")
     val currentId: Long,
-    @ColumnInfo("location_id")
-    val locationId: Long,
     @ColumnInfo("forecast_id")
     val forecastId: Long,
 )

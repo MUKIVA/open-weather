@@ -1,13 +1,11 @@
 package com.github.mukiva.feature.dashboard.domain.usecase
 
-import android.util.Log
 import com.github.mukiva.feature.dashboard.domain.model.Location
 import com.github.mukiva.weatherdata.LocationRepository
 import com.github.mukiva.weatherdata.utils.RequestResult
 import com.github.mukiva.weatherdata.utils.map
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 import com.github.mukiva.weatherdata.models.Location as DataLocation
 

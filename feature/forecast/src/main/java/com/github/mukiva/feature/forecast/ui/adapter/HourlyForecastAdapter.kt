@@ -11,11 +11,12 @@ import com.github.mukiva.feature.forecast.presentation.HourlyForecast
 import com.github.mukiva.feature.forecast.ui.ForecastTimelineFragment
 
 class HourlyForecastAdapter(
+    private val locationId: Long,
     fragmentManager: FragmentManager,
     lifecycle: Lifecycle,
 ) : FragmentStateAdapter(fragmentManager, lifecycle) {
 
-    private val mDiffer: AsyncListDiffer<HourlyForecast.Content> = AsyncListDiffer(
+    private val mDiffer: AsyncListDiffer<HourlyForecast> = AsyncListDiffer(
         AdapterListUpdateCallback(this),
         AsyncDifferConfig.Builder(HourlyForecastDiffUtilCallback).build()
     )
@@ -24,14 +25,13 @@ class HourlyForecastAdapter(
 
     override fun createFragment(position: Int): Fragment {
         return ForecastTimelineFragment.newInstance(
-            args = ForecastTimelineFragment
-                .Args(position = position)
+            args = ForecastTimelineFragment.Args(locationId, position)
         )
     }
 
-    operator fun get(pos: Int): HourlyForecast.Content = mDiffer.currentList[pos]
+    operator fun get(pos: Int): HourlyForecast = mDiffer.currentList[pos]
 
-    fun submit(days: List<HourlyForecast.Content>) {
+    fun submit(days: List<HourlyForecast>) {
         mDiffer.submitList(days)
     }
 }

@@ -1,5 +1,6 @@
 package com.github.mukiva.feature.dashboard.ui.adapter
 
+import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
@@ -22,19 +23,26 @@ class DashboardAdapter(
 
     override fun getItemCount(): Int = mDiffer.currentList.size
 
+    override fun getItemId(position: Int): Long {
+        return mDiffer.currentList[position].id
+    }
+
+    override fun containsItem(itemId: Long): Boolean {
+        val location = mDiffer.currentList.firstOrNull { it.id == itemId }
+        return location != null
+    }
+
     override fun createFragment(position: Int): Fragment {
         val location = mDiffer.currentList[position]
         val fragment = DashboardTemplateFragment
             .newInstance(
-                DashboardTemplateFragment.Args(
-                    locationName = location.name,
-                    region = location.region,
-                )
+                DashboardTemplateFragment.Args(location.id)
             )
         return fragment
     }
+    operator fun get(pos: Int): Location = mDiffer.currentList[pos]
 
-    fun submit(list: List<Location>) {
+    fun submitList(list: List<Location>) {
         mDiffer.submitList(list)
     }
 }

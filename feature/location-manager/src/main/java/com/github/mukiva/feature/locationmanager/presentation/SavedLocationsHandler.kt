@@ -1,11 +1,14 @@
 package com.github.mukiva.feature.locationmanager.presentation
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.mukiva.feature.locationmanager.domain.usecase.GetAddedLocationsUseCase
 import com.github.mukiva.feature.locationmanager.domain.usecase.UpdateStoredLocationsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -43,10 +46,13 @@ class SavedLocationsHandler @Inject constructor(
         mSavedLocationsState.update { newState }
     }
     override fun fetchAddedLocations() {
-        getAddedLocationsUseCase()
-            .map(::asSavedListState)
-            .onEach(mSavedLocationsState::emit)
-            .launchIn(viewModelScope)
+        viewModelScope.launch {
+            getAddedLocationsUseCase()
+                .map(::asSavedListState)
+                .onEach(mSavedLocationsState::emit)
+                .filter { it !is SavedLocationsState.Loading }
+                .first()
+        }
     }
     override fun enterNormalMode() {
         val state = mSavedLocationsState.value as? SavedLocationsState.Edit

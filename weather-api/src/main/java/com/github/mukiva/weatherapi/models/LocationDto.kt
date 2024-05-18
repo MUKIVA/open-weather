@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class LocationDto(
     @SerialName("id")
-    val id: Int = 0,
+    val id: Long = 0,
     @SerialName("name")
     val name: String,
     @SerialName("region")

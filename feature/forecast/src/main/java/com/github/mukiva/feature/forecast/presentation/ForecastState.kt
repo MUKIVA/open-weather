@@ -5,6 +5,6 @@ sealed class ForecastState {
     data object Error : ForecastState()
     data object Loading : ForecastState()
     data class Content(
-        val hourlyForecast: List<HourlyForecast.Content>,
+        val hourlyForecast: List<HourlyForecast>,
     ) : ForecastState()
 }

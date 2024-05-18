@@ -2,12 +2,12 @@ package com.github.mukiva.feature.settings.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.mukiva.feature.settings.domain.SettingItem
 import com.github.mukiva.openweather.core.domain.settings.Config
 import com.github.mukiva.openweather.core.domain.settings.Group
 import com.github.mukiva.openweather.core.domain.settings.Theme
 import com.github.mukiva.openweather.core.domain.settings.UnitsType
 import com.github.mukiva.weatherdata.SettingsRepository
-import com.github.mukiva.feature.settings.domain.SettingItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -42,11 +42,12 @@ class SettingsViewModel @Inject constructor(
         val selectedPosition = variants.indexOf(selectedVariant)
         mState.update { state ->
             if (state is SettingsState.Content) {
-                state.copy(bottomSheetState = BottomSheetState.Show(
-                    key,
-                    variants,
-                    selectedPosition
-                )
+                state.copy(
+                    bottomSheetState = BottomSheetState.Show(
+                        key,
+                        variants,
+                        selectedPosition
+                    )
                 )
             } else {
                 state

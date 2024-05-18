@@ -2,6 +2,7 @@ package com.github.mukiva.feature.forecast.ui
 
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -23,31 +24,32 @@ import com.github.mukiva.core.ui.visible
 import com.github.mukiva.feature.forecast.R
 import com.github.mukiva.feature.forecast.databinding.FragmentForecastBinding
 import com.github.mukiva.feature.forecast.databinding.ItemDayTabBinding
-import com.google.android.material.tabs.TabLayoutMediator
 import com.github.mukiva.feature.forecast.presentation.ForecastState
 import com.github.mukiva.feature.forecast.presentation.ForecastViewModel
 import com.github.mukiva.feature.forecast.presentation.HourlyForecast
 import com.github.mukiva.feature.forecast.ui.adapter.HourlyForecastAdapter
+import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.format.DayOfWeekNames
-import java.io.Serializable
+import kotlinx.parcelize.Parcelize
 import com.github.mukiva.core.ui.R as CoreUiRes
 
 @AndroidEntryPoint
 class ForecastFragment : Fragment(R.layout.fragment_forecast) {
 
+    @Parcelize
     data class Args(
-        val locationName: String,
+        val locationId: Long,
         val dayPosition: Int
-    ) : Serializable
+    ) : Parcelable
 
     private val mBinding by viewBindings(FragmentForecastBinding::bind)
     private val mViewModel by viewModels<ForecastViewModel>()
     private val mHourlyForecastAdapter by uiLazy {
-        HourlyForecastAdapter(childFragmentManager, lifecycle)
+        HourlyForecastAdapter(getArgs(Args::class.java).locationId, childFragmentManager, lifecycle)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -73,7 +75,7 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast) {
             dayOfWeek(DayOfWeekNames.ENGLISH_ABBREVIATED)
         }
 
-        viewPager.offscreenPageLimit = 2
+        viewPager.offscreenPageLimit = 3
         viewPager.adapter = mHourlyForecastAdapter
 
         TabLayoutMediator(tabLayout, viewPager, true, true) { tab, index ->
@@ -114,9 +116,9 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast) {
 
     private fun subscribeOnViewModel() {
         mViewModel.state
-            .flowWithLifecycle(lifecycle)
+            .flowWithLifecycle(viewLifecycleOwner.lifecycle)
             .onEach(::updateState)
-            .launchIn(lifecycleScope)
+            .launchIn(viewLifecycleOwner.lifecycleScope)
     }
 
     private fun updateState(state: ForecastState) {
@@ -126,7 +128,7 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast) {
         updateType(state)
     }
 
-    private fun updateViewPager(list: List<HourlyForecast.Content>) {
+    private fun updateViewPager(list: List<HourlyForecast>) {
         mHourlyForecastAdapter.submit(list)
     }
 
@@ -143,13 +145,13 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast) {
                     getString(CoreUiRes.string.error_msg),
                     getString(CoreUiRes.string.refresh)
                 ) {
-                    mViewModel.loadForecast(getArgs(Args::class.java).locationName)
+                    mViewModel.loadForecast(getArgs(Args::class.java).locationId, false)
                 }
             }
             ForecastState.Init -> {
                 content.gone()
                 emptyView.loading()
-                mViewModel.loadForecast(getArgs(Args::class.java).locationName)
+                mViewModel.loadForecast(getArgs(Args::class.java).locationId, false)
             }
             ForecastState.Loading -> {
                 emptyView.loading()

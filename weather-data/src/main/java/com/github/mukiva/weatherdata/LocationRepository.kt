@@ -1,6 +1,5 @@
 package com.github.mukiva.weatherdata
 
-import android.util.Log
 import com.github.mukiva.weatherapi.IWeatherApi
 import com.github.mukiva.weatherdata.models.Location
 import com.github.mukiva.weatherdata.utils.RequestResult
@@ -10,11 +9,9 @@ import com.github.mukiva.weatherdata.utils.toDbo
 import com.github.mukiva.weatherdata.utils.toLocation
 import com.github.mukiva.weatherdatabase.WeatherDatabase
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
-import kotlinx.coroutines.flow.onEach
 
 class LocationRepository(
     private val database: WeatherDatabase,
@@ -36,8 +33,8 @@ class LocationRepository(
         val localRequest = database.locationDao.getAll()
             .map { locationsDbo -> locationsDbo.map { it.toLocation() } }
             .map { locations -> RequestResult.Success(locations) }
-//        val start = flow<RequestResult<List<Location>>> { emit(RequestResult.InProgress(null)) }
-        return localRequest
+        val start = flow<RequestResult<List<Location>>> { emit(RequestResult.InProgress(null)) }
+        return merge(start, localRequest)
     }
 
     suspend fun addLocalLocation(location: Location) {
