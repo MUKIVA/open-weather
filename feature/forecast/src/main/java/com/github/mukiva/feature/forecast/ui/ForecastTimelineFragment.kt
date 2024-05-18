@@ -2,6 +2,7 @@ package com.github.mukiva.feature.forecast.ui
 
 import android.graphics.Rect
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.core.view.ViewCompat
@@ -16,34 +17,35 @@ import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import com.github.mukiva.core.ui.KEY_ARGS
 import com.github.mukiva.core.ui.getArgs
 import com.github.mukiva.core.ui.getDimen
-import com.github.mukiva.core.ui.gone
-import com.github.mukiva.core.ui.hide
-import com.github.mukiva.core.ui.loading
 import com.github.mukiva.core.ui.uiLazy
 import com.github.mukiva.core.ui.viewBindings
 import com.github.mukiva.core.ui.visible
 import com.github.mukiva.feature.forecast.R
 import com.github.mukiva.feature.forecast.databinding.FragmentForecastTimelineBinding
+import com.github.mukiva.feature.forecast.presentation.ForecastState
 import com.github.mukiva.feature.forecast.presentation.ForecastViewModel
 import com.github.mukiva.feature.forecast.presentation.HourlyForecast
 import com.github.mukiva.feature.forecast.ui.adapter.ForecastItemAdapter
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
-import java.io.Serializable
+import kotlinx.parcelize.Parcelize
 import com.github.mukiva.core.ui.R as CoreUiRes
 
 @AndroidEntryPoint
 class ForecastTimelineFragment : Fragment(R.layout.fragment_forecast_timeline) {
 
+    @Parcelize
     data class Args(
-        val position: Int,
-    ) : Serializable
+        val id: Long,
+        val position: Int
+    ) : Parcelable
 
-    private val mViewModel by uiLazy {
-        viewModels<ForecastViewModel>(ownerProducer = { requireParentFragment() })
-            .value.getStateHolder(getArgs(Args::class.java).position)
-    }
+    private val mViewModel by viewModels<ForecastViewModel>(
+        ownerProducer = { requireParentFragment() }
+    )
     private val mBinding by viewBindings(FragmentForecastTimelineBinding::bind)
     private val mHoursAdapter by uiLazy { ForecastItemAdapter() }
     private val mItemDecoration = object : RecyclerView.ItemDecoration() {
@@ -71,6 +73,10 @@ class ForecastTimelineFragment : Fragment(R.layout.fragment_forecast_timeline) {
     private fun subscribeOnViewModel() {
         mViewModel.state
             .flowWithLifecycle(viewLifecycleOwner.lifecycle)
+            .filterIsInstance<ForecastState.Content>()
+            .mapNotNull { forecast ->
+                forecast.hourlyForecast.getOrNull(getArgs(Args::class.java).position)
+            }
             .onEach(::updateState)
             .launchIn(lifecycleScope)
     }
@@ -87,19 +93,9 @@ class ForecastTimelineFragment : Fragment(R.layout.fragment_forecast_timeline) {
         }
     }
 
-    private fun updateState(state: HourlyForecast) {
-        when (state) {
-            is HourlyForecast.Content -> with(mBinding) {
-                emptyView.hide()
-                list.visible()
-                mHoursAdapter.submitList(state.hours)
-            }
-            HourlyForecast.Init -> with(mBinding) {
-                emptyView.loading()
-                list.gone()
-                mViewModel.loadHours(getArgs(Args::class.java).position)
-            }
-        }
+    private fun updateState(state: HourlyForecast) = with(mBinding) {
+        list.visible()
+        mHoursAdapter.submitList(state.hours)
     }
 
     companion object {

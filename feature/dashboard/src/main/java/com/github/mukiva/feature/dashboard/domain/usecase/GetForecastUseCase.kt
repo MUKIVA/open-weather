@@ -1,5 +1,6 @@
 package com.github.mukiva.feature.dashboard.domain.usecase
 
+import android.util.Log
 import com.github.mukiva.feature.dashboard.domain.model.Condition
 import com.github.mukiva.feature.dashboard.domain.model.Forecast
 import com.github.mukiva.openweather.core.domain.settings.UnitsType
@@ -16,8 +17,16 @@ import com.github.mukiva.weatherdata.models.ForecastDay
 import com.github.mukiva.weatherdata.models.ForecastWithCurrentAndLocation
 import com.github.mukiva.weatherdata.utils.RequestResult
 import com.github.mukiva.weatherdata.utils.map
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.filterNot
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.github.mukiva.weatherdata.models.Condition as DataCondition
 import com.github.mukiva.weatherdata.models.Forecast as DataForecast
@@ -26,10 +35,9 @@ class GetForecastUseCase @Inject constructor(
     private val forecastRepository: ForecastRepository,
     private val settingsRepository: SettingsRepository,
 ) {
-    operator fun invoke(location: String): Flow<RequestResult<Forecast>> {
-        val request = forecastRepository.getForecast(location)
+    operator fun invoke(id: Long): Flow<RequestResult<Forecast>> {
+        val request = forecastRepository.getForecast(id)
         val settings = settingsRepository.getUnitsType()
-
         return settings.combine(request) { unitsType, requestResult ->
             requestResult.map { forecast -> toForecast(unitsType, forecast) }
         }
@@ -40,6 +48,7 @@ class GetForecastUseCase @Inject constructor(
         forecast: ForecastWithCurrentAndLocation,
     ): Forecast {
         return Forecast(
+            locationName = forecast.location.name,
             currentWeather = toCurrent(forecast.current, unitsType),
             forecastState = toForecast(forecast.forecast, unitsType),
         )

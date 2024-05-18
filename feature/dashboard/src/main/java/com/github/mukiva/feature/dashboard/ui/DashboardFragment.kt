@@ -13,7 +13,9 @@ import androidx.core.view.children
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
@@ -31,8 +33,8 @@ import com.github.mukiva.core.ui.visible
 import com.github.mukiva.feature.dashboard.R
 import com.github.mukiva.feature.dashboard.databinding.FragmentDashboardBinding
 import com.github.mukiva.feature.dashboard.presentation.DashboardState
+import com.github.mukiva.feature.dashboard.presentation.DashboardViewModel
 import com.github.mukiva.feature.dashboard.presentation.MainCardState
-import com.github.mukiva.feature.dashboard.presentation.SharedDashboardViewModel
 import com.github.mukiva.feature.dashboard.ui.adapter.DashboardAdapter
 import com.github.mukiva.openweather.core.domain.settings.UnitsType
 import com.github.mukiva.openweather.core.domain.weather.Temp
@@ -46,7 +48,7 @@ import com.github.mukiva.core.ui.R as CoreUiRes
 @AndroidEntryPoint
 class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
 
-    private val mViewModel by viewModels<SharedDashboardViewModel>()
+    private val mViewModel by viewModels<DashboardViewModel>()
     private val mBinding by viewBindings(FragmentDashboardBinding::bind)
     private val mDashboardAdapter by lazyAdapter {
         DashboardAdapter(childFragmentManager, lifecycle)
@@ -73,13 +75,22 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
             dashboard.updatePadding(bottom = systemBarsInsets.bottom)
             insets
         }
+
+        viewLifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
+            override fun onDestroy(owner: LifecycleOwner) {
+                super.onDestroy(owner)
+                dashboard.adapter = null
+            }
+        })
     }
 
     private fun initAppbar() = with(mBinding) {
         dashboard.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                mViewModel.requestMainCardState(position)
+                mViewModel.requestWeatherState(mDashboardAdapter[position].id)
+                    .onEach(::updateMainCard)
+                    .launchIn(viewLifecycleOwner.lifecycleScope)
             }
         })
 
@@ -126,12 +137,15 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
     }
 
     private fun observeViewModel() {
-        mViewModel.mainCardState
-            .flowWithLifecycle(viewLifecycleOwner.lifecycle)
-            .onEach(::updateMainCard)
-            .launchIn(lifecycleScope)
-        mViewModel.locationListState
-            .flowWithLifecycle(lifecycle, Lifecycle.State.CREATED)
+        mViewModel.state
+            .onEach { state ->
+                if (state is DashboardState.Content) {
+                    mDashboardAdapter.submitList(state.locations)
+                }
+            }
+            .launchIn(viewLifecycleOwner.lifecycleScope)
+        mViewModel.state
+            .flowWithLifecycle(lifecycle)
             .onEach(::updateState)
             .launchIn(lifecycleScope)
     }
@@ -166,7 +180,6 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
                 mBinding.toolbarLayout.visible()
                 mBinding.dashboardContainer.visible()
                 mBinding.mainEmptyView.hide()
-                mDashboardAdapter.submit(state.locations)
             }
             DashboardState.Empty -> {
                 mBinding.toolbarLayout.gone()
@@ -189,13 +202,13 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
             DashboardState.Init -> {
                 mBinding.toolbarLayout.gone()
                 mBinding.dashboardContainer.gone()
-                mBinding.mainCard.emptyView.loading()
+                mBinding.mainEmptyView.loading()
             }
             DashboardState.Loading -> {
                 mBinding.toolbarLayout.gone()
                 mBinding.dashboardContainer.gone()
                 mBinding.mainEmptyView.loading()
-                mBinding.mainCard.emptyView.loading()
+                mBinding.mainEmptyView.loading()
             }
         }
     }

@@ -1,5 +1,7 @@
 package com.github.mukiva.core.ui
 
+import android.os.Parcelable
+import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import androidx.annotation.DimenRes
@@ -17,15 +19,14 @@ import com.github.mukiva.openweather.core.domain.weather.Pressure
 import com.github.mukiva.openweather.core.domain.weather.Speed
 import com.github.mukiva.openweather.core.domain.weather.Temp
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import java.io.Serializable
 import kotlin.math.roundToInt
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
 const val KEY_ARGS = "KEY_ARGS"
 
-fun <T : Serializable> Fragment.getArgs(clazz: Class<T>): T {
-    return this.requireArguments().getComaptSerializable(KEY_ARGS, clazz) as T
+fun <T : Parcelable> Fragment.getArgs(clazz: Class<T>): T {
+    return this.requireArguments().getCompatParcelable(KEY_ARGS, clazz) as T
 }
 
 fun Fragment.getInteger(@IntegerRes res: Int): Int {
@@ -131,32 +132,40 @@ class UiLazyDelegate<T>(
 fun <T> Fragment.lazyAdapter(factory: () -> T) =
     LazyAdapterDelegate(this, factory)
 
-@MainThread
-fun <T> AppCompatActivity.lazyAdapter(factory: () -> T) =
-    LazyAdapterDelegate(this, factory)
-
 class LazyAdapterDelegate<T>(
-    lifecycleOwner: LifecycleOwner,
+    fragment: Fragment,
     private val valueFactory: () -> T
-) : ReadOnlyProperty<LifecycleOwner, T> {
+) : ReadOnlyProperty<Fragment, T> {
 
     private var mValue: T? = null
 
+    private val mLifecycleObserver = object : DefaultLifecycleObserver {
+        override fun onDestroy(owner: LifecycleOwner) {
+            super.onDestroy(owner)
+            mValue = null
+        }
+    }
+
     init {
-        lifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
-            override fun onStop(owner: LifecycleOwner) {
-                super.onStop(owner)
-                mValue = null
+        fragment.lifecycle.addObserver(object : DefaultLifecycleObserver {
+            val viewLifecycleOwnerLiveDataObserver =
+                Observer<LifecycleOwner?> {
+                    val viewLifecycleOwner = it ?: return@Observer
+
+                    viewLifecycleOwner.lifecycle.addObserver(mLifecycleObserver)
+                }
+
+            override fun onCreate(owner: LifecycleOwner) {
+                fragment.viewLifecycleOwnerLiveData.observeForever(viewLifecycleOwnerLiveDataObserver)
             }
 
             override fun onDestroy(owner: LifecycleOwner) {
-                super.onDestroy(owner)
-                owner.lifecycle.removeObserver(this)
+                fragment.viewLifecycleOwnerLiveData.removeObserver(viewLifecycleOwnerLiveDataObserver)
             }
         })
     }
 
-    override fun getValue(thisRef: LifecycleOwner, property: KProperty<*>): T = when (val value = mValue) {
+    override fun getValue(thisRef: Fragment, property: KProperty<*>): T = when (val value = mValue) {
         null -> valueFactory().apply {
             mValue = this
         }

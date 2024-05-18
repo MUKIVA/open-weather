@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.hiltAndroid)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlinParcelize)
 }
 
 android {
@@ -34,7 +35,7 @@ dependencies {
     implementation(project(":core:domain"))
 
     implementation(project(":weather-data"))
-    
+
     implementation(libs.androidx.core)
     implementation(libs.android.material)
     implementation(libs.androidx.lifecycle)

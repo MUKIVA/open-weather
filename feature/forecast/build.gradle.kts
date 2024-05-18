@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.hiltAndroid)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlinParcelize)
 }
 
 android {
@@ -50,5 +51,4 @@ dependencies {
     implementation(libs.glide)
 
     implementation(libs.kotlinx.datetime)
-
 }

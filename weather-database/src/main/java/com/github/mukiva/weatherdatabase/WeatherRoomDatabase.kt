@@ -36,7 +36,7 @@ class WeatherDatabase internal constructor(
         HourDbo::class,
         LocationDbo::class,
     ],
-    version = 1,
+    version = 3,
     exportSchema = true
 )
 @TypeConverters(Converters::class)

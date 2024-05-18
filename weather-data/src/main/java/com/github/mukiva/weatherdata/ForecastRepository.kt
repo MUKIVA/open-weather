@@ -26,57 +26,57 @@ class ForecastRepository(
     private val gateway: IWeatherApi,
 ) {
     fun getForecast(
-        locationName: String,
+        locationId: Long,
+        onlyCache: Boolean = false,
         forecastMergeStrategy: IDataMergeStrategy<RequestResult<ForecastWithCurrentAndLocation>> =
             ForecastMergeStrategy()
-    ): Flow<RequestResult<ForecastWithCurrentAndLocation>> {
-        val remote = getRemoteForecast(locationName)
-            .map { requestResult -> requestResult.map { dto -> dto.toDomain() } }
-        val local = getLocalForecast(locationName)
-            .map { requestResult ->
-                requestResult.map { cache ->
-                    cache.toDomain()
-                }
-            }
-        return local.combine(remote, forecastMergeStrategy::merge)
+    ): Flow<RequestResult<ForecastWithCurrentAndLocation>> = when (onlyCache) {
+        true -> getLocalForecast(locationId)
+        false -> {
+            val remote = getRemoteForecast(locationId)
+            val local = getLocalForecast(locationId)
+            local.combine(remote, forecastMergeStrategy::merge)
+        }
     }
 
     private fun getRemoteForecast(
-        locationName: String
-    ): Flow<RequestResult<ForecastWithCurrentAndLocationDto>> {
-        val remote = flow { emit(gateway.forecast(locationName, FORECAST_DAYS)) }
+        locationId: Long
+    ): Flow<RequestResult<ForecastWithCurrentAndLocation>> {
+        val remote = flow { emit(gateway.forecast("id:$locationId", FORECAST_DAYS)) }
             .map { result -> result.asRequestResult() }
-            .onEach { requestResult -> saveForecastCache(locationName, requestResult) }
+            .onEach { saveForecastCache(locationId, it) }
         val start = flow<RequestResult<ForecastWithCurrentAndLocationDto>> {
             emit(RequestResult.InProgress(null))
         }
         return merge(start, remote)
+            .map { requestResult -> requestResult.map { dto -> dto.toDomain() } }
     }
 
     private fun getLocalForecast(
-        locationName: String
-    ): Flow<RequestResult<ForecastWithCurrentAndLocationDbo>> {
+        locationId: Long
+    ): Flow<RequestResult<ForecastWithCurrentAndLocation>> {
         val local = database.forecastDao
-            .getCache(locationName)
+            .getCache(locationId)
             .map(::cacheValidate)
 
         val start = flow<RequestResult<ForecastWithCurrentAndLocationDbo>> {
             emit(RequestResult.InProgress(null))
         }
         return merge(start, local)
+            .map { requestResult ->
+                requestResult.map { cache ->
+                    cache.toDomain()
+                }
+            }
     }
 
     private suspend fun saveForecastCache(
-        requestQuery: String,
+        locationId: Long,
         requestResult: RequestResult<ForecastWithCurrentAndLocationDto>,
     ) {
         if (requestResult !is RequestResult.Success) return
         val dto = checkNotNull(requestResult.data)
         val currentDbo = dto.current.toDbo()
-        val locationDbo = database.locationDao.getByLocationName(
-            cityName = dto.location.name,
-            region = dto.location.region
-        )
         val currentId = database.currentDao.insert(currentDbo)
         val forecastId = database.forecastDao.insertForecast(ForecastDbo())
 
@@ -92,9 +92,8 @@ class ForecastRepository(
             }
 
         val cache = ForecastRequestCacheDbo(
-            requestQuery = requestQuery,
             currentId = currentId,
-            locationId = locationDbo.id,
+            locationId = locationId,
             forecastId = forecastId,
         )
         database.forecastDao.insertCache(cache)

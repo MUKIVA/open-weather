@@ -1,5 +1,7 @@
 package com.github.mukiva.feature.forecast.domain.usecase
 
+import com.github.mukiva.feature.forecast.domain.ForecastItem
+import com.github.mukiva.feature.forecast.presentation.HourlyForecast
 import com.github.mukiva.openweather.core.domain.settings.UnitsType
 import com.github.mukiva.openweather.core.domain.weather.Distance
 import com.github.mukiva.openweather.core.domain.weather.Precipitation
@@ -13,8 +15,6 @@ import com.github.mukiva.weatherdata.models.Forecast
 import com.github.mukiva.weatherdata.models.Hour
 import com.github.mukiva.weatherdata.utils.RequestResult
 import com.github.mukiva.weatherdata.utils.map
-import com.github.mukiva.feature.forecast.domain.ForecastItem
-import com.github.mukiva.feature.forecast.presentation.HourlyForecast
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
@@ -24,10 +24,15 @@ class GetFullForecastUseCase @Inject constructor(
     private val forecastRepo: ForecastRepository,
     private val settingsRepository: SettingsRepository,
 ) {
-    operator fun invoke(locationName: String): Flow<RequestResult<List<HourlyForecast.Content>>> {
-        val request = forecastRepo.getForecast(locationName)
+
+    operator fun invoke(
+        locationId: Long,
+        getCached: Boolean = false
+    ): Flow<RequestResult<List<HourlyForecast>>> {
+        val request = forecastRepo.getForecast(locationId, getCached)
             .map { requestResult -> requestResult.map { it.forecast } }
         val unitsTypeFlow = settingsRepository.getUnitsType()
+
         return unitsTypeFlow.combine(request) { unitsType, requestResult ->
             requestResult.map { forecast -> toHourlyForecast(forecast, unitsType) }
         }
@@ -36,9 +41,9 @@ class GetFullForecastUseCase @Inject constructor(
     private fun toHourlyForecast(
         forecast: Forecast,
         unitsType: UnitsType
-    ): List<HourlyForecast.Content> {
+    ): List<HourlyForecast> {
         return forecast.forecastDay.mapIndexed { index, forecastDay ->
-            HourlyForecast.Content(
+            HourlyForecast(
                 index = index,
                 date = forecastDay.dateEpoch,
                 hours = forecastDay.hour.mapIndexed { id, hour ->
