@@ -5,22 +5,28 @@ import androidx.lifecycle.viewModelScope
 import com.github.mukiva.feature.dashboard.domain.model.Forecast
 import com.github.mukiva.feature.dashboard.domain.usecase.GetForecastUseCase
 import com.github.mukiva.weatherdata.utils.RequestResult
-import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.onEach
+import javax.inject.Inject
 
-class ForecastStateHolder(
-    getForecastUseCase: GetForecastUseCase,
-    locationName: String
+class ForecastStateHolder @Inject constructor(
+    private val getForecastUseCase: GetForecastUseCase,
 ) : ViewModel(), IForecastStateHolder {
 
     override val forecastState: StateFlow<LocationWeatherState>
-        get() = mState
+        get() = mState.asStateFlow()
 
-    private val mState = getForecastUseCase(locationName)
-        .map { requestResult -> asState(requestResult) }
-        .stateIn(viewModelScope, SharingStarted.Lazily, LocationWeatherState.Init)
+    private val mState = MutableStateFlow<LocationWeatherState>(LocationWeatherState.Init)
+    override fun loadForecast(name: String) {
+        getForecastUseCase(name)
+            .map { requestResult -> asState(requestResult) }
+            .onEach(mState::emit)
+            .launchIn(viewModelScope)
+    }
 
     private fun asState(requestResult: RequestResult<Forecast>): LocationWeatherState {
         return when (requestResult) {

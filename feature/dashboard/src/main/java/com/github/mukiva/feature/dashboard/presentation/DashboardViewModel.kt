@@ -6,10 +6,12 @@ import com.github.mukiva.feature.dashboard.domain.model.Location
 import com.github.mukiva.feature.dashboard.domain.usecase.GetAllLocationsUseCase
 import com.github.mukiva.feature.dashboard.navigation.IDashboardRouter
 import com.github.mukiva.weatherdata.utils.RequestResult
-import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 class DashboardViewModel @Inject constructor(
@@ -20,9 +22,20 @@ class DashboardViewModel @Inject constructor(
     IDashboardViewModel {
 
     override val locationListState: StateFlow<DashboardState>
-        get() = getAllLocationsUseCase()
+        get() = mState.asStateFlow()
+
+    private val mState = MutableStateFlow<DashboardState>(DashboardState.Init)
+
+    init {
+        loadLocations()
+    }
+
+    override fun loadLocations() {
+        getAllLocationsUseCase()
             .map(::asState)
-            .stateIn(viewModelScope, SharingStarted.Lazily, DashboardState.Init)
+            .onEach { mState.emit(it) }
+            .launchIn(viewModelScope)
+    }
 
     private fun asState(requestResult: RequestResult<List<Location>>): DashboardState {
         return when (requestResult) {

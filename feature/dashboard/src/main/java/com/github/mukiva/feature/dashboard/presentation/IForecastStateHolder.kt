@@ -4,4 +4,5 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface IForecastStateHolder {
     val forecastState: StateFlow<LocationWeatherState>
+    fun loadForecast(name: String)
 }

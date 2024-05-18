@@ -12,7 +12,7 @@ import com.github.mukiva.feature.dashboard.ui.DashboardTemplateFragment
 
 class DashboardAdapter(
     fm: FragmentManager,
-    lifecycle: Lifecycle,
+    lifecycle: Lifecycle
 ) : FragmentStateAdapter(fm, lifecycle) {
 
     private val mDiffer: AsyncListDiffer<Location> = AsyncListDiffer(

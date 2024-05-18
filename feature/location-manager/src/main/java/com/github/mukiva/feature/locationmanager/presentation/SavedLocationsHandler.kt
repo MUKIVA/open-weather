@@ -1,14 +1,12 @@
 package com.github.mukiva.feature.locationmanager.presentation
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.mukiva.feature.locationmanager.domain.usecase.GetAddedLocationsUseCase
 import com.github.mukiva.feature.locationmanager.domain.usecase.UpdateStoredLocationsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
@@ -45,14 +43,10 @@ class SavedLocationsHandler @Inject constructor(
         mSavedLocationsState.update { newState }
     }
     override fun fetchAddedLocations() {
-        viewModelScope.launch {
-            getAddedLocationsUseCase()
-                .map(::asSavedListState)
-                .onEach { Log.d("LOCATIONS", "$it") }
-                .onEach(mSavedLocationsState::emit)
-                .filter { it !is SavedLocationsState.Loading }
-                .first()
-        }
+        getAddedLocationsUseCase()
+            .map(::asSavedListState)
+            .onEach(mSavedLocationsState::emit)
+            .launchIn(viewModelScope)
     }
     override fun enterNormalMode() {
         val state = mSavedLocationsState.value as? SavedLocationsState.Edit
@@ -81,7 +75,6 @@ class SavedLocationsHandler @Inject constructor(
         val state = mSavedLocationsState.value as? SavedLocationsState.Edit
             ?: return
         val newData = state.data.swapAll(from, to)
-        Log.d("LOCATIONS", "MOVE")
         viewModelScope.launch { updateStoredLocationsUseCase(newData) }
         mSavedLocationsState.update { state.copy(data = newData) }
     }

@@ -62,14 +62,12 @@ class DataModule {
     ): WeatherDatabase = weatherDatabase(applicationContext)
 
     @Provides
-    @Singleton
     fun provideLocationRepository(
         database: WeatherDatabase,
         api: IWeatherApi,
     ): LocationRepository = LocationRepository(database, api)
 
     @Provides
-    @Singleton
     fun provideForecastRepository(
         database: WeatherDatabase,
         api: IWeatherApi,
