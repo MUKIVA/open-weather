@@ -19,6 +19,7 @@ import com.github.mukiva.weatherdata.utils.RequestResult
 import com.github.mukiva.weatherdata.utils.map
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 import com.github.mukiva.weatherdata.models.Condition as DataCondition
 import com.github.mukiva.weatherdata.models.Forecast as DataForecast
@@ -27,8 +28,11 @@ class GetForecastUseCase @Inject constructor(
     private val forecastRepository: ForecastRepository,
     private val settingsRepository: SettingsRepository,
 ) {
-    operator fun invoke(id: Long): Flow<RequestResult<Forecast>> {
-        val request = forecastRepository.getForecast(id)
+    suspend operator fun invoke(id: Long): Flow<RequestResult<Forecast>> {
+        val lang = settingsRepository
+            .getLocalization()
+            .first()
+        val request = forecastRepository.getForecast(id, lang)
         val settings = settingsRepository.getUnitsType()
         return settings.combine(request) { unitsType, requestResult ->
             requestResult.map { forecast -> toForecast(unitsType, forecast) }

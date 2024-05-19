@@ -17,11 +17,13 @@ interface IWeatherApi {
     suspend fun forecast(
         @Query(value = "q") q: String,
         @Query(value = "days") days: Int,
+        @Query(value = "lang") lang: String
     ): Result<ForecastWithCurrentAndLocationDto>
 
     @GET("search.json")
     suspend fun search(
         @Query(value = "q") q: String,
+        @Query(value = "lang") lang: String
     ): Result<List<LocationDto>>
 }
 

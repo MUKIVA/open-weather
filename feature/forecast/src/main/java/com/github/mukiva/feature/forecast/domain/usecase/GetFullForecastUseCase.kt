@@ -17,6 +17,7 @@ import com.github.mukiva.weatherdata.utils.RequestResult
 import com.github.mukiva.weatherdata.utils.map
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -25,11 +26,14 @@ class GetFullForecastUseCase @Inject constructor(
     private val settingsRepository: SettingsRepository,
 ) {
 
-    operator fun invoke(
+    suspend operator fun invoke(
         locationId: Long,
         getCached: Boolean = false
     ): Flow<RequestResult<List<HourlyForecast>>> {
-        val request = forecastRepo.getForecast(locationId, getCached)
+        val lang = settingsRepository
+            .getLocalization()
+            .first()
+        val request = forecastRepo.getForecast(locationId, lang, getCached)
             .map { requestResult -> requestResult.map { it.forecast } }
         val unitsTypeFlow = settingsRepository.getUnitsType()
 

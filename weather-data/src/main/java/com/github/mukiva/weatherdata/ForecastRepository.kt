@@ -1,5 +1,6 @@
 package com.github.mukiva.weatherdata
 
+import com.github.mukiva.openweather.core.domain.settings.Lang
 import com.github.mukiva.weatherapi.IWeatherApi
 import com.github.mukiva.weatherapi.models.ForecastWithCurrentAndLocationDto
 import com.github.mukiva.weatherdata.models.ForecastWithCurrentAndLocation
@@ -19,6 +20,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
+import java.util.Locale
 import com.github.mukiva.weatherdatabase.relations.ForecastWithCurrentAndLocation as ForecastWithCurrentAndLocationDbo
 
 class ForecastRepository(
@@ -27,22 +29,29 @@ class ForecastRepository(
 ) {
     fun getForecast(
         locationId: Long,
+        lang: Lang,
         onlyCache: Boolean = false,
         forecastMergeStrategy: IDataMergeStrategy<RequestResult<ForecastWithCurrentAndLocation>> =
             ForecastMergeStrategy()
     ): Flow<RequestResult<ForecastWithCurrentAndLocation>> = when (onlyCache) {
         true -> getLocalForecast(locationId)
         false -> {
-            val remote = getRemoteForecast(locationId)
+            val remote = getRemoteForecast(locationId, lang)
             val local = getLocalForecast(locationId)
             local.combine(remote, forecastMergeStrategy::merge)
         }
     }
 
     private fun getRemoteForecast(
-        locationId: Long
+        locationId: Long,
+        lang: Lang,
     ): Flow<RequestResult<ForecastWithCurrentAndLocation>> {
-        val remote = flow { emit(gateway.forecast("id:$locationId", FORECAST_DAYS)) }
+        val languageCode = if (lang == Lang.SYSTEM)
+            Locale.getDefault().language
+        else
+            lang.code
+
+        val remote = flow { emit(gateway.forecast("id:$locationId", FORECAST_DAYS, languageCode)) }
             .map { result -> result.asRequestResult() }
             .onEach { saveForecastCache(locationId, it) }
         val start = flow<RequestResult<ForecastWithCurrentAndLocationDto>> {

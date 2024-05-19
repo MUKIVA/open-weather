@@ -16,5 +16,11 @@
     <string name="option_units_type_metric">Metric</string>
     <string name="option_units_type_imperial">Imperial</string>
 
+    <string name="option_lang_name">Language</string>
+    <string name="option_lang_description">Select app language</string>
+    <string name="option_lang_system">System</string>
+    <string name="option_lang_en" translatable="false">English</string>
+    <string name="option_lang_ru" translatable="false">Русский</string>
+
 
 </resources>

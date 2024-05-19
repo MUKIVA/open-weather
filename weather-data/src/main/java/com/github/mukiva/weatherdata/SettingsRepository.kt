@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.github.mukiva.openweather.core.domain.settings.Config
 import com.github.mukiva.openweather.core.domain.settings.Group
+import com.github.mukiva.openweather.core.domain.settings.Lang
 import com.github.mukiva.openweather.core.domain.settings.Theme
 import com.github.mukiva.openweather.core.domain.settings.UnitsType
 import kotlinx.coroutines.flow.Flow
@@ -43,6 +44,18 @@ class SettingsRepository(
         }
     }
 
+    suspend fun setLocalization(lang: Lang) {
+        context.dataStore.edit { settings ->
+            settings[LOCALIZATION_KEY] = lang.ordinal
+        }
+    }
+
+    fun getLocalization(): Flow<Lang> {
+        return context.dataStore.data.map { settings ->
+            Lang.entries[(settings[LOCALIZATION_KEY] ?: 0)]
+        }
+    }
+
     fun getConfiguration(): Flow<Config> {
         val general = getGeneral()
         return general.map { group ->
@@ -53,10 +66,12 @@ class SettingsRepository(
     private fun getGeneral(): Flow<Group.General> {
         val themeFlow = getTheme()
         val unitsTypeFlow = getUnitsType()
-        return themeFlow.combine(unitsTypeFlow) { theme, unitsType ->
+        val localizationFlow = getLocalization()
+        return combine(themeFlow, unitsTypeFlow, localizationFlow) { theme, unitsType, localization ->
             Group.General(
                 theme = theme,
                 unitsType = unitsType,
+                lang = localization
             )
         }
     }
@@ -66,5 +81,6 @@ class SettingsRepository(
 
         private val THEME_MODE_KEY = intPreferencesKey("THEME_MODE_KEY")
         private val UNITS_TYPE_KEY = intPreferencesKey("UNITS_TYPE_KEY")
+        private val LOCALIZATION_KEY = intPreferencesKey("LOCALIZATION_KEY")
     }
 }

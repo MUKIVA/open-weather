@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class SearchLocationHandler @Inject constructor(
@@ -25,10 +26,12 @@ class SearchLocationHandler @Inject constructor(
             mSearchLocationsState.update { SearchLocationsState.Empty }
             return
         }
-        searchUseCase(q)
-            .map(::asSearchListState)
-            .onEach(mSearchLocationsState::emit)
-            .launchIn(viewModelScope)
+        viewModelScope.launch {
+            searchUseCase(q)
+                .map(::asSearchListState)
+                .onEach(mSearchLocationsState::emit)
+                .launchIn(viewModelScope)
+        }
     }
 
     override fun filterSearchLocations(location: com.github.mukiva.feature.locationmanager.domain.model.Location) {

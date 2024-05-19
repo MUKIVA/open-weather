@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,10 +23,12 @@ class ForecastViewModel @Inject constructor(
     fun state(id: Long): StateFlow<LocationWeatherState> = statesHolder[id]
 
     fun loadForecast(id: Long) {
-        getForecastUseCase(id)
-            .map(::asState)
-            .onEach { statesHolder[id].emit(it) }
-            .launchIn(viewModelScope)
+        viewModelScope.launch {
+            getForecastUseCase(id)
+                .map(::asState)
+                .onEach { statesHolder[id].emit(it) }
+                .launchIn(viewModelScope)
+        }
     }
 
     private fun asState(requestResult: RequestResult<Forecast>): LocationWeatherState {

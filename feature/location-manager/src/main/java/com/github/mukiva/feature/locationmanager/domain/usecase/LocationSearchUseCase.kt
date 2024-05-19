@@ -2,20 +2,26 @@ package com.github.mukiva.feature.locationmanager.domain.usecase
 
 import com.github.mukiva.feature.locationmanager.domain.model.Location
 import com.github.mukiva.weatherdata.LocationRepository
+import com.github.mukiva.weatherdata.SettingsRepository
 import com.github.mukiva.weatherdata.utils.RequestResult
 import com.github.mukiva.weatherdata.utils.map
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import com.github.mukiva.weatherdata.models.Location as DataLocation
 
 class LocationSearchUseCase @Inject constructor(
-    private val repository: LocationRepository
+    private val repository: LocationRepository,
+    private val settingsRepository: SettingsRepository,
 ) {
-    operator fun invoke(q: String): Flow<RequestResult<List<Location>>> {
+    suspend operator fun invoke(q: String): Flow<RequestResult<List<Location>>> {
+        val lang = settingsRepository
+            .getLocalization()
+            .first()
         val local = repository.getAllLocal()
-        val remote = repository.searchRemote(q)
+        val remote = repository.searchRemote(q, lang)
         return local.combine(remote, ::mergeStrategy)
             .map { requestResult ->
                 requestResult.map { locations ->

@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,10 +23,12 @@ class ForecastViewModel @Inject constructor(
 
     private val mState = MutableStateFlow<ForecastState>(ForecastState.Init)
     fun loadForecast(id: Long, cached: Boolean) {
-        getFullForecastUseCase(id, cached)
-            .map(::asState)
-            .onEach(mState::emit)
-            .launchIn(viewModelScope)
+        viewModelScope.launch {
+            getFullForecastUseCase(id, cached)
+                .map(::asState)
+                .onEach(mState::emit)
+                .launchIn(viewModelScope)
+        }
     }
 
     private fun asState(

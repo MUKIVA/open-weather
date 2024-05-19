@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.github.mukiva.feature.settings.domain.SettingItem
 import com.github.mukiva.openweather.core.domain.settings.Config
 import com.github.mukiva.openweather.core.domain.settings.Group
+import com.github.mukiva.openweather.core.domain.settings.Lang
 import com.github.mukiva.openweather.core.domain.settings.Theme
 import com.github.mukiva.openweather.core.domain.settings.UnitsType
 import com.github.mukiva.weatherdata.SettingsRepository
@@ -66,6 +67,8 @@ class SettingsViewModel @Inject constructor(
                     settingsRepository.setTheme(variant as Theme)
                 UnitsType::class ->
                     settingsRepository.setUnitsType(variant as UnitsType)
+                Lang::class ->
+                    settingsRepository.setLocalization(variant as Lang)
             }
         }
     }
@@ -104,6 +107,13 @@ class SettingsViewModel @Inject constructor(
                             UnitsType::class,
                             group.unitsType,
                             UnitsType.entries
+                        )
+                    )
+                    add(
+                        SettingItem.Variant(
+                            Lang::class,
+                            group.lang,
+                            Lang.entries
                         )
                     )
                 }

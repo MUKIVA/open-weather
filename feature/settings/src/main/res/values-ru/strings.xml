@@ -16,4 +16,8 @@
     <string name="option_units_type_metric">Метрическая</string>
     <string name="option_units_type_imperial">Империалистическая</string>
 
+    <string name="option_lang_name">Язык</string>
+    <string name="option_lang_description">Выбор языка приложения</string>
+    <string name="option_lang_system">Системный</string>
+
 </resources>

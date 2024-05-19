@@ -1,5 +1,6 @@
 package com.github.mukiva.weatherdata
 
+import com.github.mukiva.openweather.core.domain.settings.Lang
 import com.github.mukiva.weatherapi.IWeatherApi
 import com.github.mukiva.weatherdata.models.Location
 import com.github.mukiva.weatherdata.utils.RequestResult
@@ -12,13 +13,19 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
+import java.util.Locale
 
 class LocationRepository(
     private val database: WeatherDatabase,
     private val gateway: IWeatherApi,
 ) {
-    fun searchRemote(q: String): Flow<RequestResult<List<Location>>> {
-        val remoteRequest = flow { this.emit(gateway.search(q)) }
+    fun searchRemote(q: String, lang: Lang): Flow<RequestResult<List<Location>>> {
+        val languageCode = if (lang == Lang.SYSTEM)
+            Locale.getDefault().language
+        else
+            lang.code
+
+        val remoteRequest = flow { this.emit(gateway.search(q, languageCode)) }
             .map { result -> result.asRequestResult() }
             .map { requestResult ->
                 requestResult.map { locations ->
