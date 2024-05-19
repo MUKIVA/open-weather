@@ -14,4 +14,13 @@
     <string name="label_vis">Видимость:</string>
     <string name="label_gust">Порыв ветра:</string>
     <string name="label_humidity">Влажность:</string>
+
+    <string name="monday_abbreviaed">пн</string>
+    <string name="tuesday_abbreviaed">вт</string>
+    <string name="wednesday_abbreviaed">ср</string>
+    <string name="thursday_abbreviaed">чт</string>
+    <string name="friday_abbreviaed">пт</string>
+    <string name="saturday_abbreviaed">сб</string>
+    <string name="sunday_abbreviaed">вс</string>
+
 </resources>

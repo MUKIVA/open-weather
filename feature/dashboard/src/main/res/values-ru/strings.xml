@@ -21,4 +21,25 @@
 
     <string name="main_empty_view_msg">Список локаций пуст</string>
 
+    <string name="monday_full">Понедельник</string>
+    <string name="tuesday_full">Вторник</string>
+    <string name="wednesday_full">Среда</string>
+    <string name="thursday_full">Четверг</string>
+    <string name="friday_full">Пятница</string>
+    <string name="saturday_full">Суббота</string>
+    <string name="sunday_full">Воскресение</string>
+
+    <string name="january_full">Январь</string>
+    <string name="february_full">Февраль</string>
+    <string name="march_full">Март</string>
+    <string name="april_full">Апрель</string>
+    <string name="may_full">Май</string>
+    <string name="june_full">Июнь</string>
+    <string name="july_full">Июль</string>
+    <string name="august_full">Август</string>
+    <string name="september_full">Сентябрь</string>
+    <string name="october_full">Октябрь</string>
+    <string name="november_full">Ноябрь</string>
+    <string name="december_full">Декабрь</string>
+
 </resources>

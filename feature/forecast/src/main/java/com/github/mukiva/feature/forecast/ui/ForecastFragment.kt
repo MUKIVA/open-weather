@@ -1,5 +1,6 @@
 package com.github.mukiva.feature.forecast.ui
 
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Parcelable
@@ -72,10 +73,10 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast) {
         }
 
         val dayOfWeekFormatter = LocalDateTime.Format {
-            dayOfWeek(DayOfWeekNames.ENGLISH_ABBREVIATED)
+            dayOfWeek(localeAbbreviation(requireContext()))
         }
 
-        viewPager.offscreenPageLimit = 3
+        viewPager.offscreenPageLimit = 2
         viewPager.adapter = mHourlyForecastAdapter
 
         TabLayoutMediator(tabLayout, viewPager, true, true) { tab, index ->
@@ -159,4 +160,18 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast) {
             }
         }
     }
+}
+
+internal fun localeAbbreviation(
+    context: Context
+): DayOfWeekNames = with(context) {
+    return DayOfWeekNames(
+        monday = getString(R.string.monday_abbreviaed),
+        tuesday = getString(R.string.tuesday_abbreviaed),
+        wednesday = getString(R.string.wednesday_abbreviaed),
+        thursday = getString(R.string.thursday_abbreviaed),
+        friday = getString(R.string.friday_abbreviaed),
+        saturday = getString(R.string.saturday_abbreviaed),
+        sunday = getString(R.string.sunday_abbreviaed)
+    )
 }

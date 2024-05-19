@@ -14,4 +14,13 @@
     <string name="label_vis">Vis:</string>
     <string name="label_gust">Gust:</string>
     <string name="label_humidity">Humidity:</string>
+
+    <string name="monday_abbreviaed">Mon</string>
+    <string name="tuesday_abbreviaed">Tue</string>
+    <string name="wednesday_abbreviaed">Wed</string>
+    <string name="thursday_abbreviaed">Thu</string>
+    <string name="friday_abbreviaed">Fri</string>
+    <string name="saturday_abbreviaed">Sat</string>
+    <string name="sunday_abbreviaed">San</string>
+
 </resources>
