@@ -1,7 +1,10 @@
 package com.github.mukiva.feature.locationmanager.ui.adapter
 
+import android.util.Log
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import com.github.mukiva.feature.locationmanager.R
 import com.github.mukiva.feature.locationmanager.databinding.ItemLocationEditableBinding
 import com.github.mukiva.feature.locationmanager.domain.model.Location
 import com.github.mukiva.feature.locationmanager.presentation.EditableLocation
@@ -16,6 +19,29 @@ class LocationEditableViewHolder(
         setLocationData(item.location)
         setSelected(item.isSelected)
         setEditable(item.isEditable)
+
+        setActions(item)
+    }
+
+    fun bindWithPayloads(
+        item: EditableLocation,
+        payloads: List<EditableLocationPayload>
+    ) = with(bind) {
+        payloads.onEach { payload ->
+            Log.d("PAYLOAD", "$payload")
+            when (payload) {
+                EditableLocationPayload.CITY_NAME ->
+                    cityName.text = item.location.cityName
+                EditableLocationPayload.REGION_NAME ->
+                    region.text = item.location.regionName
+                EditableLocationPayload.COUNTRY_NAME ->
+                    country.text = item.location.countryName
+                EditableLocationPayload.IS_EDITABLE ->
+                    setEditable(item.isEditable)
+                EditableLocationPayload.IS_SELECTED ->
+                    setSelected(item.isSelected)
+            }
+        }
 
         setActions(item)
     }
@@ -51,12 +77,14 @@ class LocationEditableViewHolder(
     }
 
     private fun setEditable(isEditable: Boolean) = with(bind) {
-        selectCheckBox.isVisible = isEditable
         dragHandleIcon.isVisible = isEditable
     }
 
     private fun setSelected(isSelected: Boolean) = with(bind) {
-        selectCheckBox.isChecked = isSelected
-        selectCheckBox.isEnabled = false
+        val res = when (isSelected) {
+            true -> R.drawable.background_editable_item_selected
+            false -> R.drawable.background_editable_item
+        }
+        container.background = AppCompatResources.getDrawable(itemView.context, res)
     }
 }
