@@ -24,6 +24,7 @@ import com.github.mukiva.core.ui.getDimen
 import com.github.mukiva.core.ui.getPressureString
 import com.github.mukiva.core.ui.getSpeedString
 import com.github.mukiva.core.ui.getTempString
+import com.github.mukiva.core.ui.getWeatherDescription
 import com.github.mukiva.core.ui.gone
 import com.github.mukiva.core.ui.hide
 import com.github.mukiva.core.ui.lazyAdapter
@@ -32,6 +33,7 @@ import com.github.mukiva.core.ui.viewBindings
 import com.github.mukiva.core.ui.visible
 import com.github.mukiva.feature.dashboard.R
 import com.github.mukiva.feature.dashboard.databinding.FragmentDashboardTemplateBinding
+import com.github.mukiva.feature.dashboard.domain.model.Condition
 import com.github.mukiva.feature.dashboard.domain.model.MinimalForecast
 import com.github.mukiva.feature.dashboard.presentation.ForecastViewModel
 import com.github.mukiva.feature.dashboard.presentation.LocationWeatherState
@@ -41,7 +43,6 @@ import com.github.mukiva.openweather.core.domain.weather.Speed
 import com.github.mukiva.openweather.core.domain.weather.Temp
 import com.github.mukiva.openweather.core.domain.weather.WindDirection
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.parcelize.Parcelize
@@ -153,12 +154,13 @@ class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template)
     }
 
     private fun updateConditionField(
-        condition: com.github.mukiva.feature.dashboard.domain.model.Condition,
+        condition: Condition,
         cloudPercent: Int
     ) = with(mBinding.conditionField) {
         subtitle.text = getString(R.string.field_condition_subtitle)
-        fieldValue.text = getString(R.string.template_cloud, cloudPercent, condition.text)
-        fieldValue.setDrawable(CoreUiRes.drawable.ic_condition)
+        title.text = getString(CoreUiRes.string.template_percent, cloudPercent)
+        title.setDrawable(CoreUiRes.drawable.ic_condition)
+        description.text = requireContext().getWeatherDescription(condition.code)
     }
 
     private fun updateFeelsLike(temp: Temp) = with(mBinding.feelsLikeField) {

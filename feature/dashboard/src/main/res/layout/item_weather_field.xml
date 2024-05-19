@@ -39,7 +39,7 @@
                 android:id="@+id/subtitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="4dp"
+                android:padding="@dimen/def_v_padding"
                 android:gravity="center"
                 android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
                 tools:text="Subtitle"/>

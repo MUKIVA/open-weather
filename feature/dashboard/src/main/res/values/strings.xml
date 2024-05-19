@@ -13,7 +13,7 @@
     <string name="field_feels_like_subtitle">Feels like</string>
 
     <string name="field_condition_subtitle">Condition</string>
-    <string name="template_cloud" translatable="false">%1$d%% %2$s</string>
+<!--    <string name="template_cloud" translatable="false">%1$d%% %2$s</string>-->
 
     <string name="field_wind_speed_subtitle">Wind speed</string>
     <string name="field_wind_dir_subtitle">Wind Direction</string>

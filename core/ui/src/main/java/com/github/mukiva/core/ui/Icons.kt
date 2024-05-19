@@ -8,8 +8,12 @@ fun Context.getWeatherDrawable(code: Int, isDay: Boolean): Drawable? {
     return AppCompatResources.getDrawable(this, getWeatherIconRes(code, isDay))
 }
 
+fun Context.getWeatherDescription(code: Int): String {
+    return getString(getWeatherDescriptionRes(code))
+}
+
 private fun getWeatherIconRes(code: Int, isDay: Boolean): Int {
-    return when(code) {
+    return when (code) {
         1000 -> if (isDay) R.drawable.ic_sunny_day else R.drawable.ic_clear_night
         1003 -> if (isDay) R.drawable.ic_partly_cloudy_day else R.drawable.ic_partly_cloudy_night
         1006 -> if (isDay) R.drawable.ic_cloudy_day else R.drawable.ic_cloudy_nght
@@ -61,3 +65,58 @@ private fun getWeatherIconRes(code: Int, isDay: Boolean): Int {
         else -> error("Icon not found")
     }
 }
+
+private fun getWeatherDescriptionRes(code: Int): Int {
+    return when(code) {
+        1000 -> R.string.clear
+        1003 -> R.string.partly_cloudy
+        1006 -> R.string.cloudy
+        1009 -> R.string.overcast
+        1030 -> R.string.mist
+        1063 -> R.string.patchy_rain_nearby
+        1066 -> R.string.patchy_snow_nearby
+        1069 -> R.string.patchy_sleet_nearby
+        1072 -> R.string.patchy_freezing_drizzle_nearby
+        1087 -> R.string.thundery_outbreaks_in_nearby
+        1114 -> R.string.blowing_snow
+        1117 -> R.string.blizzard
+        1135 -> R.string.fog
+        1147 -> R.string.freezing_fog
+        1150 -> R.string.patchy_light_drizzle
+        1153 -> R.string.light_drizzle
+        1168 -> R.string.freezing_drizzle
+        1171 -> R.string.heavy_freezing_drizzle
+        1180 -> R.string.patchy_light_rain
+        1183 -> R.string.light_rain
+        1186 -> R.string.moderate_rain_at_times
+        1189 -> R.string.moderate_rain
+        1192 -> R.string.heavy_rain_at_times
+        1195 -> R.string.heavy_rain
+        1198 -> R.string.light_freezing_rain
+        1201 -> R.string.moderate_or_heavy_freezing_rain
+        1204 -> R.string.light_sleet
+        1207 -> R.string.moderate_or_heavy_sleet
+        1210 -> R.string.patchy_light_snow
+        1213 -> R.string.light_snow
+        1216 -> R.string.patchy_moderate_snow
+        1219 -> R.string.moderate_snow
+        1222 -> R.string.patchy_heavy_snow
+        1225 -> R.string.heavy_snow
+        1237 -> R.string.ice_pellets
+        1240 -> R.string.light_rain_shower
+        1243 -> R.string.moderate_or_heavy_rain_shower
+        1246 -> R.string.torrential_rain_shower
+        1249 -> R.string.light_sleet_showers
+        1252 -> R.string.moderate_or_heavy_sleet_showers
+        1255 -> R.string.light_snow_showers
+        1258 -> R.string.moderate_or_heavy_snow_showers
+        1261 -> R.string.light_showers_of_ice_pellets
+        1264 -> R.string.moderate_or_heavy_showers_of_ice_pellets
+        1273 -> R.string.patchy_light_rain_in_area_with_thunder
+        1276 -> R.string.moderate_or_heavy_rain_in_area_with_thunder
+        1279 -> R.string.patchy_light_snow_in_area_with_thunder
+        1282 -> R.string.moderate_or_heavy_snow_in_area_with_thunder
+        else -> error("Not found description")
+    }
+}
+
