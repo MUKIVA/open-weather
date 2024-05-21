@@ -1,7 +1,6 @@
 package com.github.mukiva.feature.forecast.ui
 
 import android.graphics.drawable.Drawable
-import com.bumptech.glide.Glide
 import com.github.mukiva.core.ui.getDistanceString
 import com.github.mukiva.core.ui.getPrecipitationString
 import com.github.mukiva.core.ui.getPressureString
@@ -60,9 +59,7 @@ internal fun ItemHourDetailsBinding.updateTime(date: LocalDateTime) {
     time.text = mTimeFormatter.format(date)
 }
 internal fun ItemHourDetailsBinding.updateWeatherIcon(code: Int, isDay: Boolean) {
-    Glide.with(root)
-        .load(root.context.getWeatherDrawable(code, isDay))
-        .into(weatherIcon)
+    weatherIcon.setImageDrawable(weatherIcon.context.getWeatherDrawable(code, isDay))
 }
 
 internal val mTimeFormatter = LocalDateTime.Format {

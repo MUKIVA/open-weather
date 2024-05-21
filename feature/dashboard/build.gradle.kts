@@ -50,7 +50,5 @@ dependencies {
     implementation(libs.androidx.room)
     ksp(libs.androidx.room.compiler)
 
-    implementation(libs.glide)
-
     implementation(libs.kotlinx.datetime)
 }

@@ -48,7 +48,6 @@ dependencies {
     implementation(libs.retrofit.converter.gson)
 
     implementation(libs.androidx.swipe)
-    implementation(libs.glide)
 
     implementation(libs.kotlinx.datetime)
 }

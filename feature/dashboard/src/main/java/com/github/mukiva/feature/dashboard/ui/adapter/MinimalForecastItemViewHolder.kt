@@ -2,7 +2,6 @@ package com.github.mukiva.feature.dashboard.ui.adapter
 
 import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.github.mukiva.core.ui.getTempString
 import com.github.mukiva.core.ui.getWeatherDrawable
 import com.github.mukiva.feature.dashboard.R
@@ -57,10 +56,7 @@ class MinimalForecastItemViewHolder(
     }
 
     private fun updateCondition(iconCode: Int, isDay: Boolean) = with(bindings) {
-        Glide.with(bindings.root)
-            .load(itemView.context.getWeatherDrawable(iconCode, isDay))
-            .centerCrop()
-            .into(this.condition)
+        condition.setImageDrawable(condition.context.getWeatherDrawable(iconCode, isDay))
     }
 }
 
