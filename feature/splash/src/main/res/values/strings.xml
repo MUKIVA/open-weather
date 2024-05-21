@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="get_permission">Get permission</string>
+    <string name="skip_get_permission">Skip</string>
+
+    <string name="post_notifications_description">To send a notification about the current weather, the application needs permission</string>
+    <string name="location_description">To automatically determine the current location, the application needs permission</string>
+</resources>

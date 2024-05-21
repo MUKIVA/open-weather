@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.RotateDrawable
 import android.os.Bundle
 import android.os.Parcelable
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.DrawableRes
@@ -170,6 +171,7 @@ class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template)
     }
 
     private fun updateState(state: LocationWeatherState) {
+        Log.d("STATE", "$state")
         when (state) {
             is LocationWeatherState.Content -> with(mBinding) {
                 emptyView.hide()

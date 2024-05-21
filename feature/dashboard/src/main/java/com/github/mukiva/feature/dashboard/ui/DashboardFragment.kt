@@ -4,7 +4,6 @@ import android.graphics.Rect
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
@@ -60,7 +59,27 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         initTitle()
         initDashboard()
         initAppbar()
+        initInsets()
         observeViewModel()
+    }
+
+    private fun initInsets() = with(mBinding) {
+        ViewCompat.setOnApplyWindowInsetsListener(root) { _, insets ->
+            val systemBarsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            val displayCutout = insets.getInsets(WindowInsetsCompat.Type.displayCutout())
+            toolbarLayout.updatePadding(
+                left = displayCutout.left,
+                right = displayCutout.right
+            )
+            dashboard.updatePadding(
+                bottom = systemBarsInsets.bottom,
+                right = displayCutout.right
+            )
+            mainContainer?.updatePadding(
+                left = displayCutout.left
+            )
+            insets
+        }
     }
 
     private fun initDashboard() = with(mBinding) {
@@ -70,12 +89,6 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
             (this as RecyclerView).isNestedScrollingEnabled = false
         }
         toolbarLayout.setExpanded(mIsAppbarExpanded, false)
-        ViewCompat.setOnApplyWindowInsetsListener(mBinding.root) { _, insets ->
-            val systemBarsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            dashboard.updatePadding(bottom = systemBarsInsets.bottom)
-            insets
-        }
-
         viewLifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
             override fun onDestroy(owner: LifecycleOwner) {
                 super.onDestroy(owner)
@@ -217,7 +230,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         temp: Temp,
         locationName: String
     ) {
-        mBinding.collapsingAppbarLayout.title =
+        mBinding.collapsingAppbarLayout?.title =
             getMainTitle(locationName, temp)
     }
 

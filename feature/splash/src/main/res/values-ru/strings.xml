@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="get_permission">Получить разрешение</string>
+    <string name="skip_get_permission">Пропустить</string>
+
+    <string name="post_notifications_description">Для отправки уведомления об актуальной погоде, приложению нужно разрешение</string>
+    <string name="location_description">Для автоматического определения текущего местоположения, приложению нужно разрешение</string>
+</resources>

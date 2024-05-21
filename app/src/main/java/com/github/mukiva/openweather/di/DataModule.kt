@@ -35,6 +35,7 @@ class DataModule {
         .build()
 
     @Provides
+    @Singleton
     fun provideJson(): Json = Json {
         ignoreUnknownKeys = true
     }
@@ -52,11 +53,13 @@ class DataModule {
     )
 
     @Provides
+    @Singleton
     fun provideWeatherApiGateway(
         retrofit: Retrofit
     ): IWeatherApi = retrofit.create(IWeatherApi::class.java)
 
     @Provides
+    @Singleton
     fun provideWeatherDatabase(
         @ApplicationContext applicationContext: Context
     ): WeatherDatabase = weatherDatabase(applicationContext)
@@ -69,6 +72,7 @@ class DataModule {
     ): LocationRepository = LocationRepository(database, api)
 
     @Provides
+    @Singleton
     fun provideForecastRepository(
         database: WeatherDatabase,
         api: IWeatherApi,

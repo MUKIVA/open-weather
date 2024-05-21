@@ -20,10 +20,11 @@ class LocationRepository(
     private val gateway: IWeatherApi,
 ) {
     fun searchRemote(q: String, lang: Lang): Flow<RequestResult<List<Location>>> {
-        val languageCode = if (lang == Lang.SYSTEM)
+        val languageCode = if (lang == Lang.SYSTEM) {
             Locale.getDefault().language
-        else
+        } else {
             lang.code
+        }
 
         val remoteRequest = flow { this.emit(gateway.search(q, languageCode)) }
             .map { result -> result.asRequestResult() }
@@ -50,6 +51,7 @@ class LocationRepository(
     }
 
     suspend fun removeAllLocations() {
+        database.forecastDao.cleanCache()
         database.locationDao.deleteAll()
     }
 }

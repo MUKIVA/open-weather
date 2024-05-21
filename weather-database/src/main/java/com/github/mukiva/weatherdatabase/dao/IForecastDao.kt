@@ -26,6 +26,9 @@ interface IForecastDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCache(cache: ForecastRequestCacheDbo): Long
 
+    @Query("DELETE FROM ForecastRequestCacheDbo")
+    suspend fun cleanCache()
+
     @Transaction
     @Query("SELECT * FROM ForecastRequestCacheDbo WHERE location_id = :locationId")
     fun getCache(locationId: Long): Flow<ForecastWithCurrentAndLocation?>

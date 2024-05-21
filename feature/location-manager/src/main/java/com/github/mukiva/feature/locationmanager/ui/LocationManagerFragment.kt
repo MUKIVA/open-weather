@@ -35,6 +35,7 @@ import com.github.mukiva.feature.locationmanager.presentation.SearchLocationsSta
 import com.github.mukiva.feature.locationmanager.ui.adapter.DragDropItemTouchHelper
 import com.github.mukiva.feature.locationmanager.ui.adapter.LocationManagerSavedAdapter
 import com.github.mukiva.feature.locationmanager.ui.adapter.LocationManagerSearchAdapter
+import com.google.android.material.search.SearchBar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -70,7 +71,7 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
             duration = getInteger(CoreUiRes.integer.def_animation_duration).toLong()
             addUpdateListener {
                 val color = it.animatedValue as Int
-                mBinding.searchView.setBackgroundColor(color)
+                mBinding.searchView?.setBackgroundColor(color)
             }
         }
     }
@@ -87,7 +88,7 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
 
     private val mSearchOnBackPressedDecorator = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            mBinding.searchView.hide()
+            mBinding.searchView?.hide()
         }
     }
     private val mEditOnBackPressedDecorator = object : OnBackPressedCallback(true) {
@@ -102,12 +103,43 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
         initActionBar()
         initList()
         initSearchView()
+        initInsets()
 
         subscribeOnViewModel()
     }
 
+    private fun initInsets() = with(mBinding) {
+        ViewCompat.setOnApplyWindowInsetsListener(root) { _, insets ->
+            val ime = insets.getInsets(WindowInsetsCompat.Type.ime())
+            val sys = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            val displayCutout = insets.getInsets(WindowInsetsCompat.Type.displayCutout())
+
+            val horizontalPadding = getDimen(CoreUiRes.dimen.def_h_padding)
+
+            searchView?.updatePadding(
+                bottom = ime.bottom
+            )
+            addedList.updatePadding(
+                bottom = sys.bottom,
+                left = horizontalPadding + displayCutout.left,
+            )
+            searchAppBar?.updatePadding(
+                right = horizontalPadding + displayCutout.right
+            )
+            searchViewList.updatePadding(
+                bottom = ime.bottom,
+                right = horizontalPadding + displayCutout.right
+            )
+            appbar.updatePadding(left = displayCutout.left)
+            insets
+        }
+    }
+
     private fun initActionBar() = with(mBinding) {
-        searchBar.setNavigationOnClickListener { mViewModel.goBack() }
+        when (searchBar) {
+            is SearchBar -> searchBar.setNavigationOnClickListener { mViewModel.goBack() }
+            else -> mainToolBar?.setNavigationOnClickListener { mViewModel.goBack() }
+        }
 
         toolbar.setOnMenuItemClickListener { item ->
             when (item.itemId) {
@@ -131,20 +163,26 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
     @OptIn(FlowPreview::class)
     private fun initSearchView() = with(mBinding) {
         searchView
-            .editText
-            .addTextChangedListener {
+            ?.editText
+            ?.addTextChangedListener {
                 lifecycleScope.launch {
-                    searchBar.setText(searchView.text)
+                    searchBar?.setText(searchView.text)
                     mSearchQueryFlow.emit(searchView.text.toString())
                 }
             }
+        searchEditText
+            ?.addTextChangedListener {
+                lifecycleScope.launch {
+                    mSearchQueryFlow.emit(searchEditText.text.toString())
+                }
+            }
 
-        searchView.setOnShowListener {
+        searchView?.setOnShowListener {
             mSearchViewBackgroundColorAnimator.start()
             requireActivity().onBackPressedDispatcher
                 .addCallback(mSearchOnBackPressedDecorator)
         }
-        searchView.setOnHideListener {
+        searchView?.setOnHideListener {
             mSearchViewBackgroundColorAnimator.reverse()
             mSearchOnBackPressedDecorator.remove()
         }
@@ -160,19 +198,6 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
         searchViewList.adapter = mSearchAdapter
 
         mTouchHelper.attachToRecyclerView(addedList)
-
-        ViewCompat.setOnApplyWindowInsetsListener(searchView) { v, insets ->
-            val ime = insets.getInsets(WindowInsetsCompat.Type.ime())
-            v.updatePadding(bottom = ime.bottom)
-            insets
-        }
-
-        ViewCompat.setOnApplyWindowInsetsListener(addedList) { v, insets ->
-            val nav = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
-            v.updatePadding(bottom = nav.bottom)
-            insets
-        }
-
         addedList.addItemDecoration(object : RecyclerView.ItemDecoration() {
             override fun getItemOffsets(
                 outRect: Rect,
@@ -205,9 +230,12 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
                 mTouchHelperCallback.isEnabled = false
                 toolbar.animate()
                     .alpha(0.0f)
-                searchBar.animate()
-                    .alpha(1.0f)
-                    .withStartAction { searchBar.visible() }
+                searchBar?.animate()
+                    ?.alpha(1.0f)
+                    ?.withStartAction { searchBar.visible() }
+                mainToolBar?.animate()
+                    ?.alpha(1.0f)
+                    ?.withStartAction { mainToolBar.visible() }
                 mEditOnBackPressedDecorator.remove()
                 mAddedAdapter.submitList(state.data)
             }
@@ -216,9 +244,12 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
                 addedEmptyView.emptyView(getString(R.string.saved_locatios_empty_view))
                 toolbar.animate()
                     .alpha(0.0f)
-                searchBar.animate()
-                    .alpha(1.0f)
-                    .withStartAction { searchBar.visible() }
+                searchBar?.animate()
+                    ?.alpha(1.0f)
+                    ?.withStartAction { searchBar.visible() }
+                mainToolBar?.animate()
+                    ?.alpha(1.0f)
+                    ?.withStartAction { mainToolBar.visible() }
                 mEditOnBackPressedDecorator.remove()
             }
             SavedLocationsState.Error -> with(mBinding) {
@@ -245,9 +276,12 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
                 requireActivity().onBackPressedDispatcher
                     .addCallback(mEditOnBackPressedDecorator)
                 toolbar.animate().alpha(1.0f)
-                searchBar.animate()
-                    .alpha(0.0f)
-                    .withEndAction { searchBar.gone() }
+                searchBar?.animate()
+                    ?.alpha(0.0f)
+                    ?.withEndAction { searchBar.gone() }
+                mainToolBar?.animate()
+                    ?.alpha(0.0f)
+                    ?.withEndAction { searchBar?.gone() }
                 mAddedAdapter.submitList(state.data)
             }
         }
@@ -268,7 +302,7 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
                 searchEmptyView.error(
                     msg = getString(CoreUiRes.string.error_msg),
                     buttonText = getString(CoreUiRes.string.refresh),
-                    onButtonClick = { mViewModel.executeSearch(searchView.text.toString()) }
+                    onButtonClick = { mViewModel.executeSearch(searchView?.text.toString()) }
                 )
                 searchViewList.gone()
             }
