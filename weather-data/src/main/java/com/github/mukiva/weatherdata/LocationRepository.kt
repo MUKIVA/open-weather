@@ -37,6 +37,10 @@ class LocationRepository(
         return merge(start, remoteRequest)
     }
 
+    fun searchRemote(lon: Double, lat: Double, lang: Lang): Flow<RequestResult<List<Location>>> {
+        return searchRemote(q = "$lat,$lon", lang)
+    }
+
     fun getAllLocal(): Flow<RequestResult<List<Location>>> {
         val localRequest = database.locationDao.getAll()
             .map { locationsDbo -> locationsDbo.map { it.toLocation() } }

@@ -15,6 +15,7 @@ import com.github.mukiva.core.ui.viewBindings
 import com.github.mukiva.feature.splash.R
 import com.github.mukiva.feature.splash.databinding.FragmentOnboardingBinding
 import com.github.mukiva.feature.splash.presentation.OnboardingScreen
+import com.github.mukiva.feature.splash.presentation.OnboardingScreenState
 import com.github.mukiva.feature.splash.presentation.OnboardingViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
@@ -70,10 +71,18 @@ class OnboardingFragment : Fragment(R.layout.fragment_onboarding) {
             .onEach(::updateState)
             .onEach(::updateToolbarState)
             .launchIn(viewLifecycleOwner.lifecycleScope)
+        mViewModel.screenState
+            .flowWithLifecycle(viewLifecycleOwner.lifecycle)
+            .onEach(::updateScreenState)
+            .launchIn(viewLifecycleOwner.lifecycleScope)
     }
 
     private fun updateState(state: OnboardingScreen) = with(mBindings) {
         onboarding.setCurrentItem(state.ordinal, true)
+    }
+
+    private fun updateScreenState(state: OnboardingScreenState) = with(mBindings) {
+        toolbar.isEnabled = state is OnboardingScreenState.Content
     }
 
     private fun updateToolbarState(state: OnboardingScreen) = with(mBindings) {

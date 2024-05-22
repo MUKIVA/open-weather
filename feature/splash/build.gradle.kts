@@ -33,6 +33,7 @@ android {
 dependencies {
 
     implementation(project(":core:ui"))
+    implementation(project(":core:domain"))
     implementation(project(":weather-data"))
 
     implementation(libs.androidx.core)

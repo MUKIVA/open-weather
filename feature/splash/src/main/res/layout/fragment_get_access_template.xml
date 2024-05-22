@@ -8,7 +8,8 @@
     android:orientation="vertical"
     android:gravity="center"
     android:background="?attr/colorSurface"
-    android:paddingHorizontal="@dimen/def_h_padding">
+    android:paddingHorizontal="@dimen/def_h_padding"
+    android:animateLayoutChanges="true">
 
     <ImageView
         android:id="@+id/image"
@@ -51,5 +52,12 @@
             android:text="@string/skip_get_permission"/>
 
     </LinearLayout>
+    
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/progressIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:layout_marginTop="16dp"/>
 
 </LinearLayout>

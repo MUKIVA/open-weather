@@ -11,13 +11,20 @@ import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import com.github.mukiva.core.ui.KEY_ARGS
 import com.github.mukiva.core.ui.getArgs
+import com.github.mukiva.core.ui.gone
 import com.github.mukiva.core.ui.viewBindings
+import com.github.mukiva.core.ui.visible
 import com.github.mukiva.feature.splash.R
 import com.github.mukiva.feature.splash.databinding.FragmentGetAccessTemplateBinding
+import com.github.mukiva.feature.splash.presentation.OnboardingScreenState
 import com.github.mukiva.feature.splash.presentation.OnboardingViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.parcelize.Parcelize
 
 @AndroidEntryPoint
@@ -36,7 +43,9 @@ class GetAccessTemplateFragment : Fragment(R.layout.fragment_get_access_template
     )
     private val mRequestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
-    ) { mViewModel.nextStep() }
+    ) { isGranted ->
+        mViewModel.handlePermissionGranted(getArgs(Args::class.java).permission, isGranted)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -44,6 +53,14 @@ class GetAccessTemplateFragment : Fragment(R.layout.fragment_get_access_template
         initImage(getArgs(Args::class.java).imageRes)
         initDescriptionText(getString(getArgs(Args::class.java).description))
         initActions(getArgs(Args::class.java).permission)
+        subscribeOnViewModel()
+    }
+
+    private fun subscribeOnViewModel() {
+        mViewModel.screenState
+            .flowWithLifecycle(viewLifecycleOwner.lifecycle)
+            .onEach(::updateState)
+            .launchIn(viewLifecycleOwner.lifecycleScope)
     }
 
     private fun initImage(@DrawableRes imageRes: Int) = with(mBinding) {
@@ -72,6 +89,21 @@ class GetAccessTemplateFragment : Fragment(R.layout.fragment_get_access_template
                 mViewModel.nextStep()
             }
             else -> mRequestPermissionLauncher.launch(permission)
+        }
+    }
+
+    private fun updateState(state: OnboardingScreenState) = with(mBinding) {
+        when (state) {
+            OnboardingScreenState.Content -> {
+                skipButton.isEnabled = true
+                getPermissionButton.isEnabled = true
+                progressIndicator.gone()
+            }
+            OnboardingScreenState.Loading -> {
+                skipButton.isEnabled = false
+                getPermissionButton.isEnabled = false
+                progressIndicator.visible()
+            }
         }
     }
 
