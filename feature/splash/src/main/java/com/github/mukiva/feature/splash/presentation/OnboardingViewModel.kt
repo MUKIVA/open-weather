@@ -1,6 +1,7 @@
 package com.github.mukiva.feature.splash.presentation
 
 import android.Manifest
+import android.os.Build
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.mukiva.feature.splash.domain.AddLocationUseCase
@@ -31,7 +32,7 @@ class OnboardingViewModel @Inject constructor(
     val screenState: StateFlow<OnboardingScreenState>
         get() = mScreenState
 
-    private val mState = MutableStateFlow(OnboardingScreen.entries.first())
+    private val mState = MutableStateFlow(createInitScreen())
     private val mScreenState = MutableStateFlow<OnboardingScreenState>(OnboardingScreenState.Content)
 
     private val mFirstOpenComplete = settingsRepository.getFirstOpenComplete()
@@ -86,4 +87,9 @@ class OnboardingViewModel @Inject constructor(
     fun previousStep() {
         mState.update { state -> OnboardingScreen.entries[state.ordinal.dec()] }
     }
+}
+
+internal fun createInitScreen() = when {
+    Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU -> OnboardingScreen.LOCATION_ACCESS
+    else -> OnboardingScreen.NOTIFICATION_ACCESS
 }
