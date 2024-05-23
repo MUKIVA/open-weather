@@ -12,3 +12,4 @@ class DefaultNavigationResourcesProvider : INavigationResourcesProvider {
         return R.navigation.navigation_main
     }
 }
+

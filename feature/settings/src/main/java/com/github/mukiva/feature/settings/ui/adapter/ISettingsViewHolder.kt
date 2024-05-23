@@ -5,6 +5,7 @@ import com.github.mukiva.feature.settings.databinding.ItemSettingsGroupTitleBind
 import com.github.mukiva.feature.settings.databinding.ItemSettingsToggleBinding
 import com.github.mukiva.feature.settings.databinding.ItemSettingsVariantBinding
 import com.github.mukiva.feature.settings.domain.SettingItem
+import kotlin.reflect.KClass
 
 sealed interface ISettingsViewHolder {
     fun bind(item: SettingItem)
@@ -20,7 +21,7 @@ sealed interface ISettingsViewHolder {
 
     class ToggleViewHolder(
         private val binding: ItemSettingsToggleBinding,
-        private val onClick: (SettingItem.Toggle) -> Unit
+        private val onClick: (KClass<*>, Boolean) -> Unit
     ) : RecyclerView.ViewHolder(binding.root), ISettingsViewHolder {
         override fun bind(item: SettingItem) = with(binding) {
             if (item !is SettingItem.Toggle) return
@@ -30,7 +31,10 @@ sealed interface ISettingsViewHolder {
             updateSwitcher(item.isEnabled)
 
             root.setOnClickListener {
-                onClick(item)
+                switcher.isChecked = !switcher.isChecked
+            }
+            switcher.setOnCheckedChangeListener { buttonView, isChecked ->
+                onClick(item.key, isChecked)
             }
         }
 

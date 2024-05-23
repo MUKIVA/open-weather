@@ -4,6 +4,10 @@
     <string name="variant_unchecked">Не выбрано</string>
 
     <string name="setting_group_general">Главные</string>
+    <string name="setting_group_notification">Уведомления</string>
+
+    <string name="option_current_weather_name">Уведомление о текущей погоде</string>
+    <string name="option_current_weather_description">Уведомлять о текущей погоде каждые 30 минут</string>
 
     <string name="option_theme_name">Тема приложения</string>
     <string name="option_theme_description">Смена темы приложения</string>

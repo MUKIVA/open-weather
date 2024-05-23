@@ -15,4 +15,6 @@
     <dimen name="def_radius">16dp</dimen>
     <dimen name="def_cardview_padding">16dp</dimen>
     <dimen name="def_cardview_stroke_width">1.5dp</dimen>
+
+    <dimen name="tablet_width">600dp</dimen>
 </resources>

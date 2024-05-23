@@ -4,6 +4,10 @@
     <string name="variant_unchecked">unchecked</string>
 
     <string name="setting_group_general">General</string>
+    <string name="setting_group_notification">Notification</string>
+
+    <string name="option_current_weather_name">Current Weather Notification</string>
+    <string name="option_current_weather_description">Current weather notifications every 30 minutes</string>
 
     <string name="option_theme_name">Application theme</string>
     <string name="option_theme_description">Change application theme</string>

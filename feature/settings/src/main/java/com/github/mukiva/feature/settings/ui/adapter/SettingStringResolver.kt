@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.fragment.app.Fragment
 import com.github.mukiva.feature.settings.R
 import com.github.mukiva.feature.settings.domain.SettingItem
+import com.github.mukiva.openweather.core.domain.settings.CurrentWeather
 import com.github.mukiva.openweather.core.domain.settings.Group
 import com.github.mukiva.openweather.core.domain.settings.Lang
 import com.github.mukiva.openweather.core.domain.settings.Theme
@@ -31,6 +32,7 @@ internal fun Context.resolveName(key: KClass<*>): String {
         Theme::class -> getString(R.string.option_theme_name)
         UnitsType::class -> getString(R.string.option_units_type_name)
         Lang::class -> getString(R.string.option_lang_name)
+        CurrentWeather::class -> getString(R.string.option_current_weather_name)
         else -> error("Unimplemented brunch")
     }
 }
@@ -40,6 +42,7 @@ internal fun Context.resolveDescription(key: KClass<*>): String {
         Theme::class -> getString(R.string.option_theme_description)
         UnitsType::class -> getString(R.string.option_units_type_description)
         Lang::class -> getString(R.string.option_lang_description)
+        CurrentWeather::class -> getString(R.string.option_current_weather_description)
         else -> error("Unimplemented brunch")
     }
 }
@@ -47,6 +50,7 @@ internal fun Context.resolveDescription(key: KClass<*>): String {
 internal fun Context.resolveGroup(group: Group): String {
     return when (group) {
         is Group.General -> getString(R.string.setting_group_general)
+        is Group.Notification -> getString(R.string.setting_group_notification)
     }
 }
 

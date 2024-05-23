@@ -1,5 +1,6 @@
 package com.github.mukiva.core.ui
 
+import android.content.Context
 import android.view.View
 import androidx.core.view.isVisible
 import com.github.mukiva.openweather.core.domain.settings.UnitsType
@@ -29,6 +30,15 @@ fun View.getTempString(temp: Temp): String = with(temp) {
             context.getString(R.string.template_celsius, value.roundToInt())
         UnitsType.IMPERIAL ->
             context.getString(R.string.template_fahrenheit, value.roundToInt())
+    }
+}
+
+fun Context.getTempString(temp: Temp): String = with(temp) {
+    return when (unitsType) {
+        UnitsType.METRIC ->
+            getString(R.string.template_celsius, value.roundToInt())
+        UnitsType.IMPERIAL ->
+            getString(R.string.template_fahrenheit, value.roundToInt())
     }
 }
 

@@ -53,6 +53,7 @@ class OnboardingViewModel @Inject constructor(
                 when (permission) {
                     Manifest.permission.POST_NOTIFICATIONS -> {
                         mScreenState.emit(OnboardingScreenState.Loading)
+                        settingsRepository.setCurrentWeatherNotificationEnabled(isGranted)
                         mScreenState.emit(OnboardingScreenState.Content)
                     }
                     Manifest.permission.ACCESS_COARSE_LOCATION -> {
@@ -60,7 +61,6 @@ class OnboardingViewModel @Inject constructor(
                         if (isGranted) {
                             addLocationUseCase()
                         }
-                        nextStep()
                         mScreenState.emit(OnboardingScreenState.Content)
                     }
                     else -> error("Permission not handled")

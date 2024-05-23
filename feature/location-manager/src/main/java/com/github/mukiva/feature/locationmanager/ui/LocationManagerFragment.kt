@@ -116,9 +116,6 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
 
             val horizontalPadding = getDimen(CoreUiRes.dimen.def_h_padding)
 
-            searchView?.updatePadding(
-                bottom = ime.bottom
-            )
             addedList.updatePadding(
                 bottom = sys.bottom,
                 left = horizontalPadding + displayCutout.left,
@@ -128,7 +125,6 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
             )
             searchViewList.updatePadding(
                 bottom = ime.bottom,
-                right = horizontalPadding + displayCutout.right
             )
             appbar.updatePadding(left = displayCutout.left)
             insets
@@ -206,7 +202,7 @@ class LocationManagerFragment : Fragment(R.layout.fragment_location_manager) {
                 state: RecyclerView.State
             ) {
                 super.getItemOffsets(outRect, view, parent, state)
-                outRect.top = getDimen(R.dimen.def_v_padding)
+                outRect.top = getDimen(CoreUiRes.dimen.def_v_padding)
             }
         })
     }

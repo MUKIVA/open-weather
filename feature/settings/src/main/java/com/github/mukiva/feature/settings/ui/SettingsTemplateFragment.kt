@@ -30,7 +30,7 @@ class SettingsTemplateFragment : Fragment(R.layout.fragment_settings_template) {
     private val mAdapter by uiLazy {
         SettingsAdapter(
             onSelectVariant = { mViewModel.selectVariant(it.key, it.variants, it.selectedVariant) },
-            onToggleOption = { }
+            onToggleOption = { key, isEnabled -> mViewModel.toggle(key, isEnabled) }
         )
     }
 

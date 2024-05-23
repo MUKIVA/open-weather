@@ -8,10 +8,11 @@ import com.github.mukiva.feature.settings.databinding.ItemSettingsGroupTitleBind
 import com.github.mukiva.feature.settings.databinding.ItemSettingsToggleBinding
 import com.github.mukiva.feature.settings.databinding.ItemSettingsVariantBinding
 import com.github.mukiva.feature.settings.domain.SettingItem
+import kotlin.reflect.KClass
 
 class SettingsAdapter(
     private val onSelectVariant: (SettingItem.Variant) -> Unit,
-    private val onToggleOption: (SettingItem.Toggle) -> Unit
+    private val onToggleOption: (KClass<*>, Boolean) -> Unit
 ) : ListAdapter<SettingItem, ViewHolder>(SettingsDiffUtil) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)

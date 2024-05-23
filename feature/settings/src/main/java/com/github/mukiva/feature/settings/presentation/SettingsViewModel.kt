@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.mukiva.feature.settings.domain.SettingItem
 import com.github.mukiva.openweather.core.domain.settings.Config
+import com.github.mukiva.openweather.core.domain.settings.CurrentWeather
 import com.github.mukiva.openweather.core.domain.settings.Group
 import com.github.mukiva.openweather.core.domain.settings.Lang
 import com.github.mukiva.openweather.core.domain.settings.Theme
@@ -37,6 +38,15 @@ class SettingsViewModel @Inject constructor(
             .map(::asState)
             .onEach(mState::emit)
             .launchIn(viewModelScope)
+    }
+
+    fun toggle(key: KClass<*>, isEnabled: Boolean) {
+        viewModelScope.launch {
+            when (key) {
+                CurrentWeather::class ->
+                    settingsRepository.setCurrentWeatherNotificationEnabled(isEnabled)
+            }
+        }
     }
 
     fun selectVariant(key: KClass<*>, variants: EnumEntries<*>, selectedVariant: Enum<*>) {
@@ -114,6 +124,15 @@ class SettingsViewModel @Inject constructor(
                             Lang::class,
                             group.lang,
                             Lang.entries
+                        )
+                    )
+                }
+                is Group.Notification -> {
+                    add(SettingItem.Title(group))
+                    add(
+                        SettingItem.Toggle(
+                            CurrentWeather::class,
+                            isEnabled = group.currentWeather.isEnabled
                         )
                     )
                 }

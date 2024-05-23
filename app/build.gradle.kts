@@ -13,6 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.github.mukiva.openweather"
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
         minSdk = 26
@@ -63,6 +64,7 @@ dependencies {
     implementation(project(":feature:location-manager"))
     implementation(project(":feature:settings"))
     implementation(project(":feature:splash"))
+    implementation(project(":feature:weather-notification"))
 
     implementation(project(":weather-data"))
     implementation(project(":weather-api"))

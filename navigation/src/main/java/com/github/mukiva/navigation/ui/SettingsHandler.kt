@@ -1,5 +1,6 @@
 package com.github.mukiva.navigation.ui
 
+import android.util.Log
 import androidx.annotation.MainThread
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
@@ -17,7 +18,8 @@ import javax.inject.Singleton
 
 @Singleton
 class SettingsHandler @Inject constructor(
-    private val settingsRepository: SettingsRepository
+    private val settingsRepository: SettingsRepository,
+    private val weatherNotificationServiceLauncher: IWeatherNotificationServiceLauncher
 ) : IOnCreateHandler, IOnDestroyHandler {
 
     private var mActivity: FragmentActivity? = null
@@ -46,8 +48,18 @@ class SettingsHandler @Inject constructor(
                 val localeList = LocaleListCompat.forLanguageTags("xx")
                 AppCompatDelegate.setApplicationLocales(localeList)
             }
-            Lang.EN -> AppCompatDelegate.setApplicationLocales(LocaleListCompat.create(Locale(lang.code)))
-            Lang.RU -> AppCompatDelegate.setApplicationLocales(LocaleListCompat.create(Locale(lang.code)))
+            Lang.EN -> AppCompatDelegate
+                .setApplicationLocales(LocaleListCompat.create(Locale(lang.code)))
+            Lang.RU -> AppCompatDelegate
+                .setApplicationLocales(LocaleListCompat.create(Locale(lang.code)))
+        }
+    }
+
+    private fun updateCurrentWeatherNotification(isEnabled: Boolean) {
+        Log.i("SettingsHandler", "IS ENABLED: $isEnabled")
+        when (isEnabled) {
+            true -> weatherNotificationServiceLauncher.startService()
+            false -> weatherNotificationServiceLauncher.stopService()
         }
     }
 
@@ -63,9 +75,15 @@ class SettingsHandler @Inject constructor(
             .flowWithLifecycle(activity.lifecycle)
             .onEach(::updateLocalization)
             .launchIn(activity.lifecycleScope)
+
+        settingsRepository.getCurrentWeatherNotificationEnabled()
+            .flowWithLifecycle(activity.lifecycle)
+            .onEach(::updateCurrentWeatherNotification)
+            .launchIn(activity.lifecycleScope)
     }
 
     override fun onDestroy() {
         mActivity = null
     }
 }
+

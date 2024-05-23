@@ -6,4 +6,9 @@ sealed class Group {
         val lang: Lang,
         val unitsType: UnitsType
     ) : Group()
+
+    data class Notification(
+        val currentWeather: CurrentWeather
+    ) : Group()
 }
+

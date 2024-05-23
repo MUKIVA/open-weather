@@ -26,7 +26,7 @@ class AddLocationUseCase @Inject constructor(
                     saveFirstLocation(requestResult.data)
                 }
             }
-            .single()
+            .first()
     }
 
     private suspend fun saveFirstLocation(locationList: List<Location>?) {

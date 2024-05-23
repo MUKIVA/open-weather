@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.github.mukiva.openweather.core.domain.settings.Config
+import com.github.mukiva.openweather.core.domain.settings.CurrentWeather
 import com.github.mukiva.openweather.core.domain.settings.Group
 import com.github.mukiva.openweather.core.domain.settings.Lang
 import com.github.mukiva.openweather.core.domain.settings.Theme
@@ -30,6 +31,18 @@ class SettingsRepository(
     fun getFirstOpenComplete(): Flow<Boolean> {
         return context.dataStore.data.map { settings ->
             settings[FIRST_OPEN_COMPLETE_KEY] ?: false
+        }
+    }
+
+    suspend fun setCurrentWeatherNotificationEnabled(isEnabled: Boolean) {
+        context.dataStore.edit { settings ->
+            settings[CURRENT_WEATHER_NOTIFICATION_KEY] = isEnabled
+        }
+    }
+
+    fun getCurrentWeatherNotificationEnabled(): Flow<Boolean> {
+        return context.dataStore.data.map { settings ->
+            settings[CURRENT_WEATHER_NOTIFICATION_KEY] ?: false
         }
     }
 
@@ -70,13 +83,14 @@ class SettingsRepository(
     }
 
     fun getConfiguration(): Flow<Config> {
-        val general = getGeneral()
-        return general.map { group ->
-            Config(groups = listOf(group))
+        val general: Flow<Group> = getGeneralGroup()
+        val currentWeather: Flow<Group> = getNotificationGroup()
+        return general.combine(currentWeather) { generalGroup, currentGroup ->
+            Config(listOf(generalGroup, currentGroup))
         }
     }
 
-    private fun getGeneral(): Flow<Group.General> {
+    private fun getGeneralGroup(): Flow<Group.General> {
         val themeFlow = getTheme()
         val unitsTypeFlow = getUnitsType()
         val localizationFlow = getLocalization()
@@ -89,12 +103,22 @@ class SettingsRepository(
         }
     }
 
+    private fun getNotificationGroup(): Flow<Group.Notification> {
+        val currentWeatherNotification = getCurrentWeatherNotificationEnabled()
+        return currentWeatherNotification.map { isEnabled ->
+            Group.Notification(
+                currentWeather = CurrentWeather(isEnabled)
+            )
+        }
+    }
+
     companion object {
         private const val DATA_STORE_NAME = "SETTINGS"
 
         private val THEME_MODE_KEY = intPreferencesKey("THEME_MODE_KEY")
         private val UNITS_TYPE_KEY = intPreferencesKey("UNITS_TYPE_KEY")
         private val LOCALIZATION_KEY = intPreferencesKey("LOCALIZATION_KEY")
+        private val CURRENT_WEATHER_NOTIFICATION_KEY = booleanPreferencesKey("CURRENT_WEATHER_NOTIFICATION_KEY")
         private val FIRST_OPEN_COMPLETE_KEY = booleanPreferencesKey("FIRST_OPEN_COMPLETE_KEY")
     }
 }
