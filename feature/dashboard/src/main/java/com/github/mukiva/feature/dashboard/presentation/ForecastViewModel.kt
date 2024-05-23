@@ -8,6 +8,8 @@ import com.github.mukiva.feature.dashboard.navigation.IDashboardRouter
 import com.github.mukiva.weatherdata.utils.RequestResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -27,7 +29,10 @@ class ForecastViewModel @Inject constructor(
             getForecastUseCase(id)
                 .map(::asState)
                 .onEach { statesHolder[id].emit(it) }
-                .launchIn(viewModelScope)
+                .filter { state ->
+                    state !is LocationWeatherState.Loading && state !is LocationWeatherState.Init
+                }
+                .first()
         }
     }
 

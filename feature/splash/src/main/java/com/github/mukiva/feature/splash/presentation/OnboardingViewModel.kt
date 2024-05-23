@@ -50,25 +50,22 @@ class OnboardingViewModel @Inject constructor(
 
     fun handlePermissionGranted(permission: String, isGranted: Boolean) {
         viewModelScope.launch {
-            val handler = viewModelScope.async {
-                when (permission) {
-                    Manifest.permission.POST_NOTIFICATIONS -> {
-                        mScreenState.emit(OnboardingScreenState.Loading)
-                        settingsRepository.setCurrentWeatherNotificationEnabled(isGranted)
-                        mScreenState.emit(OnboardingScreenState.Content)
-                    }
-                    Manifest.permission.ACCESS_COARSE_LOCATION -> {
-                        mScreenState.emit(OnboardingScreenState.Loading)
-                        if (isGranted) {
-                            addLocationUseCase()
-                        }
-                        mScreenState.emit(OnboardingScreenState.Content)
-                    }
-                    else -> error("Permission not handled")
+            when (permission) {
+                Manifest.permission.POST_NOTIFICATIONS -> {
+                    mScreenState.emit(OnboardingScreenState.Loading)
+                    settingsRepository.setCurrentWeatherNotificationEnabled(isGranted)
+                    mScreenState.emit(OnboardingScreenState.Content)
+                    nextStep()
                 }
+                Manifest.permission.ACCESS_COARSE_LOCATION -> {
+                    mScreenState.emit(OnboardingScreenState.Loading)
+                    if (isGranted) {
+                        addLocationUseCase()
+                    }
+                    nextStep()
+                }
+                else -> error("Permission not handled")
             }
-            handler.await()
-            nextStep()
         }
     }
 

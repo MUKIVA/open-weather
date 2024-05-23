@@ -1,5 +1,6 @@
 package com.github.mukiva.feature.dashboard.presentation
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.mukiva.feature.dashboard.domain.model.Location
@@ -8,11 +9,14 @@ import com.github.mukiva.feature.dashboard.navigation.IDashboardRouter
 import com.github.mukiva.weatherdata.utils.RequestResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,22 +25,29 @@ class DashboardViewModel @Inject constructor(
     private val weatherStatesHolder: ForecastStatesHolder,
     router: IDashboardRouter
 ) : ViewModel(), IDashboardRouter by router {
+    val state: StateFlow<DashboardState>
+        get() = mState
 
-    val state: StateFlow<DashboardState> = getAllLocationsUseCase()
-        .map(::asState)
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.Lazily,
-            DashboardState.Init
-        ).apply {
-            onEach { state ->
-                if (state is DashboardState.Content) {
-                    weatherStatesHolder.clear()
-                }
-            }
+    private val mState = MutableStateFlow<DashboardState>(DashboardState.Init)
+
+    init {
+        getAllLocationsUseCase()
+            .filter { mState.value !is DashboardState.Init }
+            .onEach { loadLocations() }
+            .launchIn(viewModelScope)
+    }
+
+    fun loadLocations() {
+        viewModelScope.launch {
+            getAllLocationsUseCase()
+                .map(::asState)
+                .onEach(mState::emit)
+                .onEach { Log.d("STATE", "$it") }
+                .filter { state -> state !is DashboardState.Loading && state !is DashboardState.Init }
+                .onEach { weatherStatesHolder.clear() }
+                .first()
         }
-
-    fun loadLocations() { getAllLocationsUseCase() }
+    }
 
     fun requestWeatherState(id: Long): Flow<MainCardState> {
         return weatherStatesHolder[id].map(::asMainCardState)

@@ -50,7 +50,7 @@ class SavedLocationsHandler @Inject constructor(
             getAddedLocationsUseCase()
                 .map(::asSavedListState)
                 .onEach(mSavedLocationsState::emit)
-                .filter { it !is SavedLocationsState.Loading }
+                .filter { it !is SavedLocationsState.Loading && it !is SavedLocationsState.Init }
                 .first()
         }
     }

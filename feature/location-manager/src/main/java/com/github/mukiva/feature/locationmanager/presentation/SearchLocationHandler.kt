@@ -5,7 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.github.mukiva.feature.locationmanager.domain.usecase.LocationSearchUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
@@ -30,7 +31,8 @@ class SearchLocationHandler @Inject constructor(
             searchUseCase(q)
                 .map(::asSearchListState)
                 .onEach(mSearchLocationsState::emit)
-                .launchIn(viewModelScope)
+                .filter { state -> state !is SearchLocationsState.Loading }
+                .first()
         }
     }
 

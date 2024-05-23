@@ -144,6 +144,10 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
                     mViewModel.goSettings()
                     return@setOnMenuItemClickListener true
                 }
+                R.id.refresh -> {
+                    mViewModel.loadLocations()
+                    return@setOnMenuItemClickListener true
+                }
                 else -> false
             }
         }
@@ -151,6 +155,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
 
     private fun observeViewModel() {
         mViewModel.state
+            .flowWithLifecycle(lifecycle, Lifecycle.State.CREATED)
             .onEach { state ->
                 if (state is DashboardState.Content) {
                     mDashboardAdapter.submitList(state.locations)
@@ -158,9 +163,9 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
             }
             .launchIn(viewLifecycleOwner.lifecycleScope)
         mViewModel.state
-            .flowWithLifecycle(lifecycle)
+            .flowWithLifecycle(viewLifecycleOwner.lifecycle)
             .onEach(::updateState)
-            .launchIn(lifecycleScope)
+            .launchIn(viewLifecycleOwner.lifecycleScope)
     }
 
     private fun updateMainCard(
@@ -216,6 +221,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
                 mBinding.toolbarLayout.gone()
                 mBinding.dashboardContainer.gone()
                 mBinding.mainEmptyView.loading()
+                mViewModel.loadLocations()
             }
             DashboardState.Loading -> {
                 mBinding.toolbarLayout.gone()

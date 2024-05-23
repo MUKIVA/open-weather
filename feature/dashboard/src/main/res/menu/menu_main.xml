@@ -4,6 +4,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/refresh"
+        android:icon="@drawable/ic_refresh"
+        android:title="@string/settings"
+        app:iconTint="?attr/colorOnSurface"
+        app:showAsAction="ifRoom"/>
+
+    <item
         android:id="@+id/select_locations"
         android:icon="@drawable/ic_add_circle"
         android:title="@string/select_locations"
