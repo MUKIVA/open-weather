@@ -4,10 +4,11 @@ import android.app.NotificationManager
 import android.app.job.JobParameters
 import android.app.job.JobService
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.github.mukiva.core.ui.getTempString
-import com.github.mukiva.openweather.core.domain.settings.UnitsType
 import com.github.mukiva.openweather.core.domain.weather.Temp
 import com.github.mukiva.weatherdata.ForecastRepository
 import com.github.mukiva.weatherdata.LocationRepository
@@ -43,6 +44,12 @@ class WeatherNotificationService : JobService() {
 
     private val mJob = SupervisorJob()
     private val mServiceScope = CoroutineScope(Dispatchers.IO + mJob)
+    private var mNetworkEnabled = true
+
+    override fun onCreate() {
+        super.onCreate()
+        mNetworkEnabled = true
+    }
 
     override fun onStartJob(params: JobParameters?): Boolean {
         Log.i("WeatherNotificationService", "Start Job")
@@ -90,7 +97,6 @@ class WeatherNotificationService : JobService() {
                 }
             }
             .first()
-//        sendNotification("Test", Temp(UnitsType.METRIC, 10.0, 50.0))
     }
 
     private fun sendNotification(
@@ -110,6 +116,21 @@ class WeatherNotificationService : JobService() {
             .build()
         val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         nm.notify(NOTIFICATION_ID, notification)
+    }
+
+    override fun onNetworkChanged(params: JobParameters) {
+        mNetworkEnabled = checkNetworkAvailable()
+    }
+
+    private fun checkNetworkAvailable(): Boolean {
+        val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val an = cm.activeNetwork ?: return false
+        val actNw = cm.getNetworkCapabilities(an) ?: return false
+        return when {
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+            actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+            else -> false
+        }
     }
 
     companion object {

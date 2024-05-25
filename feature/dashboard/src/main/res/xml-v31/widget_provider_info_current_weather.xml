@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="310dp"
+    android:minHeight="73dp"
+    android:updatePeriodMillis="1800000"
+    android:description="@string/widget_current_weather_description"
+    android:previewLayout="@layout/lay_widget_current_weather_preview"
+    android:initialLayout="@layout/lay_widget_current_weather"
+    android:resizeMode="vertical|horizontal"
+    android:widgetCategory="home_screen">
+
+</appwidget-provider>

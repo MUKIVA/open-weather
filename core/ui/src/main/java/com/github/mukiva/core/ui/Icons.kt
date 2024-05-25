@@ -8,6 +8,10 @@ fun Context.getWeatherDrawable(code: Int, isDay: Boolean): Drawable? {
     return AppCompatResources.getDrawable(this, getWeatherIconRes(code, isDay))
 }
 
+fun Context.getWeatherRes(code: Int, isDay: Boolean): Int {
+    return getWeatherIconRes(code, isDay)
+}
+
 fun Context.getWeatherDescription(code: Int): String {
     return getString(getWeatherDescriptionRes(code))
 }

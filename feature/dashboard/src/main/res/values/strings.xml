@@ -13,7 +13,6 @@
     <string name="field_feels_like_subtitle">Feels like</string>
 
     <string name="field_condition_subtitle">Condition</string>
-<!--    <string name="template_cloud" translatable="false">%1$d%% %2$s</string>-->
 
     <string name="field_wind_speed_subtitle">Wind speed</string>
     <string name="field_wind_dir_subtitle">Wind Direction</string>
@@ -46,4 +45,10 @@
     <string name="october_full">October</string>
     <string name="november_full">November</string>
     <string name="december_full">December</string>
+
+    <string name="widget_current_weather_description">Current weather with clock</string>
+    <string name="widget_empty_view_text">Location not found</string>
+
+    <string name="widget_preview_city_name">London</string>
+    <string name="widget_preview_current_temp" translatable="false">10°C</string>
 </resources>

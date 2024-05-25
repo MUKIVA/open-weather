@@ -42,4 +42,10 @@
     <string name="november_full">Ноябрь</string>
     <string name="december_full">Декабрь</string>
 
+    <string name="widget_current_weather_description">Текущая погода с часами</string>
+    <string name="widget_empty_view_text">Местоположение не найдено</string>
+    <string name="widget_configurator_header">Выберите стильвиджета</string>
+
+    <string name="widget_preview_city_name">Лондон</string>
+    
 </resources>

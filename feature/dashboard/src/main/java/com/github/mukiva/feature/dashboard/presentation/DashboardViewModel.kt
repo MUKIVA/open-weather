@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.github.mukiva.feature.dashboard.domain.model.Location
 import com.github.mukiva.feature.dashboard.domain.usecase.GetAllLocationsUseCase
 import com.github.mukiva.feature.dashboard.navigation.IDashboardRouter
+import com.github.mukiva.feature.dashboard.ui.widget.CurrentWeatherWidgetProvider
+import com.github.mukiva.weatherdata.SettingsRepository
 import com.github.mukiva.weatherdata.utils.RequestResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -23,6 +25,8 @@ import javax.inject.Inject
 class DashboardViewModel @Inject constructor(
     private val getAllLocationsUseCase: GetAllLocationsUseCase,
     private val weatherStatesHolder: ForecastStatesHolder,
+    private val settingsRepository: SettingsRepository,
+    private val currentWeatherUpdater: CurrentWeatherWidgetProvider.Updater,
     router: IDashboardRouter
 ) : ViewModel(), IDashboardRouter by router {
     val state: StateFlow<DashboardState>
@@ -34,6 +38,12 @@ class DashboardViewModel @Inject constructor(
         getAllLocationsUseCase()
             .filter { mState.value !is DashboardState.Init }
             .onEach { loadLocations() }
+            .launchIn(viewModelScope)
+        settingsRepository.getUnitsType()
+            .onEach {
+                currentWeatherUpdater.update()
+                loadLocations()
+            }
             .launchIn(viewModelScope)
     }
 
