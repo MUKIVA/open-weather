@@ -31,10 +31,10 @@ android {
 
 dependencies {
 
-    implementation(project(":core:ui"))
-    implementation(project(":core:domain"))
+    implementation(projects.core.domain)
+    implementation(projects.core.ui)
 
-    implementation(project(":weather-data"))
+    implementation(projects.weatherData)
 
     implementation(libs.androidx.core)
     implementation(libs.android.material)

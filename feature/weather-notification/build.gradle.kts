@@ -28,10 +28,9 @@ android {
 }
 
 dependencies {
-
-    implementation(project(":weather-data"))
-    implementation(project(":core:domain"))
-    implementation(project(":core:ui"))
+    implementation(projects.core.domain)
+    implementation(projects.core.ui)
+    implementation(projects.weatherData)
 
     implementation(libs.androidx.core)
     implementation(libs.hilt.android)

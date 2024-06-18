@@ -54,21 +54,18 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:ui"))
-    implementation(project(":core:domain"))
-
-    implementation(project(":navigation"))
-
-    implementation(project(":feature:dashboard"))
-    implementation(project(":feature:forecast"))
-    implementation(project(":feature:location-manager"))
-    implementation(project(":feature:settings"))
-    implementation(project(":feature:splash"))
-    implementation(project(":feature:weather-notification"))
-
-    implementation(project(":weather-data"))
-    implementation(project(":weather-api"))
-    implementation(project(":weather-database"))
+    implementation(projects.core.ui)
+    implementation(projects.core.domain)
+    implementation(projects.navigation)
+    implementation(projects.feature.dashboard)
+    implementation(projects.feature.forecast)
+    implementation(projects.feature.locationManager)
+    implementation(projects.feature.settings)
+    implementation(projects.feature.splash)
+    implementation(projects.feature.weatherNotification)
+    implementation(projects.weatherData)
+    implementation(projects.weatherApi)
+    implementation(projects.weatherDatabase)
 
     implementation(libs.androidx.navigation.fragment)
     implementation(libs.androidx.navigation.ui)

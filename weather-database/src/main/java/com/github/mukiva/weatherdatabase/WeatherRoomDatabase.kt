@@ -51,8 +51,8 @@ fun weatherDatabase(
 ): WeatherDatabase {
     val weatherRoomDatabase = Room.databaseBuilder(
         context = checkNotNull(applicationContext.applicationContext),
-        WeatherRoomDatabase::class.java,
-        "Weather"
+        klass = WeatherRoomDatabase::class.java,
+        name = "Weather"
     ).build()
     return WeatherDatabase(weatherRoomDatabase)
 }

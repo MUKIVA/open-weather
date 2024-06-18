@@ -30,9 +30,9 @@ android {
 
 dependencies {
 
-    implementation(project(":core:ui"))
-    implementation(project(":weather-data"))
-    implementation(project(":core:domain"))
+    implementation(projects.core.domain)
+    implementation(projects.core.ui)
+    implementation(projects.weatherData)
 
     implementation(libs.androidx.navigation.fragment)
     implementation(libs.androidx.navigation.ui)
