@@ -1,5 +1,8 @@
 import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
+import plugins.compileSdk
+import plugins.minSdk
+import plugins.targetSdk
 
 plugins {
     alias(libs.plugins.androidApplication) apply false
@@ -12,6 +15,20 @@ plugins {
     alias(libs.plugins.kotlinxSerialization) apply false
     alias(libs.plugins.kotlinParcelize) apply false
     alias(libs.plugins.detekt)
+    alias(libs.plugins.androidBuildConfiguration)
+    alias(libs.plugins.androidDefault) apply false
+}
+
+buildConfiguration {
+    minSdk(libs.versions.minSdk)
+    targetSdk(libs.versions.targetSdk)
+    compileSdk(libs.versions.compileSdk)
+}
+
+buildscript {
+    dependencies {
+        classpath(libs.build.logic)
+    }
 }
 
 detekt {

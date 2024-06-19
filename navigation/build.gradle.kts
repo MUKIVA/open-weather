@@ -3,26 +3,11 @@ plugins {
     alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.hiltAndroid)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.androidDefault)
 }
 
 android {
     namespace = "com.github.mukiva.navigation"
-    compileSdk = 34
-    defaultConfig {
-        minSdk = 26
-    }
-    buildTypes {
-        create("profile") {
-            signingConfig = signingConfigs.findByName("debug")
-        }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
-    }
     buildFeatures {
         viewBinding = true
     }

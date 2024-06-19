@@ -5,46 +5,16 @@ plugins {
     alias(libs.plugins.hiltAndroid)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlinxSerialization)
+    alias(libs.plugins.androidDefault)
 }
 
 android {
     namespace = "com.github.mukiva.openweather"
-    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.github.mukiva.openweather"
-        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
-        minSdk = 26
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
-    }
-    buildTypes {
-        getByName("debug") {
-            applicationIdSuffix = ".debug"
-            isShrinkResources = false
-
-            signingConfig = signingConfigs.findByName("debug")
-        }
-        getByName("release") {
-            applicationIdSuffix = ".release"
-            isShrinkResources = false
-
-            signingConfig = signingConfigs.findByName("release")
-        }
-        create("profile") {
-            applicationIdSuffix = ".profile"
-            isProfileable = true
-            isDebuggable = false
-
-            signingConfig = signingConfigs.findByName("debug")
-        }
     }
 
     buildFeatures {

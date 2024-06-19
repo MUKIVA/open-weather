@@ -1,34 +1,19 @@
 plugins {
     alias(libs.plugins.androidLib)
     alias(libs.plugins.kotlinAndroid)
+    alias(libs.plugins.androidDefault)
 }
 
 android {
     namespace = "com.github.mukiva.weatherdata"
-    compileSdk = 34
-
-    defaultConfig {
-        minSdk = 26
-    }
-    buildTypes {
-        create("profile") {
-            signingConfig = signingConfigs.findByName("debug")
-        }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
-    }
 }
 
 dependencies {
 
     implementation(projects.core.domain)
     implementation(projects.core.ui)
-    implementation(projects.weatherData)
+    implementation(projects.weatherDatabase)
+    implementation(projects.weatherApi)
 
     implementation(libs.kotlinx.datetime)
     implementation(libs.kotlinx.coroutines)
