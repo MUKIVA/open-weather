@@ -23,16 +23,25 @@ import kotlinx.coroutines.flow.onEach
 import java.util.Locale
 import com.github.mukiva.weatherdatabase.relations.ForecastWithCurrentAndLocation as ForecastWithCurrentAndLocationDbo
 
-class ForecastRepository(
-    private val database: WeatherDatabase,
-    private val gateway: IWeatherApi,
-) {
+interface IForecastRepository {
     fun getForecast(
         locationId: Long,
         lang: Lang,
         onlyCache: Boolean = false,
         forecastMergeStrategy: IDataMergeStrategy<RequestResult<ForecastWithCurrentAndLocation>> =
             ForecastMergeStrategy()
+    ): Flow<RequestResult<ForecastWithCurrentAndLocation>>
+}
+
+internal class ForecastRepository(
+    private val database: WeatherDatabase,
+    private val gateway: IWeatherApi,
+) : IForecastRepository {
+    override fun getForecast(
+        locationId: Long,
+        lang: Lang,
+        onlyCache: Boolean,
+        forecastMergeStrategy: IDataMergeStrategy<RequestResult<ForecastWithCurrentAndLocation>>
     ): Flow<RequestResult<ForecastWithCurrentAndLocation>> = when (onlyCache) {
         true -> getLocalForecast(locationId)
         false -> {
@@ -46,10 +55,11 @@ class ForecastRepository(
         locationId: Long,
         lang: Lang,
     ): Flow<RequestResult<ForecastWithCurrentAndLocation>> {
-        val languageCode = if (lang == Lang.SYSTEM)
+        val languageCode = if (lang == Lang.SYSTEM) {
             Locale.getDefault().language
-        else
+        } else {
             lang.code
+        }
 
         val remote = flow { emit(gateway.forecast("id:$locationId", FORECAST_DAYS, languageCode)) }
             .map { result -> result.asRequestResult() }
@@ -122,3 +132,8 @@ class ForecastRepository(
         private const val FORECAST_DAYS = 3
     }
 }
+
+fun createForecastRepository(
+    database: WeatherDatabase,
+    gateway: IWeatherApi,
+): IForecastRepository = ForecastRepository(database, gateway)

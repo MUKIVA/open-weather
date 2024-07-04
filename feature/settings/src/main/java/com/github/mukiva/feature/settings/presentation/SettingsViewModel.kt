@@ -9,7 +9,7 @@ import com.github.mukiva.openweather.core.domain.settings.Group
 import com.github.mukiva.openweather.core.domain.settings.Lang
 import com.github.mukiva.openweather.core.domain.settings.Theme
 import com.github.mukiva.openweather.core.domain.settings.UnitsType
-import com.github.mukiva.weatherdata.SettingsRepository
+import com.github.mukiva.weatherdata.ISettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,7 +25,7 @@ import kotlin.reflect.KClass
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val settingsRepository: SettingsRepository
+    private val settingsRepository: ISettingsRepository
 ) : ViewModel() {
 
     val state: StateFlow<SettingsState>

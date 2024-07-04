@@ -9,8 +9,8 @@ import com.github.mukiva.openweather.core.domain.weather.Pressure
 import com.github.mukiva.openweather.core.domain.weather.Speed
 import com.github.mukiva.openweather.core.domain.weather.Temp
 import com.github.mukiva.openweather.core.domain.weather.WindDirection
-import com.github.mukiva.weatherdata.ForecastRepository
-import com.github.mukiva.weatherdata.SettingsRepository
+import com.github.mukiva.weatherdata.IForecastRepository
+import com.github.mukiva.weatherdata.ISettingsRepository
 import com.github.mukiva.weatherdata.models.Forecast
 import com.github.mukiva.weatherdata.models.Hour
 import com.github.mukiva.weatherdata.utils.RequestResult
@@ -22,8 +22,8 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class GetFullForecastUseCase @Inject constructor(
-    private val forecastRepo: ForecastRepository,
-    private val settingsRepository: SettingsRepository,
+    private val forecastRepo: IForecastRepository,
+    private val settingsRepository: ISettingsRepository,
 ) {
 
     suspend operator fun invoke(

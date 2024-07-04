@@ -38,7 +38,7 @@ class DefaultRouterImpl @AssistedInject constructor(
 
             if (activity.supportActionBar == null) return
 
-            NavigationUI.setupActionBarWithNavController(activity, currentNavController, appBarConfiguration)
+//            NavigationUI.setupActionBarWithNavController(activity, currentNavController, appBarConfiguration)
         }
     }
 

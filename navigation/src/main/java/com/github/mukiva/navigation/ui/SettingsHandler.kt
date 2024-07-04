@@ -9,7 +9,7 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.github.mukiva.openweather.core.domain.settings.Lang
 import com.github.mukiva.openweather.core.domain.settings.Theme
-import com.github.mukiva.weatherdata.SettingsRepository
+import com.github.mukiva.weatherdata.ISettingsRepository
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import java.util.Locale
@@ -18,7 +18,7 @@ import javax.inject.Singleton
 
 @Singleton
 class SettingsHandler @Inject constructor(
-    private val settingsRepository: SettingsRepository,
+    private val settingsRepository: ISettingsRepository,
     private val weatherNotificationServiceLauncher: IWeatherNotificationServiceLauncher
 ) : IOnCreateHandler, IOnDestroyHandler {
 

@@ -10,8 +10,8 @@ import com.github.mukiva.openweather.core.domain.weather.Pressure
 import com.github.mukiva.openweather.core.domain.weather.Speed
 import com.github.mukiva.openweather.core.domain.weather.Temp
 import com.github.mukiva.openweather.core.domain.weather.WindDirection
-import com.github.mukiva.weatherdata.ForecastRepository
-import com.github.mukiva.weatherdata.SettingsRepository
+import com.github.mukiva.weatherdata.IForecastRepository
+import com.github.mukiva.weatherdata.ISettingsRepository
 import com.github.mukiva.weatherdata.models.Current
 import com.github.mukiva.weatherdata.models.ForecastDay
 import com.github.mukiva.weatherdata.models.ForecastWithCurrentAndLocation
@@ -25,8 +25,8 @@ import com.github.mukiva.weatherdata.models.Condition as DataCondition
 import com.github.mukiva.weatherdata.models.Forecast as DataForecast
 
 class GetForecastUseCase @Inject constructor(
-    private val forecastRepository: ForecastRepository,
-    private val settingsRepository: SettingsRepository,
+    private val forecastRepository: IForecastRepository,
+    private val settingsRepository: ISettingsRepository,
 ) {
     suspend operator fun invoke(id: Long): Flow<RequestResult<Forecast>> {
         val lang = settingsRepository

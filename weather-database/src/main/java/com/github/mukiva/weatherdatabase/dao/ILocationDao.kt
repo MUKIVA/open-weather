@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import com.github.mukiva.weatherdatabase.models.LocationDbo
 import kotlinx.coroutines.flow.Flow
 
@@ -18,6 +19,15 @@ interface ILocationDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(location: LocationDbo): Long
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(locations: List<LocationDbo>)
+
+    @Transaction
+    suspend fun updateLocations(locations: List<LocationDbo>) {
+        deleteAll()
+        insert(locations)
+    }
 
     @Delete
     suspend fun delete(location: LocationDbo)

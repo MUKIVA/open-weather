@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import com.github.mukiva.weatherdata.SettingsRepository
+import com.github.mukiva.weatherdata.ISettingsRepository
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -17,7 +17,7 @@ import javax.inject.Inject
 class WeatherNotificationBroadcastReceiver : BroadcastReceiver() {
 
     @Inject
-    lateinit var settingsRepository: SettingsRepository
+    lateinit var settingsRepository: ISettingsRepository
 
     @Inject
     lateinit var serviceLauncher: IWeatherNotificationServiceLauncher

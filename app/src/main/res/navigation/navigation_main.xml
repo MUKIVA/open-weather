@@ -10,7 +10,7 @@
         android:name="com.github.mukiva.feature.dashboard.ui.DashboardFragment" />
     <fragment
         android:id="@+id/locationManagerFragment"
-        android:name="com.github.mukiva.feature.locationmanager.ui.LocationManagerFragment" />
+        android:name="com.github.mukiva.feature.locationmanager.ui.LocationManagerRootFragment" />
     <fragment
         android:id="@+id/settingsTemplateFragment"
         android:name="com.github.mukiva.feature.settings.ui.SettingsTemplateFragment" />

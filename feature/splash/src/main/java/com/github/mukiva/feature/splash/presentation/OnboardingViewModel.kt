@@ -6,9 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.mukiva.feature.splash.domain.AddLocationUseCase
 import com.github.mukiva.feature.splash.navigation.ISplashRouter
-import com.github.mukiva.weatherdata.SettingsRepository
+import com.github.mukiva.weatherdata.ISettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -22,7 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class OnboardingViewModel @Inject constructor(
     router: ISplashRouter,
-    private val settingsRepository: SettingsRepository,
+    private val settingsRepository: ISettingsRepository,
     private val addLocationUseCase: AddLocationUseCase
 ) : ViewModel(), ISplashRouter by router {
 

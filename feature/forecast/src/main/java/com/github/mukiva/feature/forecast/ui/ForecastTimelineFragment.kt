@@ -59,6 +59,7 @@ class ForecastTimelineFragment : Fragment(R.layout.fragment_forecast_timeline) {
             state: RecyclerView.State
         ) {
             super.getItemOffsets(outRect, view, parent, state)
+
             with(outRect) {
                 top = mTopPadding
             }

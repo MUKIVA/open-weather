@@ -1,19 +1,18 @@
 package com.github.mukiva.feature.splash.domain
 
-import com.github.mukiva.weatherdata.LocationRepository
-import com.github.mukiva.weatherdata.SettingsRepository
+import com.github.mukiva.weatherdata.ILocationRepository
+import com.github.mukiva.weatherdata.ISettingsRepository
 import com.github.mukiva.weatherdata.models.Location
 import com.github.mukiva.weatherdata.utils.RequestResult
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.single
 import javax.inject.Inject
 
 class AddLocationUseCase @Inject constructor(
-    private val locationRepository: LocationRepository,
+    private val locationRepository: ILocationRepository,
     private val locationProvider: ILocationProvider,
-    private val settingsRepository: SettingsRepository
+    private val settingsRepository: ISettingsRepository
 ) {
     suspend operator fun invoke() {
         val lang = settingsRepository.getLocalization()

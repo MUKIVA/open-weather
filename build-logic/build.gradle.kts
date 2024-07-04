@@ -16,6 +16,10 @@ gradlePlugin {
             id = "$group.build-configuration"
             implementationClass = "plugins.BuildConfigurationPlugin"
         }
+        create("shared-test-implementation") {
+            id = "$group.shared-test-implementation"
+            implementationClass = "plugins.SharedTestImplementationPlugin"
+        }
     }
 }
 

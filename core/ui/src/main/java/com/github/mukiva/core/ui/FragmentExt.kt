@@ -1,7 +1,6 @@
 package com.github.mukiva.core.ui
 
 import android.os.Parcelable
-import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import androidx.annotation.DimenRes

@@ -1,6 +1,6 @@
 package com.github.mukiva.feature.dashboard.presentation
 
-import com.github.mukiva.weatherdata.LocationRepository
+import com.github.mukiva.weatherdata.ILocationRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -12,7 +12,7 @@ import javax.inject.Singleton
 
 @Singleton
 class ForecastStatesHolder @Inject constructor(
-    private val locationRepository: LocationRepository
+    locationRepository: ILocationRepository
 ) {
     init {
         locationRepository.getAllLocal()

@@ -10,9 +10,9 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.github.mukiva.core.ui.getTempString
 import com.github.mukiva.openweather.core.domain.weather.Temp
-import com.github.mukiva.weatherdata.ForecastRepository
-import com.github.mukiva.weatherdata.LocationRepository
-import com.github.mukiva.weatherdata.SettingsRepository
+import com.github.mukiva.weatherdata.IForecastRepository
+import com.github.mukiva.weatherdata.ILocationRepository
+import com.github.mukiva.weatherdata.ISettingsRepository
 import com.github.mukiva.weatherdata.models.Location
 import com.github.mukiva.weatherdata.utils.RequestResult
 import dagger.hilt.android.AndroidEntryPoint
@@ -34,13 +34,13 @@ import com.github.mukiva.core.ui.R as CoreUiRes
 class WeatherNotificationService : JobService() {
 
     @Inject
-    lateinit var settingsRepository: SettingsRepository
+    lateinit var settingsRepository: ISettingsRepository
 
     @Inject
-    lateinit var locationRepository: LocationRepository
+    lateinit var locationRepository: ILocationRepository
 
     @Inject
-    lateinit var forecastRepository: ForecastRepository
+    lateinit var forecastRepository: IForecastRepository
 
     private val mJob = SupervisorJob()
     private val mServiceScope = CoroutineScope(Dispatchers.IO + mJob)

@@ -1,7 +1,7 @@
 package com.github.mukiva.feature.locationmanager.domain.usecase
 
 import com.github.mukiva.feature.locationmanager.domain.model.Location
-import com.github.mukiva.weatherdata.LocationRepository
+import com.github.mukiva.weatherdata.ILocationRepository
 import com.github.mukiva.weatherdata.utils.RequestResult
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
@@ -10,13 +10,12 @@ import javax.inject.Inject
 import com.github.mukiva.weatherdata.models.Location as DataLocation
 
 class AddLocationUseCase @Inject constructor(
-    private val repository: LocationRepository
+    private val repository: ILocationRepository
 ) {
     suspend operator fun invoke(location: Location): RequestResult<Unit> {
-        repository.addLocalLocation(
+        return repository.addLocalLocation(
             location = location.toData()
         )
-        return RequestResult.Success(Unit)
     }
 
     private fun Location.toData(): DataLocation {

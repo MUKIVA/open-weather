@@ -7,15 +7,22 @@ import com.android.build.gradle.LibraryExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.artifacts.Dependency
 import org.gradle.api.plugins.ExtensionAware
+import org.gradle.kotlin.dsl.DependencyHandlerScope
 import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.getByType
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
+
+private const val TEST_IMPLEMENTATION_CONF_NAME = "testImplementation"
+private const val ANDROID_TEST_IMPLEMENTATION_CONF_NAME = "androidTestImplementation"
 
 class AndroidDefaultPlugin : Plugin<Project> {
 
     override fun apply(target: Project) {
         target.configureDefault()
+        target.configureTestDependencies()
     }
 
     @Suppress("DEPRECATION")
@@ -76,4 +83,30 @@ class AndroidDefaultPlugin : Plugin<Project> {
             source.java.srcDirs("src/${source.name}/kotlin")
         }
     }
+
+    private fun Project.configureTestDependencies() {
+        dependencies {
+            val config = rootProject.extensions.getByType<SharedTestExtension>()
+            config.dependencies.onEach { dependency ->
+                handleAddDependency(dependency)
+            }
+        }
+    }
+}
+
+internal fun DependencyHandlerScope.handleAddDependency(dependency: plugins.Dependency) {
+    when (dependency.confName) {
+        ConfName.TEST_IMPLEMENTATION ->
+            testImplementation(dependency.dependencyNotation)
+        ConfName.ANDROID_TEST_IMPLEMENTATION ->
+            androidTestImplementation(dependency.dependencyNotation)
+    }
+}
+
+internal fun DependencyHandlerScope.testImplementation(dependencyNotation: Any): Dependency? {
+    return add(TEST_IMPLEMENTATION_CONF_NAME, dependencyNotation)
+}
+
+internal fun DependencyHandlerScope.androidTestImplementation(dependencyNotation: Any): Dependency? {
+    return add(ANDROID_TEST_IMPLEMENTATION_CONF_NAME, dependencyNotation)
 }

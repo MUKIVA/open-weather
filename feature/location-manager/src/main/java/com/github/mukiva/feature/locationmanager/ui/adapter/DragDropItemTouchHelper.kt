@@ -7,12 +7,17 @@ class DragDropItemTouchHelper(
     private val adapter: ItemTouchHelperAdapter,
 ) : ItemTouchHelper.Callback() {
 
-    var isEnabled: Boolean = true
-    var swipeIsEnabled: Boolean = true
-    var dragDropIsEnabled: Boolean = true
+    private var isEnabled: Boolean = true
+    private var swipeIsEnabled: Boolean = false
+    private var dragDropIsEnabled: Boolean = true
 
     override fun isLongPressDragEnabled(): Boolean = isEnabled && dragDropIsEnabled
     override fun isItemViewSwipeEnabled(): Boolean = isEnabled && swipeIsEnabled
+
+    override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+        TODO("Not yet implemented")
+    }
+
     override fun getMovementFlags(
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder,
@@ -32,9 +37,5 @@ class DragDropItemTouchHelper(
             target.adapterPosition
         )
         return true
-    }
-
-    override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-        adapter.onItemDismiss(viewHolder.adapterPosition)
     }
 }

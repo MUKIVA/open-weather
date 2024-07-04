@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.core.view.WindowCompat
 import com.github.mukiva.core.ui.uiLazy
 import com.github.mukiva.navigation.R
 import com.github.mukiva.navigation.domain.IRouter
@@ -45,7 +44,7 @@ class MainActivity : AppCompatActivity(), IRouterHolder {
             }.start()
             setKeepOnScreenCondition { isNotEndOfAnimation }
         }
-        WindowCompat.setDecorFitsSystemWindows(window, false)
+
         setContentView(R.layout.activity_main)
         mRouter.onCreated(this)
 

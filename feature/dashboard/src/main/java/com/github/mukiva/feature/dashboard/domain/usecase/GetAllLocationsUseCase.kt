@@ -1,7 +1,7 @@
 package com.github.mukiva.feature.dashboard.domain.usecase
 
 import com.github.mukiva.feature.dashboard.domain.model.Location
-import com.github.mukiva.weatherdata.LocationRepository
+import com.github.mukiva.weatherdata.ILocationRepository
 import com.github.mukiva.weatherdata.utils.RequestResult
 import com.github.mukiva.weatherdata.utils.map
 import kotlinx.coroutines.flow.Flow
@@ -10,7 +10,7 @@ import javax.inject.Inject
 import com.github.mukiva.weatherdata.models.Location as DataLocation
 
 class GetAllLocationsUseCase @Inject constructor(
-    private val locationRepository: LocationRepository,
+    private val locationRepository: ILocationRepository,
 ) {
     operator fun invoke(): Flow<RequestResult<List<Location>>> {
         return locationRepository.getAllLocal()

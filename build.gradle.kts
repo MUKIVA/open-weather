@@ -1,8 +1,10 @@
 import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
+import plugins.androidTestImplementation
 import plugins.compileSdk
 import plugins.minSdk
 import plugins.targetSdk
+import plugins.testImplementation
 
 plugins {
     alias(libs.plugins.androidApplication) apply false
@@ -16,7 +18,14 @@ plugins {
     alias(libs.plugins.kotlinParcelize) apply false
     alias(libs.plugins.detekt)
     alias(libs.plugins.androidBuildConfiguration)
+    alias(libs.plugins.sharedTestImplementation)
     alias(libs.plugins.androidDefault) apply false
+}
+
+sharedTestImplementation {
+    testImplementation(libs.junit.jupiter)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.kotlin)
 }
 
 buildConfiguration {

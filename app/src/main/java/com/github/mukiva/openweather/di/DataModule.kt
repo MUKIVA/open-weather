@@ -4,9 +4,12 @@ import android.content.Context
 import com.github.mukiva.openweather.BuildConfig
 import com.github.mukiva.weatherapi.IWeatherApi
 import com.github.mukiva.weatherapi.weatherApi
-import com.github.mukiva.weatherdata.ForecastRepository
-import com.github.mukiva.weatherdata.LocationRepository
-import com.github.mukiva.weatherdata.SettingsRepository
+import com.github.mukiva.weatherdata.IForecastRepository
+import com.github.mukiva.weatherdata.ILocationRepository
+import com.github.mukiva.weatherdata.ISettingsRepository
+import com.github.mukiva.weatherdata.createForecastRepository
+import com.github.mukiva.weatherdata.createLocationRepository
+import com.github.mukiva.weatherdata.createSettingsRepository
 import com.github.mukiva.weatherdatabase.WeatherDatabase
 import com.github.mukiva.weatherdatabase.weatherDatabase
 import dagger.Module
@@ -69,18 +72,18 @@ class DataModule {
     fun provideLocationRepository(
         database: WeatherDatabase,
         api: IWeatherApi,
-    ): LocationRepository = LocationRepository(database, api)
+    ): ILocationRepository = createLocationRepository(database, api)
 
     @Provides
     @Singleton
     fun provideForecastRepository(
         database: WeatherDatabase,
         api: IWeatherApi,
-    ): ForecastRepository = ForecastRepository(database, api)
+    ): IForecastRepository = createForecastRepository(database, api)
 
     @Provides
     @Singleton
     fun provideSettingsRepository(
         @ApplicationContext applicationContext: Context
-    ): SettingsRepository = SettingsRepository(applicationContext)
+    ): ISettingsRepository = createSettingsRepository(applicationContext)
 }

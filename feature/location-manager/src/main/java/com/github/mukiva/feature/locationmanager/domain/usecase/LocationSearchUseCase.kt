@@ -1,8 +1,8 @@
 package com.github.mukiva.feature.locationmanager.domain.usecase
 
 import com.github.mukiva.feature.locationmanager.domain.model.Location
-import com.github.mukiva.weatherdata.LocationRepository
-import com.github.mukiva.weatherdata.SettingsRepository
+import com.github.mukiva.weatherdata.ILocationRepository
+import com.github.mukiva.weatherdata.ISettingsRepository
 import com.github.mukiva.weatherdata.utils.RequestResult
 import com.github.mukiva.weatherdata.utils.map
 import kotlinx.coroutines.flow.Flow
@@ -13,8 +13,8 @@ import javax.inject.Inject
 import com.github.mukiva.weatherdata.models.Location as DataLocation
 
 class LocationSearchUseCase @Inject constructor(
-    private val repository: LocationRepository,
-    private val settingsRepository: SettingsRepository,
+    private val repository: ILocationRepository,
+    private val settingsRepository: ISettingsRepository,
 ) {
     suspend operator fun invoke(q: String): Flow<RequestResult<List<Location>>> {
         val lang = settingsRepository
@@ -76,7 +76,7 @@ class LocationSearchUseCase @Inject constructor(
     private fun mergeStrategy(
         source: RequestResult.Error<List<DataLocation>>,
     ): RequestResult<List<DataLocation>> {
-        return RequestResult.Error(data = null, error = source.error)
+        return RequestResult.Error(data = null, cause = source.cause)
     }
 
     private fun mergeStrategy(): RequestResult<List<DataLocation>> {

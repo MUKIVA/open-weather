@@ -1,9 +1,9 @@
 package com.github.mukiva.weatherdata.utils
 
-sealed class RequestResult<out E : Any>(val data: E? = null) {
-    class InProgress<E : Any>(data: E? = null) : RequestResult<E>(data)
-    class Success<E : Any>(data: E) : RequestResult<E>(data)
-    class Error<E : Any>(data: E? = null, val error: Throwable? = null) : RequestResult<E>(data)
+sealed class RequestResult<T> {
+    data class InProgress<T>(val data: T? = null) : RequestResult<T>()
+    data class Error<T>(val data: T? = null, val cause: Throwable?) : RequestResult<T>()
+    data class Success<T>(val data: T) : RequestResult<T>()
 }
 
 internal fun <T : Any> Result<T>.asRequestResult(): RequestResult<T> {
@@ -14,10 +14,10 @@ internal fun <T : Any> Result<T>.asRequestResult(): RequestResult<T> {
     }
 }
 
-fun <I : Any, O : Any> RequestResult<I>.map(transform: (I) -> O): RequestResult<O> {
+fun <I, O> RequestResult<I>.map(transform: (I) -> O): RequestResult<O> {
     return when (this) {
-        is RequestResult.Error -> RequestResult.Error()
+        is RequestResult.Error -> RequestResult.Error(data?.let(transform), cause)
         is RequestResult.InProgress -> RequestResult.InProgress(data?.let(transform))
-        is RequestResult.Success -> RequestResult.Success(transform(checkNotNull(data)))
+        is RequestResult.Success -> RequestResult.Success(transform(data))
     }
 }

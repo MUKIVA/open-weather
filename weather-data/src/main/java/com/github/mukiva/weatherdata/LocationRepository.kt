@@ -15,11 +15,21 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import java.util.Locale
 
-class LocationRepository(
+interface ILocationRepository {
+    fun searchRemote(q: String, lang: Lang): Flow<RequestResult<List<Location>>>
+    fun searchRemote(lon: Double, lat: Double, lang: Lang): Flow<RequestResult<List<Location>>>
+    fun getAllLocal(): Flow<RequestResult<List<Location>>>
+    suspend fun addLocalLocation(location: Location): RequestResult<Unit>
+//    suspend fun addLocalLocations(locations: List<Location>): RequestResult<Unit>
+//    suspend fun removeAllLocations(): RequestResult<Unit>
+    suspend fun updateLocations(locations: List<Location>): RequestResult<Unit>
+}
+
+internal class LocationRepository(
     private val database: WeatherDatabase,
     private val gateway: IWeatherApi,
-) {
-    fun searchRemote(q: String, lang: Lang): Flow<RequestResult<List<Location>>> {
+) : ILocationRepository {
+    override fun searchRemote(q: String, lang: Lang): Flow<RequestResult<List<Location>>> {
         val languageCode = if (lang == Lang.SYSTEM) {
             Locale.getDefault().language
         } else {
@@ -37,11 +47,11 @@ class LocationRepository(
         return merge(start, remoteRequest)
     }
 
-    fun searchRemote(lon: Double, lat: Double, lang: Lang): Flow<RequestResult<List<Location>>> {
+    override fun searchRemote(lon: Double, lat: Double, lang: Lang): Flow<RequestResult<List<Location>>> {
         return searchRemote(q = "$lat,$lon", lang)
     }
 
-    fun getAllLocal(): Flow<RequestResult<List<Location>>> {
+    override fun getAllLocal(): Flow<RequestResult<List<Location>>> {
         val localRequest = database.locationDao.getAll()
             .map { locationsDbo -> locationsDbo.map { it.toLocation() } }
             .map { locations -> RequestResult.Success(locations) }
@@ -49,13 +59,37 @@ class LocationRepository(
         return merge(start, localRequest)
     }
 
-    suspend fun addLocalLocation(location: Location) {
+    override suspend fun addLocalLocation(location: Location) = wrapTry<Unit> {
         database.locationDao
             .insert(location.toDbo())
     }
 
-    suspend fun removeAllLocations() {
-        database.forecastDao.cleanCache()
-        database.locationDao.deleteAll()
+    override suspend fun updateLocations(locations: List<Location>): RequestResult<Unit> = wrapTry {
+        database.locationDao
+            .updateLocations(locations.map { location -> location.toDbo() })
+    }
+
+//    override suspend fun addLocalLocations(locations: List<Location>): RequestResult<Unit> = wrapTry {
+//        database.locationDao
+//            .insert(locations.map { location -> location.toDbo() })
+//    }
+
+//    override suspend fun removeAllLocations() = wrapTry {
+//        database.forecastDao.cleanCache()
+//        database.locationDao.deleteAll()
+//    }
+
+    private suspend fun <T : Any> wrapTry(block: suspend () -> T): RequestResult<T> {
+        return try {
+            val result = block()
+            RequestResult.Success(result)
+        } catch (cause: Exception) {
+            RequestResult.Error(null, cause)
+        }
     }
 }
+
+fun createLocationRepository(
+    database: WeatherDatabase,
+    api: IWeatherApi
+): ILocationRepository = LocationRepository(database, api)

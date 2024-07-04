@@ -1,9 +1,9 @@
 package com.github.mukiva.feature.dashboard.domain.usecase
 
 import com.github.mukiva.feature.dashboard.domain.model.ForecastDataWrapper
-import com.github.mukiva.weatherdata.ForecastRepository
-import com.github.mukiva.weatherdata.LocationRepository
-import com.github.mukiva.weatherdata.SettingsRepository
+import com.github.mukiva.weatherdata.IForecastRepository
+import com.github.mukiva.weatherdata.ILocationRepository
+import com.github.mukiva.weatherdata.ISettingsRepository
 import com.github.mukiva.weatherdata.utils.RequestResult
 import com.github.mukiva.weatherdata.utils.map
 import kotlinx.coroutines.flow.Flow
@@ -14,9 +14,9 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class GetCurrentWeatherUseCase @Inject constructor(
-    private val settingsRepository: SettingsRepository,
-    private val locationRepository: LocationRepository,
-    private val forecastRepository: ForecastRepository
+    private val settingsRepository: ISettingsRepository,
+    private val locationRepository: ILocationRepository,
+    private val forecastRepository: IForecastRepository
 ) {
 
     suspend operator fun invoke(): Flow<RequestResult<ForecastDataWrapper>> {
@@ -33,18 +33,21 @@ class GetCurrentWeatherUseCase @Inject constructor(
                     ForecastDataWrapper(
                         errorType = ForecastDataWrapper.ErrorType.GET_LOCATION_ERROR,
                         unitsType = unitsType,
-                    )
+                    ),
+                    cause = locations.cause
                 )
             }
         }
-        val locationsData = locations.data
+        val locationsData = (locations as? RequestResult.Success)
+            ?.data
         if (locationsData.isNullOrEmpty()) {
             return flow {
                 RequestResult.Error(
                     ForecastDataWrapper(
                         errorType = ForecastDataWrapper.ErrorType.LOCATION_NOT_FOUND,
                         unitsType = unitsType
-                    )
+                    ),
+                    cause = null
                 )
             }
         }

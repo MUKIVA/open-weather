@@ -10,7 +10,6 @@ import com.github.mukiva.feature.locationmanager.presentation.EditableLocation
 class LocationManagerSavedAdapter(
     private val onEnterEditMode: (EditableLocation) -> Unit,
     private val onSelectEditable: (EditableLocation) -> Unit,
-    private val onItemRemove: (EditableLocation) -> Unit,
     private val onItemMoveCallback: (Int, Int) -> Unit
 ) : ListAdapter<EditableLocation, LocationEditableViewHolder>(EditableLocationDiffUtil), ItemTouchHelperAdapter {
 
@@ -42,9 +41,5 @@ class LocationManagerSavedAdapter(
     override fun onItemMove(fromPosition: Int, toPosition: Int) {
         onItemMoveCallback(fromPosition, toPosition)
         notifyItemMoved(fromPosition, toPosition)
-    }
-
-    override fun onItemDismiss(position: Int) {
-        onItemRemove(getItem(position))
     }
 }
