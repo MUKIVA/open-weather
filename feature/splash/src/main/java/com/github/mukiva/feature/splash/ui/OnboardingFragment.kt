@@ -63,6 +63,7 @@ class OnboardingFragment : Fragment(R.layout.fragment_onboarding) {
     private fun initViewPager() = with(mBindings) {
         onboarding.isUserInputEnabled = false
         onboarding.adapter = mOnboardingAdapter
+        onboarding.offscreenPageLimit = mOnboardingAdapter.itemCount
     }
 
     private fun subscribeOnViewModel() {
