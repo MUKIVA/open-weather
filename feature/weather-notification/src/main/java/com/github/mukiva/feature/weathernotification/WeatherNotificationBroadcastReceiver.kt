@@ -8,7 +8,7 @@ import com.github.mukiva.weatherdata.ISettingsRepository
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -22,7 +22,7 @@ class WeatherNotificationBroadcastReceiver : BroadcastReceiver() {
     @Inject
     lateinit var serviceLauncher: IWeatherNotificationServiceLauncher
 
-    private val mBroadcastReceiverScope = CoroutineScope(Job() + Dispatchers.IO)
+    private val mBroadcastReceiverScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     override fun onReceive(context: Context?, intent: Intent?) {
         if (context == null) return

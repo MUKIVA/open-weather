@@ -17,5 +17,8 @@ dependencies {
 
     implementation(libs.androidx.core)
     implementation(libs.hilt.android)
+    implementation(libs.hilt.common)
     ksp(libs.hilt.compiler)
+
+    implementation(libs.androidx.work)
 }

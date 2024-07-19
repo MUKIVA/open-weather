@@ -5,13 +5,14 @@ minSdk = "31"
 targetSdk = "34"
 compileSdk = "34"
 
-agp = "8.5.0"
+agp = "8.5.1"
 coreSplashscreen = "1.0.1"
 kotlin = "2.0.0"
 jetbrainsKotlinJvm = "2.0.0"
 hilt = "2.51.1"
 secrets = "2.0.1"
 ksp = "2.0.0-1.0.21"
+androidx-work = "2.9.0"
 androidx-core = "1.13.1"
 androidx-fragment = "1.8.1"
 androidx-lifecycle = "2.8.3"
@@ -33,6 +34,7 @@ appcompat = "1.7.0"
 junit = "5.10.2"
 mockito = "5.12.0"
 mockitoKotlin = "5.3.1"
+hiltCommon = "1.2.0"
 
 [libraries]
 androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
@@ -47,6 +49,7 @@ androidx-navigation-fragment = { module = "androidx.navigation:navigation-fragme
 androidx-navigation-ui = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "androidx-navigation" }
 androidx-swipe = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "androidx-swipe" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+androidx-work = { module = "androidx.work:work-runtime-ktx", version.ref = "androidx-work" }
 
 kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "koltinx-coroutines" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "koltinx-coroutines" }
@@ -56,6 +59,7 @@ kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.
 android-material = { module = "com.google.android.material:material", version.ref = "android-material" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
+hilt-common = { group = "androidx.hilt", name = "hilt-common", version.ref = "hiltCommon" }
 
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 retrofit-adapter-result = { module = "com.github.skydoves:retrofit-adapters-result", version.ref = "retrofit-adapter-result" }
@@ -72,6 +76,7 @@ mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "
 android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 build-logic = { module = "com.github.mukiva:build-logic", version.ref = "buildLogic" }
+
 
 
 [plugins]

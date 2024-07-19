@@ -4,9 +4,9 @@ import com.github.mukiva.navigation.router.GlobalRouter
 import com.github.mukiva.navigation.router.INavigationResourcesProvider
 import com.github.mukiva.navigation.ui.ILifecycleHandler
 import com.github.mukiva.navigation.ui.IWeatherNotificationServiceLauncher
+import com.github.mukiva.feature.weathernotification.IWeatherNotificationServiceLauncher as LauncherImplementation
 import com.github.mukiva.navigation.ui.SettingsHandler
 import com.github.mukiva.openweather.glue.navigation.DefaultNavigationResourcesProvider
-import com.github.mukiva.openweather.service.WeatherNotificationServiceLauncher
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -35,7 +35,7 @@ class GlueNavigationModule {
 
     @Provides
     fun provideWeatherNotificationServiceLauncher(
-        weatherNotificationServiceLauncher: WeatherNotificationServiceLauncher
+        weatherNotificationServiceLauncher: LauncherImplementation
     ): IWeatherNotificationServiceLauncher = object : IWeatherNotificationServiceLauncher {
         override fun startService() {
             weatherNotificationServiceLauncher.startService()

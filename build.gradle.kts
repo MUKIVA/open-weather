@@ -1,6 +1,5 @@
 import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
-import plugins.androidTestImplementation
 import plugins.compileSdk
 import plugins.minSdk
 import plugins.targetSdk
