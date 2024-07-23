@@ -7,7 +7,7 @@
     <string name="is_day_true">День</string>
     <string name="is_day_false">Ночь</string>
 
-    <string name="field_feels_like_subtitle">Ощучается</string>
+    <string name="field_feels_like_subtitle">Ощущается</string>
     <string name="field_condition_subtitle">Облачность</string>
 
     <string name="field_wind_speed_subtitle">Скорость ветра</string>
@@ -15,8 +15,23 @@
 
     <string name="field_humidity_subtitle">Влажность</string>
 
+    <string name="field_will_it_rain">Будет ли дождь</string>
+    <string name="field_chance_of_rain">Вероятность дождя</string>
+
+    <string name="field_will_it_snow">Будет ли снег</string>
+    <string name="field_chance_of_snow">Вероятность снега</string>
+
+    <string name="field_precipitation_amount">Количество осадков</string>
+
+    <string name="field_sunrise">Восход Солнца</string>
+    <string name="field_sunset">Закат Солнца</string>
+    <string name="field_moonrise">Восход Луны</string>
+    <string name="field_moonset">Закат Луны</string>
+
     <string name="field_pressure_subtitle">Давление</string>
     <string name="dashboard_title_current">Текущая погода</string>
+    <string name="dashboard_title_precipitation">Осадки</string>
+    <string name="dashboard_title_astro">Долгота дня</string>
     <string name="dashboard_title_forecast">Прогноз</string>
 
     <string name="main_empty_view_msg">Список локаций пуст</string>
@@ -44,8 +59,11 @@
 
     <string name="widget_current_weather_description">Текущая погода с часами</string>
     <string name="widget_empty_view_text">Местоположение не найдено</string>
-    <string name="widget_configurator_header">Выберите стильвиджета</string>
+    <string name="widget_configurator_header">Выберите стиль виджета</string>
 
     <string name="widget_preview_city_name">Лондон</string>
-    
+
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+
 </resources>

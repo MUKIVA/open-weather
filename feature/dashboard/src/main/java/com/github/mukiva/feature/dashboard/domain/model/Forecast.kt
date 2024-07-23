@@ -1,7 +1,9 @@
 package com.github.mukiva.feature.dashboard.domain.model
 
 data class Forecast(
-    val locationName: String,
-    val currentWeather: CurrentWeather,
-    val forecastState: List<MinimalForecast>,
+    val location: Location,
+    val current: Current,
+    val precipitation: Precipitation,
+    val astro: Astro,
+    val dayForecasts: List<DayForecast>
 )

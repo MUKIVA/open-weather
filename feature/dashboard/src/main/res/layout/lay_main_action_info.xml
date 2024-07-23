@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingVertical="@dimen/def_v_padding">
+
+    <ImageView
+        android:id="@+id/conditionImage"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:padding="8dp"
+        android:src="@drawable/ic_blizzard_day"
+        android:background="@drawable/background_frame"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/temperature"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="8dp"
+        android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
+        tools:text="21C"
+        app:layout_constraintStart_toEndOf="@id/conditionImage"
+        app:layout_constraintTop_toTopOf="@id/conditionImage"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/location"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="8dp"
+        android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
+        tools:text="Йошкар-Ола"
+        app:layout_constraintStart_toEndOf="@id/conditionImage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/conditionImage"
+        app:layout_constraintTop_toBottomOf="@id/temperature" />
+
+    <include
+        android:id="@+id/emptyView"
+        layout="@layout/lay_list_states"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="@dimen/def_h_padding"
+    android:orientation="vertical"
+    android:background="@drawable/background_frame">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/dashboard_title_precipitation"
+        android:textStyle="bold"
+        android:paddingBottom="@dimen/def_v_padding"
+        android:textAppearance="@style/TextAppearance.Material3.TitleLarge"/>
+
+    <com.github.mukiva.feature.dashboard.ui.view.FieldView
+        android:id="@+id/fieldWillItRain"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:label="@string/field_will_it_rain"
+        app:image="@drawable/ic_rain" />
+
+    <com.github.mukiva.feature.dashboard.ui.view.FieldView
+        android:id="@+id/fieldChanceOfRain"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:label="@string/field_chance_of_rain"
+        app:image="@drawable/ic_chance_of_rain" />
+
+    <com.github.mukiva.feature.dashboard.ui.view.FieldView
+        android:id="@+id/fieldWillItSnow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:label="@string/field_will_it_snow"
+        app:image="@drawable/ic_snow" />
+
+    <com.github.mukiva.feature.dashboard.ui.view.FieldView
+        android:id="@+id/fieldChanceOfSnow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:label="@string/field_chance_of_snow"
+        app:image="@drawable/ic_chance_of_snow" />
+
+    <com.github.mukiva.feature.dashboard.ui.view.FieldView
+        android:id="@+id/fieldPrecipitation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:label="@string/field_precipitation_amount"
+        app:image="@drawable/ic_precipitation" />
+
+</LinearLayout>

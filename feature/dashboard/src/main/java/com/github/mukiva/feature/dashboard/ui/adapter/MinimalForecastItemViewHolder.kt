@@ -6,7 +6,7 @@ import com.github.mukiva.core.ui.getTempString
 import com.github.mukiva.core.ui.getWeatherDrawable
 import com.github.mukiva.feature.dashboard.R
 import com.github.mukiva.feature.dashboard.databinding.ItemMinForecastBinding
-import com.github.mukiva.feature.dashboard.domain.model.MinimalForecast
+import com.github.mukiva.feature.dashboard.domain.model.DayForecast
 import com.github.mukiva.openweather.core.domain.weather.Temp
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.format.DayOfWeekNames
@@ -29,12 +29,12 @@ class MinimalForecastItemViewHolder(
         monthName(localeMonthNames(itemView.context))
     }
 
-    fun bind(item: MinimalForecast) = with(bindings) {
-        updateCondition(item.conditionIconCode, item.isDay)
+    fun bind(item: DayForecast) = with(bindings) {
+        updateCondition(item.conditionIconCode)
         updateDate(item.date)
         updateTempInfo(
-            dayTemp = item.maxTemp,
-            nightTemp = item.minTemp,
+            dayTemp = item.dayTemp,
+            nightTemp = item.nightTemp,
         )
 
         root.setOnClickListener {
@@ -55,8 +55,8 @@ class MinimalForecastItemViewHolder(
         dayOfWeek.text = dayOfWeekFormatter.format(date)
     }
 
-    private fun updateCondition(iconCode: Int, isDay: Boolean) = with(bindings) {
-        condition.setImageDrawable(condition.context.getWeatherDrawable(iconCode, isDay))
+    private fun updateCondition(iconCode: Int) = with(bindings) {
+        condition.setImageDrawable(condition.context.getWeatherDrawable(iconCode, true))
     }
 }
 

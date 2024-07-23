@@ -5,5 +5,5 @@ data class Location(
     val name: String,
     val region: String,
     val country: String,
-    val position: Int,
+    val priority: Int
 )

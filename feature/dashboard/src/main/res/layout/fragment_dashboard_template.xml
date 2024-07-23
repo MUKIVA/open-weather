@@ -1,105 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
-
-    <GridLayout
-        android:id="@+id/grid"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:columnCount="2"
-        android:paddingHorizontal="@dimen/def_v_padding"
-        android:clipToPadding="false">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:textStyle="bold"
-            android:layout_columnSpan="2"
-            android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
-            android:text="@string/dashboard_title_current" />
-
-        <include
-            android:id="@+id/isDayField"
-            android:layout_columnWeight="1"
-            layout="@layout/item_weather_field"
-            android:layout_width="0dp"
-            android:layout_height="match_parent" />
-
-        <include
-            android:id="@+id/feelsLikeField"
-            android:layout_columnWeight="1"
-            layout="@layout/item_weather_field"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"/>
-
-        <include
-            android:id="@+id/conditionField"
-            android:layout_columnSpan="2"
-            layout="@layout/item_weather_field_spanned"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-
-        <include
-            android:id="@+id/windSpeedField"
-            android:layout_columnWeight="1"
-            layout="@layout/item_weather_field"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"/>
-
-        <include
-            android:id="@+id/windDirField"
-            android:layout_columnWeight="1"
-            layout="@layout/item_weather_field"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"/>
-
-        <include
-            android:id="@+id/humidityField"
-            android:layout_columnWeight="1"
-            layout="@layout/item_weather_field"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"/>
-
-        <include
-            android:id="@+id/pressureField"
-            android:layout_columnWeight="1"
-            layout="@layout/item_weather_field"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"/>
-
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:textStyle="bold"
-            android:layout_columnSpan="2"
-            android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
-            android:text="@string/dashboard_title_forecast" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/daysForecastList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:overScrollMode="never"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/item_min_forecast"
-            android:layout_columnSpan="2" />
-
-
-    </GridLayout>
+    android:paddingHorizontal="@dimen/def_h_padding"
+    android:orientation="vertical">
 
     <include
-        android:id="@+id/emptyView"
-        layout="@layout/lay_list_states"
-        tools:visibility="gone"
-        android:layout_width="wrap_content"
+        android:id="@+id/layMainInfo"
+        layout="@layout/lay_main_info"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        />
+        android:layout_marginTop="@dimen/def_v_padding" />
 
-</FrameLayout>
+    <include
+        android:id="@+id/layPrecipitation"
+        layout="@layout/lay_precipitation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/def_v_padding" />
+
+    <include
+        android:id="@+id/layAstro"
+        layout="@layout/lay_astro"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/def_v_padding" />
+
+    <include
+        android:id="@+id/layDayForecast"
+        layout="@layout/lay_day_forecast"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/def_v_padding" />
+
+</LinearLayout>

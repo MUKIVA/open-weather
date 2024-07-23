@@ -27,7 +27,7 @@ class GetAllLocationsUseCase @Inject constructor(
             name = data.name,
             region = data.region,
             country = data.country,
-            position = data.priority,
+            priority = data.priority,
         )
     }
 }

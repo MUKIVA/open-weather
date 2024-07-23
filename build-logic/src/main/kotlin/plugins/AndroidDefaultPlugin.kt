@@ -64,7 +64,7 @@ class AndroidDefaultPlugin : Plugin<Project> {
                 }
                 isDebuggable = false
                 isProfileable = true
-                isMinifyEnabled = true
+                isMinifyEnabled = false
 
                 signingConfig = signingConfigs.findByName("debug")
             }

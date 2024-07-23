@@ -13,8 +13,8 @@ import com.github.mukiva.core.ui.getTempString
 import com.github.mukiva.core.ui.getWeatherDescription
 import com.github.mukiva.core.ui.getWeatherRes
 import com.github.mukiva.feature.dashboard.R
-import com.github.mukiva.feature.dashboard.domain.model.ForecastDataWrapper
-import com.github.mukiva.feature.dashboard.domain.usecase.GetCurrentWeatherUseCase
+import com.github.mukiva.feature.dashboard.domain.model.Forecast
+import com.github.mukiva.feature.dashboard.domain.usecase.GetCurrentUseCase
 import com.github.mukiva.openweather.core.domain.weather.Temp
 import com.github.mukiva.weatherdata.utils.RequestResult
 import dagger.hilt.android.AndroidEntryPoint
@@ -58,7 +58,7 @@ class CurrentWeatherWidgetProvider : AppWidgetProvider() {
     }
 
     @Inject
-    lateinit var getCurrentWeatherUseCase: GetCurrentWeatherUseCase
+    lateinit var getCurrentWeatherUseCase: GetCurrentUseCase
 
     private val mJob = SupervisorJob()
     private val mScope = CoroutineScope(Dispatchers.Main + mJob)
@@ -78,11 +78,11 @@ class CurrentWeatherWidgetProvider : AppWidgetProvider() {
         super.onUpdate(context, appWidgetManager, appWidgetIds)
         Log.i("CurrentWeatherWidgetProvider", "onUpdate")
         mScope.launch {
-            getCurrentWeatherUseCase()
-                .map(::asState)
-                .onEach { state -> updateState(context, appWidgetManager, appWidgetIds, state) }
-                .filter { state -> state !is State.Loading }
-                .first()
+//            getCurrentWeatherUseCase()
+//                .map(::asState)
+//                .onEach { state -> updateState(context, appWidgetManager, appWidgetIds, state) }
+//                .filter { state -> state !is State.Loading }
+//                .first()
         }
     }
 
@@ -161,29 +161,30 @@ internal fun asLoading(context: Context): RemoteViews {
     ).apply { updateStateVisibility(CurrentWeatherWidgetProvider.State.Loading) }
 }
 
-internal fun asState(requestResult: RequestResult<ForecastDataWrapper>): CurrentWeatherWidgetProvider.State {
-    return when (requestResult) {
-        is RequestResult.Error -> {
-            val data = checkNotNull(requestResult.data)
-            when (data.errorType) {
-                ForecastDataWrapper.ErrorType.NOTHING -> CurrentWeatherWidgetProvider.State.Error
-                ForecastDataWrapper.ErrorType.GET_LOCATION_ERROR -> CurrentWeatherWidgetProvider.State.Error
-                ForecastDataWrapper.ErrorType.LOCATION_NOT_FOUND -> CurrentWeatherWidgetProvider.State.Empty
-            }
-        }
-        is RequestResult.InProgress -> CurrentWeatherWidgetProvider.State.Loading
-        is RequestResult.Success -> {
-            val data = checkNotNull(requestResult.data)
-            val forecast = checkNotNull(data.data)
-            val unitsType = checkNotNull(data.unitsType)
-            CurrentWeatherWidgetProvider.State.Content(
-                currentTemp = Temp(unitsType, forecast.current.tempC, forecast.current.tempF),
-                locationName = forecast.location.name,
-                isDay = forecast.current.isDay == 1,
-                conditionCode = forecast.current.condition.code
-            )
-        }
-    }
+internal fun asState(requestResult: RequestResult<Forecast>): CurrentWeatherWidgetProvider.State {
+    return CurrentWeatherWidgetProvider.State.Loading
+//    return when (requestResult) {
+//        is RequestResult.Error -> {
+//            val data = checkNotNull(requestResult.data)
+//            when (data.errorType) {
+//                ForecastDataWrapper.ErrorType.NOTHING -> CurrentWeatherWidgetProvider.State.Error
+//                ForecastDataWrapper.ErrorType.GET_LOCATION_ERROR -> CurrentWeatherWidgetProvider.State.Error
+//                ForecastDataWrapper.ErrorType.LOCATION_NOT_FOUND -> CurrentWeatherWidgetProvider.State.Empty
+//            }
+//        }
+//        is RequestResult.InProgress -> CurrentWeatherWidgetProvider.State.Loading
+//        is RequestResult.Success -> {
+//            val data = checkNotNull(requestResult.data)
+//            val forecast = checkNotNull(data.data)
+//            val unitsType = checkNotNull(data.unitsType)
+//            CurrentWeatherWidgetProvider.State.Content(
+//                currentTemp = Temp(unitsType, forecast.current.tempC, forecast.current.tempF),
+//                locationName = forecast.location.name,
+//                isDay = forecast.current.isDay == 1,
+//                conditionCode = forecast.current.condition.code
+//            )
+//        }
+//    }
 }
 
 internal fun boolAsViewVisibility(isVisible: Boolean): Int {

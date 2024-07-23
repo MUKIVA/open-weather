@@ -1,6 +1,5 @@
 package com.github.mukiva.feature.dashboard.ui.adapter
 
-import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
@@ -9,7 +8,7 @@ import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.github.mukiva.feature.dashboard.domain.model.Location
-import com.github.mukiva.feature.dashboard.ui.DashboardTemplateFragment
+import com.github.mukiva.feature.dashboard.ui.dashboard_template_fragment.DashboardTemplateFragment
 
 class DashboardAdapter(
     fm: FragmentManager,

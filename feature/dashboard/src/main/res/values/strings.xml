@@ -19,8 +19,23 @@
 
     <string name="field_humidity_subtitle">Humidity</string>
 
+    <string name="field_will_it_rain">Will it rain</string>
+    <string name="field_chance_of_rain">Chance of rain</string>
+
+    <string name="field_will_it_snow">Will it snow</string>
+    <string name="field_chance_of_snow">Chance of snow</string>
+
+    <string name="field_precipitation_amount">Precipitation amount</string>
+
+    <string name="field_sunrise">Sunrise</string>
+    <string name="field_sunset">Sunset</string>
+    <string name="field_moonrise">Moonrise</string>
+    <string name="field_moonset">Moonset</string>
+
     <string name="field_pressure_subtitle">Pressure</string>
     <string name="dashboard_title_current">Current</string>
+    <string name="dashboard_title_precipitation">Precipitation</string>
+    <string name="dashboard_title_astro">Astro</string>
     <string name="dashboard_title_forecast">Forecast</string>
 
     <string name="main_empty_view_msg">List of locations is empty</string>
@@ -51,4 +66,7 @@
 
     <string name="widget_preview_city_name">London</string>
     <string name="widget_preview_current_temp" translatable="false">10°C</string>
+
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="@dimen/def_h_padding"
+    android:orientation="vertical"
+    android:background="@drawable/background_frame">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/dashboard_title_current"
+        android:textStyle="bold"
+        android:paddingBottom="@dimen/def_v_padding"
+        android:textAppearance="@style/TextAppearance.Material3.TitleLarge"/>
+
+    <com.github.mukiva.feature.dashboard.ui.view.FieldView
+        android:id="@+id/fieldIsDay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:label="@string/field_is_day_subtitle"
+        app:image="@drawable/ic_day" />
+
+    <com.github.mukiva.feature.dashboard.ui.view.FieldView
+        android:id="@+id/fieldFeelsLike"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:label="@string/field_feels_like_subtitle"
+        app:image="@drawable/ic_feels_like"/>
+
+    <com.github.mukiva.feature.dashboard.ui.view.FieldView
+        android:id="@+id/fieldCloud"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:label="@string/field_condition_subtitle"
+        app:image="@drawable/ic_condition"/>
+
+    <com.github.mukiva.feature.dashboard.ui.view.FieldView
+        android:id="@+id/fieldWindSpeed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:label="@string/field_wind_speed_subtitle"
+        app:image="@drawable/ic_wind_speed" />
+
+    <com.github.mukiva.feature.dashboard.ui.view.FieldView
+        android:id="@+id/fieldWindDirection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:label="@string/field_wind_dir_subtitle"
+        app:image="@drawable/ic_dir" />
+
+    <com.github.mukiva.feature.dashboard.ui.view.FieldView
+        android:id="@+id/fieldHumidity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:label="@string/field_humidity_subtitle"
+        app:image="@drawable/ic_humidity" />
+
+    <com.github.mukiva.feature.dashboard.ui.view.FieldView
+        android:id="@+id/fieldPressure"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:label="@string/field_pressure_subtitle"
+        app:image="@drawable/ic_pressure" />
+
+</LinearLayout>
