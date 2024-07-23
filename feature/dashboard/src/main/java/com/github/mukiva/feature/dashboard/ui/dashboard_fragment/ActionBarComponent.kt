@@ -1,7 +1,6 @@
 package com.github.mukiva.feature.dashboard.ui.dashboard_fragment
 
 import android.view.View
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope

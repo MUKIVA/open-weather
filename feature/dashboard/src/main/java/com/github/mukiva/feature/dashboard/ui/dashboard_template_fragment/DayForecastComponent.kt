@@ -3,7 +3,6 @@ package com.github.mukiva.feature.dashboard.ui.dashboard_template_fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.RecyclerView
 import com.github.mukiva.core.ui.component.Component
 import com.github.mukiva.feature.dashboard.databinding.LayDayForecastBinding
 import com.github.mukiva.feature.dashboard.presentation.DashboardViewModel

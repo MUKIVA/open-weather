@@ -22,10 +22,7 @@ import com.github.mukiva.weatherdata.utils.map
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
-import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
-import kotlinx.datetime.format.DateTimeFormat
-import kotlinx.datetime.format.DateTimeFormatBuilder
 import kotlinx.datetime.format.Padding
 import kotlinx.datetime.format.char
 import javax.inject.Inject

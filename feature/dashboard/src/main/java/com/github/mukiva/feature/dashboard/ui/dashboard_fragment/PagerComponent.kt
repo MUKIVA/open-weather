@@ -1,7 +1,6 @@
 package com.github.mukiva.feature.dashboard.ui.dashboard_fragment
 
 import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.children
 import androidx.core.view.updatePadding
