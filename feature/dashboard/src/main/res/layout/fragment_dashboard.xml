@@ -25,7 +25,7 @@
     </androidx.core.widget.NestedScrollView>
 
     <include
-        android:id="@+id/emptyView"
+        android:id="@+id/mainEmptyView"
         layout="@layout/lay_list_states"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

@@ -88,7 +88,7 @@ class PagerComponent(
     private fun setEmptyState() = with(binding) {
         layActionBar.root.gone()
         scrollView.gone()
-        emptyView.notify(
+        mainEmptyView.notify(
             msg = root.context.getString(R.string.main_empty_view_msg),
             buttonMsg = root.context.getString(R.string.select_locations),
             action = onEmptyAction
@@ -98,7 +98,7 @@ class PagerComponent(
     private fun setErrorState() = with(binding) {
         layActionBar.root.gone()
         scrollView.gone()
-        emptyView.error(
+        mainEmptyView.error(
             msg = root.context.getString(CoreUiRes.string.error_msg),
             buttonText = root.context.getString(CoreUiRes.string.refresh),
             onButtonClick = onErrorAction
@@ -108,11 +108,11 @@ class PagerComponent(
     private fun setLoadingState() = with(binding) {
         layActionBar.root.gone()
         scrollView.gone()
-        emptyView.loading()
+        mainEmptyView.loading()
     }
 
     private fun setContentState(data: IDashboardState.Content) = with(binding) {
-        emptyView.hide()
+        mainEmptyView.hide()
         layActionBar.root.visible()
         scrollView.visible()
         mAdapter.submitList(data.forecasts)
