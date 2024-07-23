@@ -2,6 +2,7 @@ package com.github.mukiva.navigation.ui
 
 import android.animation.ValueAnimator
 import android.os.Bundle
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -44,6 +45,8 @@ class MainActivity : AppCompatActivity(), IRouterHolder {
             }.start()
             setKeepOnScreenCondition { isNotEndOfAnimation }
         }
+
+        enableEdgeToEdge()
 
         setContentView(R.layout.activity_main)
         mRouter.onCreated(this)

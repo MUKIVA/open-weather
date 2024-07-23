@@ -19,7 +19,8 @@
         android:enableOnBackInvokedCallback="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        tools:targetApi="34">
+        tools:targetApi="34"
+        android:theme="@style/Theme.OpenWeather.Splash">
 
         <!-- Main Activity in navigation module -->
 

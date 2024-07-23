@@ -1,6 +1,10 @@
 <resources>
-    <style name="Base.Theme.OpenWeather" parent="Theme.Material3.DynamicColors.DayNight.NoActionBar">
-
+    <style name="Base.Theme.OpenWeather" parent="Theme.Material3.DynamicColors.DayNight">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 
     <style name="Theme.OpenWeather" parent="Base.Theme.OpenWeather" />
