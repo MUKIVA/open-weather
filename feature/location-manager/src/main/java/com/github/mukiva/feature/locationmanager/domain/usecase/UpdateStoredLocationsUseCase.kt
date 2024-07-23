@@ -9,7 +9,7 @@ import kotlinx.datetime.toLocalDateTime
 import javax.inject.Inject
 import com.github.mukiva.weatherdata.models.Location as DataLocation
 
-class UpdateStoredLocationsUseCase @Inject constructor(
+internal class UpdateStoredLocationsUseCase @Inject constructor(
     private val repository: ILocationRepository
 ) {
 

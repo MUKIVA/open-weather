@@ -1,7 +1,7 @@
 package com.github.mukiva.weatherdata.utils
 
-interface IDataMergeStrategy<E> {
-    fun merge(local: E, remote: E): E
+public interface IDataMergeStrategy<E> {
+    public fun merge(local: E, remote: E): E
 }
 
 internal class ForecastMergeStrategy<T : Any> : IDataMergeStrategy<RequestResult<T>> {

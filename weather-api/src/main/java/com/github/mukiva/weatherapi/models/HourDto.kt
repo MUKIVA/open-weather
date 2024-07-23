@@ -6,7 +6,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class HourDto(
+public data class HourDto(
     @SerialName("time_epoch")
     @Serializable(with = DateTimeUnixSerializer::class)
     val timeEpoch: LocalDateTime,

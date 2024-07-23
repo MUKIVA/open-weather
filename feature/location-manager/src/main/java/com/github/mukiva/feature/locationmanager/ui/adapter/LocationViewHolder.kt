@@ -4,7 +4,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.mukiva.feature.locationmanager.databinding.ItemLocationBinding
 import com.github.mukiva.feature.locationmanager.domain.model.Location
 
-class LocationViewHolder(
+internal class LocationViewHolder(
     private val binding: ItemLocationBinding,
     private val onAddCallback: (location: Location) -> Unit
 ) : RecyclerView.ViewHolder(binding.root) {

@@ -14,7 +14,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
+internal class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
 
     private val mViewModel by viewModels<DashboardViewModel>()
     private val mBinding by viewBindings(FragmentDashboardBinding::bind)

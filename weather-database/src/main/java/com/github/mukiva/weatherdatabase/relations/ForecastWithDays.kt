@@ -5,7 +5,7 @@ import androidx.room.Relation
 import com.github.mukiva.weatherdatabase.models.ForecastDayDbo
 import com.github.mukiva.weatherdatabase.models.ForecastDbo
 
-data class ForecastWithDays(
+public data class ForecastWithDays(
     @Embedded
     val forecastDbo: ForecastDbo,
 

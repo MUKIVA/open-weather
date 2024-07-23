@@ -15,11 +15,11 @@ import com.github.mukiva.weatherdata.editors.NotificationGroupEditor
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 
-interface ISettingsRepository :
+public interface ISettingsRepository :
     IGeneralGroupEditor,
     ILaunchGroupEditor,
     INotificationGroupEditor {
-    fun getConfiguration(): Flow<Config>
+    public fun getConfiguration(): Flow<Config>
 }
 
 internal class SettingsRepository(
@@ -43,7 +43,7 @@ internal class SettingsRepository(
 internal const val DATA_STORE_NAME = "SETTINGS"
 internal val Context.dataStore: DataStore<Preferences> by preferencesDataStore(DATA_STORE_NAME)
 
-fun createSettingsRepository(
+public fun createSettingsRepository(
     context: Context
 ): ISettingsRepository {
     val applicationContext = context.applicationContext

@@ -15,14 +15,12 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import java.util.Locale
 
-interface ILocationRepository {
-    fun searchRemote(q: String, lang: Lang): Flow<RequestResult<List<Location>>>
-    fun searchRemote(lon: Double, lat: Double, lang: Lang): Flow<RequestResult<List<Location>>>
-    fun getAllLocal(): Flow<RequestResult<List<Location>>>
-    suspend fun addLocalLocation(location: Location): RequestResult<Unit>
-//    suspend fun addLocalLocations(locations: List<Location>): RequestResult<Unit>
-//    suspend fun removeAllLocations(): RequestResult<Unit>
-    suspend fun updateLocations(locations: List<Location>): RequestResult<Unit>
+public interface ILocationRepository {
+    public fun searchRemote(q: String, lang: Lang): Flow<RequestResult<List<Location>>>
+    public fun searchRemote(lon: Double, lat: Double, lang: Lang): Flow<RequestResult<List<Location>>>
+    public fun getAllLocal(): Flow<RequestResult<List<Location>>>
+    public suspend fun addLocalLocation(location: Location): RequestResult<Unit>
+    public suspend fun updateLocations(locations: List<Location>): RequestResult<Unit>
 }
 
 internal class LocationRepository(
@@ -69,16 +67,6 @@ internal class LocationRepository(
             .updateLocations(locations.map { location -> location.toDbo() })
     }
 
-//    override suspend fun addLocalLocations(locations: List<Location>): RequestResult<Unit> = wrapTry {
-//        database.locationDao
-//            .insert(locations.map { location -> location.toDbo() })
-//    }
-
-//    override suspend fun removeAllLocations() = wrapTry {
-//        database.forecastDao.cleanCache()
-//        database.locationDao.deleteAll()
-//    }
-
     private suspend fun <T : Any> wrapTry(block: suspend () -> T): RequestResult<T> {
         return try {
             val result = block()
@@ -89,7 +77,7 @@ internal class LocationRepository(
     }
 }
 
-fun createLocationRepository(
+public fun createLocationRepository(
     database: WeatherDatabase,
     api: IWeatherApi
 ): ILocationRepository = LocationRepository(database, api)

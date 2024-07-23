@@ -23,8 +23,8 @@ import kotlinx.coroutines.flow.onEach
 import java.util.Locale
 import com.github.mukiva.weatherdatabase.relations.ForecastWithCurrentAndLocation as ForecastWithCurrentAndLocationDbo
 
-interface IForecastRepository {
-    fun getForecast(
+public interface IForecastRepository {
+    public fun getForecast(
         locationId: Long,
         lang: Lang,
         onlyCache: Boolean = false,
@@ -133,7 +133,7 @@ internal class ForecastRepository(
     }
 }
 
-fun createForecastRepository(
+public fun createForecastRepository(
     database: WeatherDatabase,
     gateway: IWeatherApi,
 ): IForecastRepository = ForecastRepository(database, gateway)

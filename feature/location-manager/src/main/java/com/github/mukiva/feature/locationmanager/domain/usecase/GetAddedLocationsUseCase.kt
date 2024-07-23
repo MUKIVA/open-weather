@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import com.github.mukiva.weatherdata.models.Location as DataLocation
 
-class GetAddedLocationsUseCase @Inject constructor(
+internal class GetAddedLocationsUseCase @Inject constructor(
     private val repository: ILocationRepository
 ) {
     operator fun invoke(): Flow<RequestResult<List<EditableLocation>>> {

@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class OnboardingViewModel @Inject constructor(
+internal class OnboardingViewModel @Inject constructor(
     router: ISplashRouter,
     private val settingsRepository: ISettingsRepository,
     private val addLocationUseCase: AddLocationUseCase

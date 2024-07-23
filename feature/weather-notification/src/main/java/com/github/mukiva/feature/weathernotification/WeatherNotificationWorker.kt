@@ -6,12 +6,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import androidx.core.app.NotificationCompat
 import androidx.hilt.work.HiltWorker
-import androidx.work.Constraints
 import androidx.work.CoroutineWorker
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.NetworkType
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.github.mukiva.core.ui.getTempString
 import com.github.mukiva.openweather.core.domain.weather.Temp
@@ -30,7 +25,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import java.time.Duration
 
 @HiltWorker
 class WeatherNotificationWorker @AssistedInject internal constructor(
@@ -115,55 +109,6 @@ class WeatherNotificationWorker @AssistedInject internal constructor(
 
     companion object {
         private const val NOTIFICATION_ID = 0
-    }
-}
-
-internal class WeatherNotificationWorkerLauncher(
-    private val applicationContext: Context
-) : IWeatherNotificationServiceLauncher {
-
-    override fun startService() {
-
-        val context = assertApplicationContext(applicationContext)
-
-        val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .setRequiresCharging(false)
-            .setRequiresBatteryNotLow(true)
-            .setRequiresDeviceIdle(false)
-            .build()
-
-        val workRequest = PeriodicWorkRequestBuilder<WeatherNotificationWorker>(
-            Duration.ofMinutes(WORK_EXECUTE_DURATION)
-        )
-            .setConstraints(constraints)
-            .setInitialDelay(Duration.ZERO)
-            .build()
-
-
-        WorkManager.getInstance(context)
-            .enqueueUniquePeriodicWork(
-                WEATHER_NOTIFICATION_WORK_ID,
-                ExistingPeriodicWorkPolicy.KEEP,
-                workRequest
-            )
-    }
-
-    override fun stopService() {
-        val context = assertApplicationContext(applicationContext)
-
-        WorkManager.getInstance(context)
-            .cancelUniqueWork(WEATHER_NOTIFICATION_WORK_ID)
-    }
-
-    private fun assertApplicationContext(context: Context): Context {
-        return context.applicationContext
-            ?: error("It is not the applicationContext")
-    }
-
-    companion object {
-        private const val WEATHER_NOTIFICATION_WORK_ID = "WEATHER_NOTIFICATION_WORK_ID"
-        private const val WORK_EXECUTE_DURATION = 30L
     }
 }
 

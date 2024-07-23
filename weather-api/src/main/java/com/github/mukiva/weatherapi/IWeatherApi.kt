@@ -12,27 +12,27 @@ import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface IWeatherApi {
+public interface IWeatherApi {
     @GET("forecast.json")
-    suspend fun forecast(
+    public suspend fun forecast(
         @Query(value = "q") q: String,
         @Query(value = "days") days: Int,
         @Query(value = "lang") lang: String
     ): Result<ForecastWithCurrentAndLocationDto>
 
     @GET("search.json")
-    suspend fun search(
+    public suspend fun search(
         @Query(value = "q") q: String,
         @Query(value = "lang") lang: String
     ): Result<List<LocationDto>>
 }
 
-fun weatherApi(
+public fun weatherApi(
     baseUrl: String,
     apiKey: String,
     okHttpClient: OkHttpClient? = null,
     json: Json = Json
-) = retrofit(baseUrl, apiKey, okHttpClient, json)
+): Retrofit = retrofit(baseUrl, apiKey, okHttpClient, json)
 
 private fun retrofit(
     baseUrl: String,

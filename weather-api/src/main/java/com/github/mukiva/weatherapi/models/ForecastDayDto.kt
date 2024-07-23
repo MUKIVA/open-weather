@@ -6,7 +6,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ForecastDayDto(
+public data class ForecastDayDto(
     @SerialName("date_epoch")
     @Serializable(with = DateTimeUnixSerializer::class)
     val dateEpoch: LocalDateTime,

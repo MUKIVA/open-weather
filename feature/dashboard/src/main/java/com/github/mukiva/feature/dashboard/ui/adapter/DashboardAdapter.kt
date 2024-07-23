@@ -10,7 +10,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.github.mukiva.feature.dashboard.domain.model.Location
 import com.github.mukiva.feature.dashboard.ui.dashboard_template_fragment.DashboardTemplateFragment
 
-class DashboardAdapter(
+internal class DashboardAdapter(
     fm: FragmentManager,
     lifecycle: Lifecycle
 ) : FragmentStateAdapter(fm, lifecycle) {

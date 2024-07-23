@@ -9,7 +9,7 @@ import com.github.mukiva.feature.locationmanager.databinding.ItemLocationEditabl
 import com.github.mukiva.feature.locationmanager.domain.model.Location
 import com.github.mukiva.feature.locationmanager.presentation.EditableLocation
 
-class LocationEditableViewHolder(
+internal class LocationEditableViewHolder(
     private val bind: ItemLocationEditableBinding,
     private val onEdit: (EditableLocation) -> Unit,
     private val onSelect: (EditableLocation) -> Unit
@@ -28,7 +28,6 @@ class LocationEditableViewHolder(
         payloads: List<EditableLocationPayload>
     ) = with(bind) {
         payloads.onEach { payload ->
-            Log.d("PAYLOAD", "$payload")
             when (payload) {
                 EditableLocationPayload.CITY_NAME ->
                     cityName.text = item.location.cityName

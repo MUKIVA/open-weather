@@ -7,7 +7,7 @@ import androidx.work.WorkerParameters
 import com.github.mukiva.feature.weathernotification.WeatherNotificationWorker
 import javax.inject.Inject
 
-class MainWorkerFactory @Inject constructor(
+internal class MainWorkerFactory @Inject constructor(
     private val weatherNotificationWorkerFactory: WeatherNotificationWorker.Factory
 ) : WorkerFactory() {
     override fun createWorker(

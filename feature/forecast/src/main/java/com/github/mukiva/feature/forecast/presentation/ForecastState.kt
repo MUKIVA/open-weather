@@ -1,6 +1,6 @@
 package com.github.mukiva.feature.forecast.presentation
 
-sealed class ForecastState {
+internal sealed class ForecastState {
     data object Init : ForecastState()
     data object Error : ForecastState()
     data object Loading : ForecastState()

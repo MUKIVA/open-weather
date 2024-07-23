@@ -10,28 +10,28 @@ import com.github.mukiva.weatherdatabase.models.LocationDbo
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface ILocationDao {
+public interface ILocationDao {
     @Query("SELECT * FROM LocationDbo ORDER BY priority ASC")
-    fun getAll(): Flow<List<LocationDbo>>
+    public fun getAll(): Flow<List<LocationDbo>>
 
     @Query("SELECT * FROM LocationDbo WHERE id = :locationId")
-    fun getById(locationId: Long): LocationDbo
+    public fun getById(locationId: Long): LocationDbo
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(location: LocationDbo): Long
+    public suspend fun insert(location: LocationDbo): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(locations: List<LocationDbo>)
+    public suspend fun insert(locations: List<LocationDbo>)
 
     @Transaction
-    suspend fun updateLocations(locations: List<LocationDbo>) {
+    public suspend fun updateLocations(locations: List<LocationDbo>) {
         deleteAll()
         insert(locations)
     }
 
     @Delete
-    suspend fun delete(location: LocationDbo)
+    public suspend fun delete(location: LocationDbo)
 
     @Query("DELETE FROM LocationDbo")
-    suspend fun deleteAll()
+    public suspend fun deleteAll()
 }

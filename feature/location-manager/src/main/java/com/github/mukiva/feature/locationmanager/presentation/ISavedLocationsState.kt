@@ -1,6 +1,6 @@
 package com.github.mukiva.feature.locationmanager.presentation
 
-sealed interface ISavedLocationsState {
+internal sealed interface ISavedLocationsState {
     data object Loading : ISavedLocationsState
     data object Error : ISavedLocationsState
     data class Content(

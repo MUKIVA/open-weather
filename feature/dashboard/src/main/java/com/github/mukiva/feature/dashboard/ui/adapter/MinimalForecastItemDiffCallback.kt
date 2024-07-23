@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import androidx.recyclerview.widget.DiffUtil
 import com.github.mukiva.feature.dashboard.domain.model.DayForecast
 
-object MinimalForecastItemDiffCallback : DiffUtil.ItemCallback<DayForecast>() {
+internal object MinimalForecastItemDiffCallback : DiffUtil.ItemCallback<DayForecast>() {
     override fun areItemsTheSame(oldItem: DayForecast, newItem: DayForecast): Boolean {
         return oldItem.id == newItem.id
     }

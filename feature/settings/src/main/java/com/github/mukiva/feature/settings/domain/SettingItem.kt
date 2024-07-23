@@ -4,7 +4,7 @@ import com.github.mukiva.openweather.core.domain.settings.Group
 import kotlin.enums.EnumEntries
 import kotlin.reflect.KClass
 
-sealed class SettingItem(
+internal sealed class SettingItem(
     val id: Int
 ) {
     data class Title(val group: Group) : SettingItem(TITLE_ITEM_ID)

@@ -39,7 +39,7 @@ import kotlinx.parcelize.Parcelize
 import com.github.mukiva.core.ui.R as CoreUiRes
 
 @AndroidEntryPoint
-class ForecastFragment : Fragment(R.layout.fragment_forecast) {
+class ForecastFragment internal constructor() : Fragment(R.layout.fragment_forecast) {
 
     @Parcelize
     data class Args(

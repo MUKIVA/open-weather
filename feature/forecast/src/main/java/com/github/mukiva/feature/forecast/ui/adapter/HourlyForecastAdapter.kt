@@ -10,7 +10,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.github.mukiva.feature.forecast.presentation.HourlyForecast
 import com.github.mukiva.feature.forecast.ui.ForecastTimelineFragment
 
-class HourlyForecastAdapter(
+internal class HourlyForecastAdapter(
     private val locationId: Long,
     fragmentManager: FragmentManager,
     lifecycle: Lifecycle,

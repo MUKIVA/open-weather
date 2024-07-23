@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 import kotlinx.datetime.LocalDateTime
 
 @Entity
-data class CurrentDbo(
+public data class CurrentDbo(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
     @ColumnInfo("last_updated_epoch")

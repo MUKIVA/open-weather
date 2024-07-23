@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class ForecastLoader @Inject constructor(
+internal class ForecastLoader @Inject constructor(
     private val getCurrentUseCase: GetCurrentUseCase
 ) : IForecastLoader {
 

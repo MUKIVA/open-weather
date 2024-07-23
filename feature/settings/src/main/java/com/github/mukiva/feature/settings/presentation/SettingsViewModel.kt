@@ -24,7 +24,7 @@ import kotlin.enums.EnumEntries
 import kotlin.reflect.KClass
 
 @HiltViewModel
-class SettingsViewModel @Inject constructor(
+internal class SettingsViewModel @Inject constructor(
     private val settingsRepository: ISettingsRepository
 ) : ViewModel() {
 

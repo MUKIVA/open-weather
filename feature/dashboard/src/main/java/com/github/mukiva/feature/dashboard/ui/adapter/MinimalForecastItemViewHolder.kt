@@ -14,7 +14,7 @@ import kotlinx.datetime.format.MonthNames
 import kotlinx.datetime.format.Padding
 import kotlinx.datetime.format.char
 
-class MinimalForecastItemViewHolder(
+internal class MinimalForecastItemViewHolder(
     private val bindings: ItemMinForecastBinding,
     private val onItemClick: (Int) -> Unit,
 ) : RecyclerView.ViewHolder(bindings.root) {

@@ -3,7 +3,7 @@ package com.github.mukiva.feature.settings.presentation
 import kotlin.enums.EnumEntries
 import kotlin.reflect.KClass
 
-sealed class BottomSheetState {
+internal sealed class BottomSheetState {
     data object Hide : BottomSheetState()
     data class Show(
         val key: KClass<*>,

@@ -3,7 +3,7 @@ package com.github.mukiva.openweather.glue.navigation
 import com.github.mukiva.navigation.router.INavigationResourcesProvider
 import com.github.mukiva.openweather.R
 
-class DefaultNavigationResourcesProvider : INavigationResourcesProvider {
+internal class DefaultNavigationResourcesProvider : INavigationResourcesProvider {
     override fun provideStartDestination(): Int {
         return R.id.dashboardFragment
     }

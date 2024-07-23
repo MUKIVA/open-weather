@@ -6,7 +6,7 @@ import com.github.mukiva.navigation.router.GlobalRouter
 import com.github.mukiva.openweather.R
 import javax.inject.Inject
 
-class DashboardRouter @Inject constructor(
+internal class DashboardRouter @Inject constructor(
     private val globalRouter: GlobalRouter
 ) : IDashboardRouter {
 

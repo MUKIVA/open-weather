@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 import java.util.Collections
 import javax.inject.Inject
 
-class SavedLocationsHandler @Inject constructor(
+internal class SavedLocationsHandler @Inject constructor(
     private val updateStoredLocationsUseCase: UpdateStoredLocationsUseCase,
     private val getAddedLocationsUseCase: GetAddedLocationsUseCase,
 ) : ISavedLocationsHandler {

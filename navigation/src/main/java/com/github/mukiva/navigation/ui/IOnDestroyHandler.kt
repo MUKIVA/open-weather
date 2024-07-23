@@ -1,5 +1,5 @@
 package com.github.mukiva.navigation.ui
 
-interface IOnDestroyHandler : ILifecycleHandler {
-    fun onDestroy()
+public interface IOnDestroyHandler : ILifecycleHandler {
+    public fun onDestroy()
 }

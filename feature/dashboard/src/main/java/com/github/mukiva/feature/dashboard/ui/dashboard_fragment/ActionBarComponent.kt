@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlin.math.roundToInt
 
-class ActionBarComponent(
+internal class ActionBarComponent(
     private val binding: LayDashboardActionBarBinding,
     private val onSettingsClick: () -> Unit,
     private val onManageLocationsClick: () -> Unit,

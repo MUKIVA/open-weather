@@ -13,7 +13,7 @@ import dagger.hilt.components.SingletonComponent
 
 @Module
 @InstallIn(SingletonComponent::class)
-class DashboardModule {
+internal class DashboardModule {
     @Provides
     fun provideCurrentWeatherUpdater(
         @ApplicationContext applicationContext: Context
@@ -22,7 +22,7 @@ class DashboardModule {
 
 @Module
 @InstallIn(SingletonComponent::class)
-interface DashboardBinds {
+internal interface DashboardBinds {
 
     @Binds
     fun bindForecastLoader(

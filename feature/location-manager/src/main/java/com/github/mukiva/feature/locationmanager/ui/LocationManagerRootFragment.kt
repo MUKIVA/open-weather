@@ -13,7 +13,7 @@ import com.github.mukiva.feature.locationmanager.presentation.LocationManagerVie
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class LocationManagerRootFragment : Fragment(R.layout.fragment_location_manager) {
+internal class LocationManagerRootFragment : Fragment(R.layout.fragment_location_manager) {
 
     private val mViewModel by viewModels<LocationManagerViewModel>()
     private val mBinding by viewBindings(FragmentLocationManagerBinding::bind)

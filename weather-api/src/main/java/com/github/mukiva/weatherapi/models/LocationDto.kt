@@ -6,7 +6,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class LocationDto(
+public data class LocationDto(
     @SerialName("id")
     val id: Long = 0,
     @SerialName("name")

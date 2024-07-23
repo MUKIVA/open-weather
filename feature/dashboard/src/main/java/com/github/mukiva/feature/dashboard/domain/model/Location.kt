@@ -1,6 +1,6 @@
 package com.github.mukiva.feature.dashboard.domain.model
 
-data class Location(
+internal data class Location(
     val id: Long,
     val name: String,
     val region: String,

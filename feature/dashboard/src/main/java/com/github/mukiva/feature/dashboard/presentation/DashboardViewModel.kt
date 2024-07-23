@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
-class DashboardViewModel @Inject constructor(
+internal class DashboardViewModel @Inject constructor(
     private val getAllLocationsUseCase: GetAllLocationsUseCase,
     private val router: IDashboardRouter,
     private val forecastLoader: IForecastLoader,

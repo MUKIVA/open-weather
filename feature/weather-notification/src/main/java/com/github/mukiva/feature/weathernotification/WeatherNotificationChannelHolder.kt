@@ -4,15 +4,19 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 
-class WeatherNotificationChannelHolder(
+interface INotificationChannelHolder {
+    fun initChannels()
+}
+
+class WeatherNotificationChannelHolder internal constructor(
     private val applicationContext: Context
-) {
+): INotificationChannelHolder {
 
     private val mNotificationManager by lazy {
         applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     }
 
-    fun initChannels() {
+    override fun initChannels() {
         initCurrentWeatherChannel()
     }
 
@@ -29,3 +33,7 @@ class WeatherNotificationChannelHolder(
         const val CURRENT_WEATHER_CHANNEL_ID = "current_weather_notification"
     }
 }
+
+fun createNotificationChannelHolder(
+    applicationContext: Context
+): INotificationChannelHolder = WeatherNotificationChannelHolder(applicationContext)

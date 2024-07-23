@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 import kotlinx.datetime.LocalDateTime
 
 @Entity
-data class HourDbo(
+public data class HourDbo(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
     @ColumnInfo("time_epoch")

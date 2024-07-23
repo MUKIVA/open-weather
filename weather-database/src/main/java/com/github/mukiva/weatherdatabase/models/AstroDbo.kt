@@ -2,7 +2,7 @@ package com.github.mukiva.weatherdatabase.models
 
 import androidx.room.ColumnInfo
 
-data class AstroDbo(
+public data class AstroDbo(
     @ColumnInfo("sunrise")
     val sunrise: String,
     @ColumnInfo("sunset")

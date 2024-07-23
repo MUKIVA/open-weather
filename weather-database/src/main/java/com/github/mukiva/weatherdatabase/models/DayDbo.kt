@@ -5,7 +5,7 @@ import androidx.room.Embedded
 import androidx.room.Entity
 
 @Entity
-data class DayDbo(
+public data class DayDbo(
     @ColumnInfo("maxtemp_c")
     val maxTempC: Double,
     @ColumnInfo("maxtemp_f")

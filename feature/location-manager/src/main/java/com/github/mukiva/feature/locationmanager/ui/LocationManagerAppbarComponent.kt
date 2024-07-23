@@ -19,7 +19,7 @@ import com.google.android.material.search.SearchView.TransitionState
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
-class LocationManagerAppbarComponent(
+internal class LocationManagerAppbarComponent(
     private val binding: LayLocationManagerAppbarBinding,
     private val onBackPressedDispatcher: () -> OnBackPressedDispatcher,
     private val onEnterNormalMode: () -> Unit,

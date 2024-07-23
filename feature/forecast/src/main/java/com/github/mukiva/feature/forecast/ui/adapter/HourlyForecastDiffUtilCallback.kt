@@ -3,7 +3,7 @@ package com.github.mukiva.feature.forecast.ui.adapter
 import androidx.recyclerview.widget.DiffUtil
 import com.github.mukiva.feature.forecast.presentation.HourlyForecast
 
-object HourlyForecastDiffUtilCallback : DiffUtil.ItemCallback<HourlyForecast>() {
+internal object HourlyForecastDiffUtilCallback : DiffUtil.ItemCallback<HourlyForecast>() {
 
     override fun areItemsTheSame(
         oldItem: HourlyForecast,

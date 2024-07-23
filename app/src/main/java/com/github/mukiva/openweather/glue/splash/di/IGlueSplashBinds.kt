@@ -9,7 +9,7 @@ import dagger.hilt.android.components.ActivityRetainedComponent
 
 @Module
 @InstallIn(ActivityRetainedComponent::class)
-interface IGlueSplashBinds {
+internal interface IGlueSplashBinds {
     @Binds
     fun bindSplashNavigator(
         splashRouter: SplashRouter

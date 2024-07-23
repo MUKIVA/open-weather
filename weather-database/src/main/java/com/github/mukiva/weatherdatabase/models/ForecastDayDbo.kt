@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 import kotlinx.datetime.LocalDateTime
 
 @Entity
-data class ForecastDayDbo(
+public data class ForecastDayDbo(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
     @ColumnInfo("date_epoch")

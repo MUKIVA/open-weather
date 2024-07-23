@@ -30,7 +30,7 @@ import com.github.mukiva.openweather.core.domain.weather.Precipitation as Precip
 import com.github.mukiva.weatherdata.models.Astro as DataAstro
 import com.github.mukiva.weatherdata.models.Location as LocationData
 
-class GetCurrentUseCase @Inject constructor(
+internal class GetCurrentUseCase @Inject constructor(
     private val forecastRepository: IForecastRepository,
     private val settingsRepository: ISettingsRepository
 ) {

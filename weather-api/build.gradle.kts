@@ -1,7 +1,13 @@
+import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode
+
 plugins {
     id("java-library")
     alias(libs.plugins.jetbrainsKotlinJvm)
     alias(libs.plugins.kotlinxSerialization)
+}
+
+kotlin {
+    explicitApi = ExplicitApiMode.Strict
 }
 
 java {

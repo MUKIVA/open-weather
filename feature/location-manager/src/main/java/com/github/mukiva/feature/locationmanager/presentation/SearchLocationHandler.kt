@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @Suppress("OPT_IN_USAGE")
-class SearchLocationHandler @Inject constructor(
+internal class SearchLocationHandler @Inject constructor(
     private val searchUseCase: LocationSearchUseCase,
     private val addLocationUseCase: AddLocationUseCase
 ) : ISearchLocationHandler {

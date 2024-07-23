@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 
 @AndroidEntryPoint
-class VariantSelectorBottomSheet : BottomSheetDialogFragment(R.layout.bottomsheet_variant_selector) {
+internal class VariantSelectorBottomSheet : BottomSheetDialogFragment(R.layout.bottomsheet_variant_selector) {
 
     private val mBinding by viewBindings(BottomsheetVariantSelectorBinding::bind)
     private val mViewModel by viewModels<SettingsViewModel>(

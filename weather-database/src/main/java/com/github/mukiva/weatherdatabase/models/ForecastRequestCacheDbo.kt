@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class ForecastRequestCacheDbo(
+public data class ForecastRequestCacheDbo(
     @ColumnInfo("location_id")
     @PrimaryKey
     val locationId: Long,

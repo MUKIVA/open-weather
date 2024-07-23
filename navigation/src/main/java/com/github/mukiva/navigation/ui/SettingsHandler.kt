@@ -17,7 +17,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class SettingsHandler @Inject constructor(
+public class SettingsHandler @Inject constructor(
     private val settingsRepository: ISettingsRepository,
     private val weatherNotificationServiceLauncher: IWeatherNotificationServiceLauncher
 ) : IOnCreateHandler, IOnDestroyHandler {

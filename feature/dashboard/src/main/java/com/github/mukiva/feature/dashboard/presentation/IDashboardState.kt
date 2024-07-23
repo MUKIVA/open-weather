@@ -2,7 +2,7 @@ package com.github.mukiva.feature.dashboard.presentation
 
 import com.github.mukiva.feature.dashboard.domain.model.Location
 
-sealed interface IDashboardState {
+internal sealed interface IDashboardState {
 
     val actionBarState: IActionBarState
 

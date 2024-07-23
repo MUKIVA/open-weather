@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ConditionDto(
+public data class ConditionDto(
     @SerialName("text")
     var text: String,
     @SerialName("icon")

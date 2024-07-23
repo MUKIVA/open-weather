@@ -11,7 +11,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class GlobalRouter @Inject constructor() :
+public class GlobalRouter @Inject constructor() :
     IRouter,
     IOnCreateHandler,
     IOnDestroyHandler {

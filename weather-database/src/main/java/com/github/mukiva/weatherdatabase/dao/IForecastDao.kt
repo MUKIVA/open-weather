@@ -13,23 +13,23 @@ import com.github.mukiva.weatherdatabase.relations.ForecastWithCurrentAndLocatio
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface IForecastDao {
+public interface IForecastDao {
     @Insert
-    suspend fun insertForecast(forecast: ForecastDbo): Long
+    public suspend fun insertForecast(forecast: ForecastDbo): Long
 
     @Insert
-    suspend fun insertForecastDay(forecastDay: ForecastDayDbo): Long
+    public suspend fun insertForecastDay(forecastDay: ForecastDayDbo): Long
 
     @Insert
-    suspend fun insertHour(hour: List<HourDbo>)
+    public suspend fun insertHour(hour: List<HourDbo>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertCache(cache: ForecastRequestCacheDbo): Long
+    public suspend fun insertCache(cache: ForecastRequestCacheDbo): Long
 
     @Query("DELETE FROM ForecastRequestCacheDbo")
-    suspend fun cleanCache()
+    public suspend fun cleanCache()
 
     @Transaction
     @Query("SELECT * FROM ForecastRequestCacheDbo WHERE location_id = :locationId")
-    fun getCache(locationId: Long): Flow<ForecastWithCurrentAndLocation?>
+    public fun getCache(locationId: Long): Flow<ForecastWithCurrentAndLocation?>
 }

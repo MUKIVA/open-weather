@@ -7,7 +7,7 @@ import android.location.Location
 import android.location.LocationManager
 import com.github.mukiva.feature.splash.domain.ILocationProvider
 
-class LocationProvider internal constructor(
+internal class LocationProvider internal constructor(
     private val applicationContext: Context
 ) : ILocationProvider {
 

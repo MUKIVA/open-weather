@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 @AndroidEntryPoint
-class SettingsTemplateFragment : Fragment(R.layout.fragment_settings_template) {
+internal class SettingsTemplateFragment : Fragment(R.layout.fragment_settings_template) {
 
     private val mViewModel by viewModels<SettingsViewModel>()
     private val mBinding by viewBindings(FragmentSettingsTemplateBinding::bind)

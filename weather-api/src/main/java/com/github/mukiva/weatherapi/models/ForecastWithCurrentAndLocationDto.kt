@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ForecastWithCurrentAndLocationDto(
+public data class ForecastWithCurrentAndLocationDto(
     @SerialName("location")
     val location: LocationDto,
     @SerialName("current")

@@ -7,7 +7,7 @@ import com.github.mukiva.feature.locationmanager.databinding.ItemLocationEditabl
 import com.github.mukiva.feature.locationmanager.presentation.EditableLocation
 
 @Suppress("UNCHECKED_CAST")
-class LocationManagerSavedAdapter(
+internal class LocationManagerSavedAdapter(
     private val onEnterEditMode: (EditableLocation) -> Unit,
     private val onSelectEditable: (EditableLocation) -> Unit,
     private val onItemMoveCallback: (Int, Int) -> Unit

@@ -6,7 +6,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class CurrentDto(
+public data class CurrentDto(
     @SerialName("last_updated_epoch")
     @Serializable(with = DateTimeUnixSerializer::class)
     var lastUpdatedEpoch: LocalDateTime,

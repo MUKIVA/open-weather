@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 
 @AndroidEntryPoint
-class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template) {
+internal class DashboardTemplateFragment : Fragment(R.layout.fragment_dashboard_template) {
 
     @Parcelize
     data class Args(

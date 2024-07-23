@@ -20,7 +20,7 @@ import com.github.mukiva.feature.forecast.ui.updateWeatherIcon
 import com.github.mukiva.feature.forecast.ui.updateWindDirection
 import com.github.mukiva.feature.forecast.ui.updateWindSpeed
 
-class ForecastItemViewHolder(
+internal class ForecastItemViewHolder(
     private val binding: ItemHourDetailsBinding,
 ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(item: ForecastItem) = with(binding) {

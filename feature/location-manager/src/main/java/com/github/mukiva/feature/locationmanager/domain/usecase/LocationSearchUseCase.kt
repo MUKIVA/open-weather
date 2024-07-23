@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import com.github.mukiva.weatherdata.models.Location as DataLocation
 
-class LocationSearchUseCase @Inject constructor(
+internal class LocationSearchUseCase @Inject constructor(
     private val repository: ILocationRepository,
     private val settingsRepository: ISettingsRepository,
 ) {

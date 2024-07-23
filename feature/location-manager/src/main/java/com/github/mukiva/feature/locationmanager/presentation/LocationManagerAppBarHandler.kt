@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
-class LocationManagerAppBarHandler @Inject constructor() : ILocationManagerAppBarHandler {
+internal class LocationManagerAppBarHandler @Inject constructor() : ILocationManagerAppBarHandler {
     override val appBarStateFlow: StateFlow<ILocationManagerAppbarState>
         get() = mAppBarStateFlow.asStateFlow()
 

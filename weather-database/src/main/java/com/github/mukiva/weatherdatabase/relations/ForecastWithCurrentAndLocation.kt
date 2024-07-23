@@ -7,7 +7,7 @@ import com.github.mukiva.weatherdatabase.models.ForecastDbo
 import com.github.mukiva.weatherdatabase.models.ForecastRequestCacheDbo
 import com.github.mukiva.weatherdatabase.models.LocationDbo
 
-data class ForecastWithCurrentAndLocation(
+public data class ForecastWithCurrentAndLocation(
     @Embedded
     val cache: ForecastRequestCacheDbo,
 

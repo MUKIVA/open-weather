@@ -5,7 +5,7 @@ import com.github.mukiva.openweather.core.domain.weather.Speed
 import com.github.mukiva.openweather.core.domain.weather.Temp
 import com.github.mukiva.openweather.core.domain.weather.WindDirection
 
-data class Current(
+internal data class Current(
     val isDay: Boolean,
     val temp: Temp,
     val feelsLike: Temp,

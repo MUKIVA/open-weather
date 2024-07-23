@@ -27,7 +27,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import com.github.mukiva.core.ui.R as CoreUiRes
 
-class PagerComponent(
+internal class PagerComponent(
     private val binding: FragmentDashboardBinding,
     private val fragmentManager: FragmentManager,
     private val lifecycle: Lifecycle,

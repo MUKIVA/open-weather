@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class DayDto(
+public data class DayDto(
     @SerialName("maxtemp_c")
     val maxTempC: Double,
     @SerialName("maxtemp_f")

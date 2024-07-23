@@ -6,7 +6,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class LocationManagerViewModel @Inject constructor(
+internal class LocationManagerViewModel @Inject constructor(
     private val locationManagerRouter: ILocationManagerRouter,
     private val savedLocationsHandler: ISavedLocationsHandler,
     private val searchLocationHandler: ISearchLocationHandler,

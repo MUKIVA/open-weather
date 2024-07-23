@@ -6,12 +6,12 @@ import com.github.mukiva.openweather.core.domain.settings.Theme
 import com.github.mukiva.openweather.core.domain.settings.UnitsType
 import kotlinx.coroutines.flow.Flow
 
-interface IGeneralGroupEditor {
-    suspend fun setTheme(theme: Theme)
-    fun getTheme(): Flow<Theme>
-    suspend fun setUnitsType(unitsType: UnitsType)
-    fun getUnitsType(): Flow<UnitsType>
-    suspend fun setLocalization(lang: Lang)
-    fun getLocalization(): Flow<Lang>
-    fun getGeneralGroup(): Flow<Group.General>
+public interface IGeneralGroupEditor {
+    public suspend fun setTheme(theme: Theme)
+    public fun getTheme(): Flow<Theme>
+    public suspend fun setUnitsType(unitsType: UnitsType)
+    public fun getUnitsType(): Flow<UnitsType>
+    public suspend fun setLocalization(lang: Lang)
+    public fun getLocalization(): Flow<Lang>
+    public fun getGeneralGroup(): Flow<Group.General>
 }

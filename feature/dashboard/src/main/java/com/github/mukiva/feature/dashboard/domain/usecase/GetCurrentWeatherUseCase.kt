@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class GetCurrentWeatherUseCase @Inject constructor(
+internal class GetCurrentWeatherUseCase @Inject constructor(
     private val settingsRepository: ISettingsRepository,
     private val locationRepository: ILocationRepository,
     private val forecastRepository: IForecastRepository

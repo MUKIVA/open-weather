@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.mukiva.feature.settings.databinding.ItemSelectableItemBinding
 import com.google.android.material.R as MaterialRes
 
-class VariantViewHolder(
+internal class VariantViewHolder(
     private val binding: ItemSelectableItemBinding,
     private val onClick: (Int) -> Unit
 ) : RecyclerView.ViewHolder(binding.root) {

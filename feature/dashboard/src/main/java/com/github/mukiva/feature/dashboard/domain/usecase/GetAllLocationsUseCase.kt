@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import com.github.mukiva.weatherdata.models.Location as DataLocation
 
-class GetAllLocationsUseCase @Inject constructor(
+internal class GetAllLocationsUseCase @Inject constructor(
     private val locationRepository: ILocationRepository,
 ) {
     operator fun invoke(): Flow<RequestResult<List<Location>>> {

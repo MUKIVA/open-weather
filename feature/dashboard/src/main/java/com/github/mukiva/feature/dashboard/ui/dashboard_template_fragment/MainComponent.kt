@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import com.github.mukiva.core.ui.R as CoreUiRes
 
-class MainComponent(
+internal class MainComponent(
     private val binding: LayMainInfoBinding,
     private val locationId: Long,
 ) : Component(), Component.IStateObserver<DashboardViewModel> {

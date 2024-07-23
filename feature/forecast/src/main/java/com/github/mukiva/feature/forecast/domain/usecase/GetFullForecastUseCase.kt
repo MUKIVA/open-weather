@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class GetFullForecastUseCase @Inject constructor(
+internal class GetFullForecastUseCase @Inject constructor(
     private val forecastRepo: IForecastRepository,
     private val settingsRepository: ISettingsRepository,
 ) {

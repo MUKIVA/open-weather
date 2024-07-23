@@ -17,7 +17,7 @@ import kotlinx.datetime.LocalTime
 import kotlinx.datetime.format.Padding
 import kotlinx.datetime.format.char
 
-class AstroComponent(
+internal class AstroComponent(
     private val binding: LayAstroBinding,
     private val locationId: Long
 ) : Component(), Component.IStateObserver<DashboardViewModel> {

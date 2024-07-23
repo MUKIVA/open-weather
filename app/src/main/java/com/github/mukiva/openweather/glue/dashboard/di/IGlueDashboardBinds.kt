@@ -9,7 +9,7 @@ import dagger.hilt.components.SingletonComponent
 
 @Module
 @InstallIn(SingletonComponent::class)
-interface IGlueDashboardBinds {
+internal interface IGlueDashboardBinds {
     @Binds
     fun bindDashboardRouter(
         router: DashboardRouter

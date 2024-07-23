@@ -20,7 +20,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 
-class DefaultRouterImpl @AssistedInject constructor(
+internal class DefaultRouterImpl @AssistedInject constructor(
     @Assisted @IdRes private val fragmentContainerId: Int,
     private val destinationResourcesProvider: INavigationResourcesProvider,
     private val activity: FragmentActivity
@@ -34,11 +34,7 @@ class DefaultRouterImpl @AssistedInject constructor(
             if (activity !is AppCompatActivity) return
 
             val currentNavController = f.findNavController()
-            val appBarConfiguration = AppBarConfiguration(currentNavController.graph)
-
-            if (activity.supportActionBar == null) return
-
-//            NavigationUI.setupActionBarWithNavController(activity, currentNavController, appBarConfiguration)
+            AppBarConfiguration(currentNavController.graph)
         }
     }
 
@@ -95,8 +91,8 @@ class DefaultRouterImpl @AssistedInject constructor(
     }
 
     @AssistedFactory
-    interface Factory {
-        fun create(
+    public interface Factory {
+        public fun create(
             @IdRes fragmentContainerId: Int
         ): DefaultRouterImpl
     }

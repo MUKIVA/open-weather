@@ -13,7 +13,7 @@ import dagger.hilt.android.components.ViewModelComponent
 
 @Module
 @InstallIn(ViewModelComponent::class)
-interface ILocationManagerBinds {
+internal interface ILocationManagerBinds {
     @Binds
     fun bindSavedLocationHandler(
         savedLocationsHandler: SavedLocationsHandler

@@ -3,13 +3,10 @@ package com.github.mukiva.feature.splash.ui
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Parcelable
-import android.util.Log
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.core.app.ActivityCompat
-import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -31,7 +28,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.parcelize.Parcelize
 
 @AndroidEntryPoint
-class GetAccessTemplateFragment : Fragment(R.layout.fragment_get_access_template) {
+internal class GetAccessTemplateFragment : Fragment(R.layout.fragment_get_access_template) {
 
     @Parcelize
     data class Args(

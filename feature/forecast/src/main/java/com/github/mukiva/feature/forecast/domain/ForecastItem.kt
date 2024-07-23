@@ -8,7 +8,7 @@ import com.github.mukiva.openweather.core.domain.weather.Temp
 import com.github.mukiva.openweather.core.domain.weather.WindDirection
 import kotlinx.datetime.LocalDateTime
 
-data class ForecastItem(
+internal data class ForecastItem(
     val id: Int,
     val humidity: Int,
     val pressure: Pressure,

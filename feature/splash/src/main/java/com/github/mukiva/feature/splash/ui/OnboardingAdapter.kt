@@ -10,7 +10,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.github.mukiva.feature.splash.R
 import com.github.mukiva.feature.splash.presentation.OnboardingScreen
 
-class OnboardingAdapter(
+internal class OnboardingAdapter(
     fm: FragmentManager,
     lifecycle: Lifecycle,
 ) : FragmentStateAdapter(fm, lifecycle) {

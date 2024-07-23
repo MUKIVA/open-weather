@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 import kotlinx.datetime.LocalDateTime
 
 @Entity
-data class LocationDbo(
+public data class LocationDbo(
     @PrimaryKey
     val id: Long,
     @ColumnInfo("name")

@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.ListAdapter
 import com.github.mukiva.feature.dashboard.databinding.ItemMinForecastBinding
 import com.github.mukiva.feature.dashboard.domain.model.DayForecast
 
-class MinimalForecastAdapter(
+internal class MinimalForecastAdapter(
     private val onItemClick: (Int) -> Unit
 ) : ListAdapter<DayForecast, MinimalForecastItemViewHolder>(MinimalForecastItemDiffCallback) {
     override fun onCreateViewHolder(

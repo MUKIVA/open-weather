@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.ListAdapter
 import com.github.mukiva.feature.locationmanager.databinding.ItemLocationBinding
 import com.github.mukiva.feature.locationmanager.domain.model.Location
 
-class LocationManagerSearchAdapter(
+internal class LocationManagerSearchAdapter(
     private val onAddCallback: (location: Location) -> Unit
 ) : ListAdapter<Location, LocationViewHolder>(LocationDiffUtil) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LocationViewHolder {

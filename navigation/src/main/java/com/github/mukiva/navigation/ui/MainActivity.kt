@@ -16,7 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), IRouterHolder {
+internal class MainActivity : AppCompatActivity(), IRouterHolder {
 
     @Inject
     lateinit var routerFactory: DefaultRouterImpl.Factory

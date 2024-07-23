@@ -4,7 +4,7 @@ import com.github.mukiva.feature.dashboard.domain.model.Astro
 import com.github.mukiva.feature.dashboard.domain.model.Current
 import com.github.mukiva.feature.dashboard.domain.model.Precipitation
 
-sealed interface ICurrentState {
+internal sealed interface ICurrentState {
     data object Init : ICurrentState
     data object Loading : ICurrentState
     data object Error : ICurrentState

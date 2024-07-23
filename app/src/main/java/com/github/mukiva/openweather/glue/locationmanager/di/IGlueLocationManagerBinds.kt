@@ -9,7 +9,7 @@ import dagger.hilt.android.components.ActivityRetainedComponent
 
 @Module
 @InstallIn(ActivityRetainedComponent::class)
-interface IGlueLocationManagerBinds {
+internal interface IGlueLocationManagerBinds {
     @Binds
     fun bindLocationManagerRouter(
         locationManagerRouter: LocationManagerRouter

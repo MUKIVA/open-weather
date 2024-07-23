@@ -7,7 +7,7 @@ import com.github.mukiva.feature.settings.databinding.ItemSettingsVariantBinding
 import com.github.mukiva.feature.settings.domain.SettingItem
 import kotlin.reflect.KClass
 
-sealed interface ISettingsViewHolder {
+internal sealed interface ISettingsViewHolder {
     fun bind(item: SettingItem)
 
     class TitleViewHolder(

@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import com.github.mukiva.core.ui.R as CoreUiRes
 
-class SearchViewComponent(
+internal class SearchViewComponent(
     private val binding: LayLocationManagerAppbarBinding,
     private val onSearchQueryChanged: (text: String?) -> Unit,
     private val onAddLocation: (location: Location) -> Unit,

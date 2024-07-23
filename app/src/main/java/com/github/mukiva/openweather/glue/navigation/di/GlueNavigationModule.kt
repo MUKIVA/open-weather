@@ -15,7 +15,7 @@ import dagger.multibindings.ElementsIntoSet
 
 @Module
 @InstallIn(SingletonComponent::class)
-class GlueNavigationModule {
+internal class GlueNavigationModule {
 
     @Provides
     fun provideNavigationResourcesProvider(): INavigationResourcesProvider =

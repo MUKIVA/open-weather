@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class WeatherNotificationBroadcastReceiver : BroadcastReceiver() {
+internal class WeatherNotificationBroadcastReceiver : BroadcastReceiver() {
 
     @Inject
     lateinit var settingsRepository: ISettingsRepository

@@ -3,7 +3,7 @@ package com.github.mukiva.feature.settings.ui.adapter
 import androidx.recyclerview.widget.DiffUtil
 import com.github.mukiva.feature.settings.domain.SettingItem
 
-object SettingsDiffUtil : DiffUtil.ItemCallback<SettingItem>() {
+ internal object SettingsDiffUtil : DiffUtil.ItemCallback<SettingItem>() {
     override fun areItemsTheSame(oldItem: SettingItem, newItem: SettingItem): Boolean {
         return when {
             oldItem is SettingItem.Title && newItem is SettingItem.Title ->

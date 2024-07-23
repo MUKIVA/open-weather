@@ -10,7 +10,7 @@ import com.github.mukiva.feature.settings.databinding.ItemSettingsVariantBinding
 import com.github.mukiva.feature.settings.domain.SettingItem
 import kotlin.reflect.KClass
 
-class SettingsAdapter(
+internal class SettingsAdapter(
     private val onSelectVariant: (SettingItem.Variant) -> Unit,
     private val onToggleOption: (KClass<*>, Boolean) -> Unit
 ) : ListAdapter<SettingItem, ViewHolder>(SettingsDiffUtil) {

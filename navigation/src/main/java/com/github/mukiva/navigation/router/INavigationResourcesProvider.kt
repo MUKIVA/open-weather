@@ -3,11 +3,11 @@ package com.github.mukiva.navigation.router
 import androidx.annotation.IdRes
 import androidx.annotation.NavigationRes
 
-interface INavigationResourcesProvider {
+public interface INavigationResourcesProvider {
 
     @IdRes
-    fun provideStartDestination(): Int
+    public fun provideStartDestination(): Int
 
     @NavigationRes
-    fun provideNavigationGraph(): Int
+    public fun provideNavigationGraph(): Int
 }

@@ -1,3 +1,3 @@
 package com.github.mukiva.navigation.ui
 
-interface ILifecycleHandler
+public interface ILifecycleHandler

@@ -1,6 +1,6 @@
 package com.github.mukiva.weatherdata.models
 
-data class Astro(
+public data class Astro(
     val sunrise: String,
     val sunset: String,
     val moonrise: String,

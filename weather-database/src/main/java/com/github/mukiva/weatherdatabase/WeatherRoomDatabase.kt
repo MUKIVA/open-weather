@@ -16,14 +16,14 @@ import com.github.mukiva.weatherdatabase.models.HourDbo
 import com.github.mukiva.weatherdatabase.models.LocationDbo
 import com.github.mukiva.weatherdatabase.utils.Converters
 
-class WeatherDatabase internal constructor(
+public class WeatherDatabase internal constructor(
     private val weatherRoomDatabase: WeatherRoomDatabase
 ) {
-    val locationDao: ILocationDao
+    public val locationDao: ILocationDao
         get() = weatherRoomDatabase.locationDao()
-    val currentDao: ICurrentDao
+    public val currentDao: ICurrentDao
         get() = weatherRoomDatabase.currentDao()
-    val forecastDao: IForecastDao
+    public val forecastDao: IForecastDao
         get() = weatherRoomDatabase.forecastDao()
 }
 
@@ -46,7 +46,7 @@ internal abstract class WeatherRoomDatabase : RoomDatabase() {
     abstract fun forecastDao(): IForecastDao
 }
 
-fun weatherDatabase(
+public fun weatherDatabase(
     applicationContext: Context
 ): WeatherDatabase {
     val weatherRoomDatabase = Room.databaseBuilder(
@@ -54,5 +54,6 @@ fun weatherDatabase(
         klass = WeatherRoomDatabase::class.java,
         name = "Weather"
     ).build()
+
     return WeatherDatabase(weatherRoomDatabase)
 }

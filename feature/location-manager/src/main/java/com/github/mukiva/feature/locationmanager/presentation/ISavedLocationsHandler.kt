@@ -2,7 +2,7 @@ package com.github.mukiva.feature.locationmanager.presentation
 
 import kotlinx.coroutines.flow.StateFlow
 
-interface ISavedLocationsHandler {
+internal interface ISavedLocationsHandler {
     val savedLocationsState: StateFlow<ISavedLocationsState>
     fun enterEditMode(location: EditableLocation)
     fun enterNormalMode()

@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import com.github.mukiva.core.ui.R as CoreUiRes
 
-class PrecipitationComponent(
+internal class PrecipitationComponent(
     private val binding: LayPrecipitationBinding,
     private val locationId: Long
 ) : Component(), Component.IStateObserver<DashboardViewModel> {

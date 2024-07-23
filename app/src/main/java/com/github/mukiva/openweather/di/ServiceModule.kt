@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.work.Worker
 import androidx.work.WorkerFactory
 import com.github.mukiva.feature.weathernotification.WeatherNotificationChannelHolder
+import com.github.mukiva.feature.weathernotification.createNotificationChannelHolder
 import com.github.mukiva.feature.weathernotification.createWeatherNotificationLauncher
 import com.github.mukiva.openweather.MainWorkerFactory
 import dagger.Module
@@ -14,7 +15,7 @@ import dagger.hilt.components.SingletonComponent
 
 @Module
 @InstallIn(SingletonComponent::class)
-class ServiceModule {
+internal class ServiceModule {
 
     @Provides
     fun provideWeatherNotificationServiceLauncher(
@@ -24,5 +25,5 @@ class ServiceModule {
     @Provides
     fun provideWeatherNotificationChannelHolder(
         @ApplicationContext context: Context
-    ) = WeatherNotificationChannelHolder(context)
+    ) = createNotificationChannelHolder(context)
 }

@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-class DayForecastComponent(
+internal class DayForecastComponent(
     private val binding: LayDayForecastBinding,
     private val locationId: Long,
     private val onItemClick: (Int) -> Unit

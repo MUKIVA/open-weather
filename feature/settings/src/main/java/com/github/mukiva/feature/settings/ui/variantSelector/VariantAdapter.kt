@@ -2,11 +2,10 @@ package com.github.mukiva.feature.settings.ui.variantSelector
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.github.mukiva.feature.settings.databinding.ItemSelectableItemBinding
 
-class VariantAdapter(
+internal class VariantAdapter(
     private val selectedPosition: () -> Int,
     private val onVariantSelect: (Int) -> Unit
 ) : ListAdapter<String, VariantViewHolder>(VariantDiffUtil) {
@@ -23,8 +22,3 @@ class VariantAdapter(
     }
 }
 
-object VariantDiffUtil : DiffUtil.ItemCallback<String>() {
-    override fun areItemsTheSame(oldItem: String, newItem: String): Boolean = true
-
-    override fun areContentsTheSame(oldItem: String, newItem: String): Boolean = false
-}

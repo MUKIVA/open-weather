@@ -3,7 +3,7 @@ package com.github.mukiva.feature.locationmanager.ui.adapter
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 
-class DragDropItemTouchHelper(
+internal class DragDropItemTouchHelper(
     private val adapter: ItemTouchHelperAdapter,
 ) : ItemTouchHelper.Callback() {
 
@@ -15,7 +15,7 @@ class DragDropItemTouchHelper(
     override fun isItemViewSwipeEnabled(): Boolean = isEnabled && swipeIsEnabled
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-        TODO("Not yet implemented")
+        // do nothing
     }
 
     override fun getMovementFlags(

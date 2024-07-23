@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
-class AddLocationUseCase @Inject constructor(
+internal class AddLocationUseCase @Inject constructor(
     private val locationRepository: ILocationRepository,
     private val locationProvider: ILocationProvider,
     private val settingsRepository: ISettingsRepository

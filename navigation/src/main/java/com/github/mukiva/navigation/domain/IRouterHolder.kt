@@ -1,6 +1,6 @@
 package com.github.mukiva.navigation.domain
 
-interface IRouterHolder {
+public interface IRouterHolder {
 
-    fun requireRouter(): IRouter
+    public fun requireRouter(): IRouter
 }

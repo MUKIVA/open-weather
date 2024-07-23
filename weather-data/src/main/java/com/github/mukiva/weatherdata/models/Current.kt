@@ -2,7 +2,7 @@ package com.github.mukiva.weatherdata.models
 
 import kotlinx.datetime.LocalDateTime
 
-data class Current(
+public data class Current(
     var lastUpdatedEpoch: LocalDateTime,
     var tempC: Double,
     var tempF: Double,

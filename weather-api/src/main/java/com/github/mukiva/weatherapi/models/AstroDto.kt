@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class AstroDto(
+public data class AstroDto(
     @SerialName("sunrise")
     val sunrise: String,
     @SerialName("sunset")

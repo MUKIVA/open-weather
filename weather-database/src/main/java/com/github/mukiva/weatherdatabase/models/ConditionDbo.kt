@@ -2,7 +2,7 @@ package com.github.mukiva.weatherdatabase.models
 
 import androidx.room.ColumnInfo
 
-data class ConditionDbo(
+public data class ConditionDbo(
     @ColumnInfo("text")
     var text: String,
     @ColumnInfo("icon")

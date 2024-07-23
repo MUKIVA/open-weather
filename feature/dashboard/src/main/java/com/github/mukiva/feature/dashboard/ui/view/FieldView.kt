@@ -8,7 +8,7 @@ import android.widget.FrameLayout
 import com.github.mukiva.feature.dashboard.R
 import com.github.mukiva.feature.dashboard.databinding.ViewFieldBinding
 
-class FieldView @JvmOverloads constructor(
+internal class FieldView @JvmOverloads constructor(
     context: Context,
     attributeSet: AttributeSet? = null,
     defStyleAttr: Int = 0,

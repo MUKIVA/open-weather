@@ -28,7 +28,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class CurrentWeatherWidgetProvider : AppWidgetProvider() {
+internal class CurrentWeatherWidgetProvider : AppWidgetProvider() {
     sealed class State {
         data object Loading : State()
         data object Error : State()

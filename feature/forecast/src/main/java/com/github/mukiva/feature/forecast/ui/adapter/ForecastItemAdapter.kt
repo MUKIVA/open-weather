@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.ListAdapter
 import com.github.mukiva.feature.forecast.databinding.ItemHourDetailsBinding
 import com.github.mukiva.feature.forecast.domain.ForecastItem
 
-class ForecastItemAdapter : ListAdapter<ForecastItem, ForecastItemViewHolder>(ForecastItemDiffUtil) {
+internal class ForecastItemAdapter : ListAdapter<ForecastItem, ForecastItemViewHolder>(ForecastItemDiffUtil) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ForecastItemViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return ForecastItemViewHolder(

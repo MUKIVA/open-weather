@@ -24,7 +24,7 @@ import com.github.mukiva.core.ui.R as CoreUiRes
 import com.google.android.material.R as MaterialRes
 
 @AndroidEntryPoint
-class OnboardingFragment : Fragment(R.layout.fragment_onboarding) {
+internal class OnboardingFragment : Fragment(R.layout.fragment_onboarding) {
 
     private val mViewModel by viewModels<OnboardingViewModel>()
     private val mBindings by viewBindings(FragmentOnboardingBinding::bind)
