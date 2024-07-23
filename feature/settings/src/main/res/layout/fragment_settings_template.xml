@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/root"
     xmlns:tools="http://schemas.android.com/tools">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/def_collapsing_toolbar_h"
-        app:liftOnScroll="false">
+        android:layout_height="wrap_content"
+        app:liftOnScroll="false"
+        android:fitsSystemWindows="true">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/collapsingToolbarLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="?attr/collapsingToolbarLayoutLargeSize"
             style="@style/Widget.Material3.CollapsingToolbar.Large"
             app:expandedTitleTextAppearance="@style/TextAppearance.Material3.HeadlineLarge"
             app:collapsedTitleTextAppearance="@style/TextAppearance.Material3.HeadlineMedium"
