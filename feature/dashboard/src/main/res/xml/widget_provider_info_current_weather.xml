@@ -2,7 +2,7 @@
 <appwidget-provider
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:minWidth="310dp"
-    android:minHeight="95dp"
+    android:minHeight="120dp"
     android:updatePeriodMillis="60000"
     android:description="@string/widget_current_weather_description"
     android:initialLayout="@layout/lay_widget_current_weather"

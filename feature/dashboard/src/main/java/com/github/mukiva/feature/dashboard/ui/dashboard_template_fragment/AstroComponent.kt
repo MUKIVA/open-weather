@@ -1,6 +1,5 @@
 package com.github.mukiva.feature.dashboard.ui.dashboard_template_fragment
 
-import android.util.Log
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
@@ -36,9 +35,6 @@ class AstroComponent(
         lifecycleOwner.lifecycleScope.launch {
             viewModel.provideForecastState(locationId)
                 .flowWithLifecycle(lifecycleOwner.lifecycle)
-                .onEach {
-                    Log.d("STATE", "$it")
-                }
                 .filterIsInstance(ICurrentState.Content::class)
                 .map { state -> state.astro }
                 .onEach(::onUpdateState)
