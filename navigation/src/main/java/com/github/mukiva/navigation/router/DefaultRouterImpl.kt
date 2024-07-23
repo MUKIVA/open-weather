@@ -12,7 +12,6 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI
 import com.github.mukiva.core.ui.KEY_ARGS
 import com.github.mukiva.navigation.domain.IRouter
 import com.github.mukiva.navigation.ui.IOnCreateHandler
@@ -91,8 +90,8 @@ internal class DefaultRouterImpl @AssistedInject constructor(
     }
 
     @AssistedFactory
-    public interface Factory {
-        public fun create(
+    interface Factory {
+        fun create(
             @IdRes fragmentContainerId: Int
         ): DefaultRouterImpl
     }

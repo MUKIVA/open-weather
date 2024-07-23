@@ -1,6 +1,5 @@
 package com.github.mukiva.feature.locationmanager.ui.adapter
 
-import android.util.Log
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
