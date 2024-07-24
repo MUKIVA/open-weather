@@ -124,8 +124,26 @@ internal class SavedLocationsHandler @Inject constructor(
         return when (requestResult) {
             is RequestResult.Error -> ISavedLocationsState.Error
             is RequestResult.InProgress -> ISavedLocationsState.Loading
-            is RequestResult.Success ->
-                ISavedLocationsState.Content(requestResult.data)
+            is RequestResult.Success -> {
+                val mergedData = mergeWithCurrentState(requestResult.data)
+                ISavedLocationsState.Content(mergedData)
+            }
+
+        }
+    }
+
+    private fun mergeWithCurrentState(
+        requestedData: List<EditableLocation>
+    ): List<EditableLocation> {
+        val state = mSavedLocationsState.value as? ISavedLocationsState.Content
+            ?: return requestedData
+        val oldData = state.data
+        return requestedData.map { editable ->
+            val oldItem = oldData.firstOrNull { it.location.id == editable.location.id }
+            editable.copy(
+                isSelected = oldItem?.isSelected ?: false,
+                isEditable = oldItem?.isEditable ?: false
+            )
         }
     }
 }
