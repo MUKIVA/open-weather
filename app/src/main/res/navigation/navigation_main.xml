@@ -7,7 +7,17 @@
 
     <fragment
         android:id="@+id/dashboardFragment"
-        android:name="com.github.mukiva.feature.dashboard.ui.dashboard_fragment.DashboardFragment" />
+        android:name="com.github.mukiva.feature.dashboard.ui.dashboard_fragment.DashboardFragment" >
+        <action
+            android:id="@+id/action_dashboardFragment_to_forecastFragment"
+            app:destination="@id/forecastFragment" />
+        <action
+            android:id="@+id/action_dashboardFragment_to_locationManagerFragment"
+            app:destination="@id/locationManagerFragment" />
+        <action
+            android:id="@+id/action_dashboardFragment_to_settingsTemplateFragment"
+            app:destination="@id/settingsTemplateFragment" />
+    </fragment>
     <fragment
         android:id="@+id/locationManagerFragment"
         android:name="com.github.mukiva.feature.locationmanager.ui.LocationManagerRootFragment" />
