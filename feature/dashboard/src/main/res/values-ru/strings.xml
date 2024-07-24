@@ -31,7 +31,7 @@
     <string name="field_pressure_subtitle">Давление</string>
     <string name="dashboard_title_current">Текущая погода</string>
     <string name="dashboard_title_precipitation">Осадки</string>
-    <string name="dashboard_title_astro">Долгота дня</string>
+    <string name="dashboard_title_astro">Продолжительность дня</string>
     <string name="dashboard_title_forecast">Прогноз</string>
 
     <string name="main_empty_view_msg">Список локаций пуст</string>
