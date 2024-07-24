@@ -2,13 +2,11 @@ package com.github.mukiva.feature.dashboard.ui.widget
 
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.util.Log
 import android.view.View
 import android.widget.RemoteViews
-import androidx.core.os.bundleOf
 import com.github.mukiva.core.ui.getTempString
 import com.github.mukiva.core.ui.getWeatherRes
 import com.github.mukiva.feature.dashboard.R

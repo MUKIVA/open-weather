@@ -12,12 +12,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.viewbinding.ViewBinding
-import com.github.mukiva.openweather.core.domain.settings.UnitsType
-import com.github.mukiva.openweather.core.domain.weather.Pressure
-import com.github.mukiva.openweather.core.domain.weather.Speed
-import com.github.mukiva.openweather.core.domain.weather.Temp
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import kotlin.math.roundToInt
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
