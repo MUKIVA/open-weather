@@ -25,6 +25,18 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import javax.inject.Singleton
 
+fun createOkHttpClient(): OkHttpClient {
+    val builder = OkHttpClient.Builder()
+    if (BuildConfig.DEBUG) {
+        builder.addInterceptor(
+            HttpLoggingInterceptor().apply {
+                level = HttpLoggingInterceptor.Level.BODY
+            }
+        )
+    }
+    return builder.build()
+}
+
 @Module
 @InstallIn(SingletonComponent::class)
 internal class DataModule {
@@ -37,13 +49,7 @@ internal class DataModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient() = OkHttpClient.Builder()
-        .addInterceptor(
-            HttpLoggingInterceptor().apply {
-                level = HttpLoggingInterceptor.Level.BODY
-            }
-        )
-        .build()
+    fun provideOkHttpClient() = createOkHttpClient()
 
     @Provides
     @Singleton
