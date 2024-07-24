@@ -1,10 +1,6 @@
 <h1>Screens:</h1>
 
-<img height="260" src="/images/1.jpg" width="117"/>
-<img height="260" src="/images/2.jpg" width="117"/>
-<img height="260" src="/images/3.jpg" width="117"/>
-<img height="260" src="/images/4.jpg" width="117"/>
-<img height="260" src="/images/5.jpg" width="117"/>
+<img height="260" src="/images/1.jpg" width="117"/><img height="260" src="/images/2.jpg" width="117"/><img height="260" src="/images/3.jpg" width="117"/><img height="260" src="/images/4.jpg" width="117"/><img height="260" src="/images/5.jpg" width="117"/>
 
 <h1>RU</h1>
 
