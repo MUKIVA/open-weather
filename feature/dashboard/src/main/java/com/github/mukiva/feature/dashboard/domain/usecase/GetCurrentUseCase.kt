@@ -11,12 +11,12 @@ import com.github.mukiva.openweather.core.domain.weather.Pressure
 import com.github.mukiva.openweather.core.domain.weather.Speed
 import com.github.mukiva.openweather.core.domain.weather.Temp
 import com.github.mukiva.openweather.core.domain.weather.WindDirection
-import com.github.mukiva.weatherdata.models.Current as DataCurrent
-import com.github.mukiva.weatherdata.models.Day as DataDay
-import com.github.mukiva.weatherdata.models.ForecastWithCurrentAndLocation
+import com.github.mukiva.weatherdata.models.CurrentData as DataCurrent
+import com.github.mukiva.weatherdata.models.DayData as DataDay
+import com.github.mukiva.weatherdata.models.ForecastWithCurrentAndLocationData
 import com.github.mukiva.weatherdata.IForecastRepository
 import com.github.mukiva.weatherdata.ISettingsRepository
-import com.github.mukiva.weatherdata.models.ForecastDay
+import com.github.mukiva.weatherdata.models.ForecastDayData
 import com.github.mukiva.weatherdata.utils.RequestResult
 import com.github.mukiva.weatherdata.utils.map
 import kotlinx.coroutines.flow.Flow
@@ -27,8 +27,8 @@ import kotlinx.datetime.format.Padding
 import kotlinx.datetime.format.char
 import javax.inject.Inject
 import com.github.mukiva.openweather.core.domain.weather.Precipitation as Precip
-import com.github.mukiva.weatherdata.models.Astro as DataAstro
-import com.github.mukiva.weatherdata.models.Location as LocationData
+import com.github.mukiva.weatherdata.models.AstroData as DataAstro
+import com.github.mukiva.weatherdata.models.LocationData as LocationData
 
 internal class GetCurrentUseCase @Inject constructor(
     private val forecastRepository: IForecastRepository,
@@ -51,17 +51,17 @@ internal class GetCurrentUseCase @Inject constructor(
     }
 
     private fun asDomainForecast(
-        forecastData: ForecastWithCurrentAndLocation,
+        forecastData: ForecastWithCurrentAndLocationData,
         unitsType: UnitsType
     ): Forecast {
-        val currentData = forecastData.current
-        val forecastDayData = forecastData.forecast.forecastDay.first()
+        val currentData = forecastData.currentData
+        val forecastDayData = forecastData.forecastData.forecastDayData.first()
         return Forecast(
-            location = asDomainLocation(forecastData.location),
+            location = asDomainLocation(forecastData.locationData),
             current = asDomainCurrent(currentData, unitsType),
-            precipitation = asDomainPrecipitation(forecastDayData.day, unitsType),
-            astro = asDomainAstro(forecastDayData.astro),
-            dayForecasts = forecastData.forecast.forecastDay.mapIndexed { index, forecastDay ->
+            precipitation = asDomainPrecipitation(forecastDayData.dayData, unitsType),
+            astro = asDomainAstro(forecastDayData.astroData),
+            dayForecasts = forecastData.forecastData.forecastDayData.mapIndexed { index, forecastDay ->
                 asDomainDayForecast(forecastDay, unitsType, index)
             },
         )
@@ -79,7 +79,7 @@ internal class GetCurrentUseCase @Inject constructor(
         windDirection = WindDirection.valueOf(currentData.windDir),
         humidityPercent = currentData.humidity,
         pressure = Pressure(unitsType, currentData.pressureMb, currentData.pressureIn),
-        conditionImageCode = currentData.condition.code
+        conditionImageCode = currentData.conditionData.code
     )
 
     private fun asDomainPrecipitation(
@@ -111,15 +111,15 @@ internal class GetCurrentUseCase @Inject constructor(
     )
 
     private fun asDomainDayForecast(
-        forecastDay: ForecastDay,
+        forecastDayData: ForecastDayData,
         unitsType: UnitsType,
         id: Int,
     ) = DayForecast(
         id = id,
-        conditionIconCode = forecastDay.day.condition.code,
-        date = forecastDay.dateEpoch,
-        nightTemp = Temp(unitsType, forecastDay.day.minTempC, forecastDay.day.minTempF),
-        dayTemp = Temp(unitsType, forecastDay.day.maxTempC, forecastDay.day.maxTempF),
+        conditionIconCode = forecastDayData.dayData.conditionData.code,
+        date = forecastDayData.dateEpoch,
+        nightTemp = Temp(unitsType, forecastDayData.dayData.minTempC, forecastDayData.dayData.minTempF),
+        dayTemp = Temp(unitsType, forecastDayData.dayData.maxTempC, forecastDayData.dayData.maxTempF),
     )
 
     private fun asDomainLocation(

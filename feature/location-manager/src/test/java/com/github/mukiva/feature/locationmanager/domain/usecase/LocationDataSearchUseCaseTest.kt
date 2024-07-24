@@ -14,9 +14,9 @@ import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
-import com.github.mukiva.weatherdata.models.Location as DataLocation
+import com.github.mukiva.weatherdata.models.LocationData as DataLocation
 
-class LocationSearchUseCaseTest {
+class LocationDataSearchUseCaseTest {
 
     private val mMockLocationRepository = mock<ILocationRepository>()
     private val mMockSettingsRepository = mock<ISettingsRepository>()

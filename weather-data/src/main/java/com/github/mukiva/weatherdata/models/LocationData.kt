@@ -2,7 +2,7 @@ package com.github.mukiva.weatherdata.models
 
 import kotlinx.datetime.LocalDateTime
 
-public data class Location(
+public data class LocationData(
     val id: Long,
     val name: String,
     val region: String,

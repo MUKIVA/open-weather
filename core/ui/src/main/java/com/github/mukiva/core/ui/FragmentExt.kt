@@ -28,10 +28,6 @@ fun <T : Parcelable> Fragment.getArgs(clazz: Class<T>): T {
     return this.requireArguments().getCompatParcelable(KEY_ARGS, clazz) as T
 }
 
-fun Fragment.getInteger(@IntegerRes res: Int): Int {
-    return this.requireContext().resources.getInteger(res)
-}
-
 fun Fragment.getDimen(@DimenRes res: Int): Int {
     return this.requireContext().resources.getDimensionPixelOffset(res)
 }

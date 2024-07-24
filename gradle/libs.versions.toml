@@ -10,6 +10,7 @@ coreSplashscreen = "1.0.1"
 kotlin = "2.0.0"
 jetbrainsKotlinJvm = "2.0.0"
 hilt = "2.51.1"
+kapt = "2.0.0"
 secrets = "2.0.1"
 ksp = "2.0.0-1.0.21"
 androidx-work = "2.9.0"
@@ -64,6 +65,7 @@ hilt-common = { group = "androidx.hilt", name = "hilt-common", version.ref = "hi
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 retrofit-adapter-result = { module = "com.github.skydoves:retrofit-adapters-result", version.ref = "retrofit-adapter-result" }
 retrofit-converter-json = { module = "com.squareup.retrofit2:converter-kotlinx-serialization", version.ref = "retrofit" }
+#retrofit-responce-type-keeper = { module = "om.squareup.retrofit2:response-type-keeper", version.ref = "retrofit" }
 
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 okhttp-logging = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp" }
@@ -77,8 +79,6 @@ android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 build-logic = { module = "com.github.mukiva:build-logic", version.ref = "buildLogic" }
 
-
-
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLib = { id = "com.android.library", version.ref = "agp" }
@@ -86,6 +86,7 @@ hiltAndroid = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 jetbrainsKotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+#kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kapt" }
 secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secrets" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 kotlinxSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "koltinx-serialization" }

@@ -1,7 +1,10 @@
 package com.github.mukiva.openweather.di
 
 import android.content.Context
+import com.github.mukiva.feature.weathernotification.WeatherNotificationWorker
+import com.github.mukiva.feature.weathernotification.WeatherNotificationWorkerFactory
 import com.github.mukiva.openweather.BuildConfig
+import com.github.mukiva.openweather.createMainWorkerFactory
 import com.github.mukiva.weatherapi.IWeatherApi
 import com.github.mukiva.weatherapi.weatherApi
 import com.github.mukiva.weatherdata.IForecastRepository
@@ -26,6 +29,12 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 internal class DataModule {
+
+    @Provides
+    @Singleton
+    fun provideMainWorkerFactory(
+        weatherNotificationWorkerFactory: WeatherNotificationWorkerFactory
+    ) = createMainWorkerFactory(weatherNotificationWorkerFactory)
 
     @Provides
     @Singleton

@@ -2,7 +2,7 @@ package com.github.mukiva.feature.splash.domain
 
 import com.github.mukiva.weatherdata.ILocationRepository
 import com.github.mukiva.weatherdata.ISettingsRepository
-import com.github.mukiva.weatherdata.models.Location
+import com.github.mukiva.weatherdata.models.LocationData
 import com.github.mukiva.weatherdata.utils.RequestResult
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
@@ -28,9 +28,9 @@ internal class AddLocationUseCase @Inject constructor(
             .first()
     }
 
-    private suspend fun saveFirstLocation(locationList: List<Location>?) {
-        if (locationList.isNullOrEmpty()) return
-        val location = locationList.single()
+    private suspend fun saveFirstLocation(locationDataList: List<LocationData>?) {
+        if (locationDataList.isNullOrEmpty()) return
+        val location = locationDataList.single()
         locationRepository.addLocalLocation(location)
     }
 }

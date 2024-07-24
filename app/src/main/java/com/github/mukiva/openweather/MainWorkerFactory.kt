@@ -5,10 +5,11 @@ import androidx.work.ListenableWorker
 import androidx.work.WorkerFactory
 import androidx.work.WorkerParameters
 import com.github.mukiva.feature.weathernotification.WeatherNotificationWorker
+import com.github.mukiva.feature.weathernotification.WeatherNotificationWorkerFactory
 import javax.inject.Inject
 
-internal class MainWorkerFactory @Inject constructor(
-    private val weatherNotificationWorkerFactory: WeatherNotificationWorker.Factory
+class MainWorkerFactory internal constructor(
+    private val weatherNotificationWorkerFactory: WeatherNotificationWorkerFactory
 ) : WorkerFactory() {
     override fun createWorker(
         appContext: Context,
@@ -22,3 +23,7 @@ internal class MainWorkerFactory @Inject constructor(
         }
     }
 }
+
+fun createMainWorkerFactory(
+    weatherNotificationWorkerFactory: WeatherNotificationWorkerFactory
+) = MainWorkerFactory(weatherNotificationWorkerFactory)

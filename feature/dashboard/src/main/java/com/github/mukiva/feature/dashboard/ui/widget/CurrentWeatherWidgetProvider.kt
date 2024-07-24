@@ -175,10 +175,10 @@ internal fun asState(requestResult: RequestResult<ForecastDataWrapper>): Current
             val forecast = checkNotNull(data.data)
             val unitsType = checkNotNull(data.unitsType)
             CurrentWeatherWidgetProvider.State.Content(
-                currentTemp = Temp(unitsType, forecast.current.tempC, forecast.current.tempF),
-                locationName = forecast.location.name,
-                isDay = forecast.current.isDay == 1,
-                conditionCode = forecast.current.condition.code
+                currentTemp = Temp(unitsType, forecast.currentData.tempC, forecast.currentData.tempF),
+                locationName = forecast.locationData.name,
+                isDay = forecast.currentData.isDay == 1,
+                conditionCode = forecast.currentData.conditionData.code
             )
         }
     }

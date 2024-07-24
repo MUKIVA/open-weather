@@ -9,15 +9,15 @@ import com.github.mukiva.weatherapi.models.ForecastDto
 import com.github.mukiva.weatherapi.models.ForecastWithCurrentAndLocationDto
 import com.github.mukiva.weatherapi.models.HourDto
 import com.github.mukiva.weatherapi.models.LocationDto
-import com.github.mukiva.weatherdata.models.Astro
-import com.github.mukiva.weatherdata.models.Condition
-import com.github.mukiva.weatherdata.models.Current
-import com.github.mukiva.weatherdata.models.Day
-import com.github.mukiva.weatherdata.models.Forecast
-import com.github.mukiva.weatherdata.models.ForecastDay
-import com.github.mukiva.weatherdata.models.ForecastWithCurrentAndLocation
-import com.github.mukiva.weatherdata.models.Hour
-import com.github.mukiva.weatherdata.models.Location
+import com.github.mukiva.weatherdata.models.AstroData
+import com.github.mukiva.weatherdata.models.ConditionData
+import com.github.mukiva.weatherdata.models.CurrentData
+import com.github.mukiva.weatherdata.models.DayData
+import com.github.mukiva.weatherdata.models.ForecastData
+import com.github.mukiva.weatherdata.models.ForecastDayData
+import com.github.mukiva.weatherdata.models.ForecastWithCurrentAndLocationData
+import com.github.mukiva.weatherdata.models.HourData
+import com.github.mukiva.weatherdata.models.LocationData
 import com.github.mukiva.weatherdatabase.models.AstroDbo
 import com.github.mukiva.weatherdatabase.models.ConditionDbo
 import com.github.mukiva.weatherdatabase.models.CurrentDbo
@@ -32,45 +32,45 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import com.github.mukiva.weatherdatabase.relations.ForecastWithCurrentAndLocation as RelationForecastWithCurrentAndLocation
 
-internal fun ForecastWithCurrentAndLocationDto.toDomain(): ForecastWithCurrentAndLocation {
-    return ForecastWithCurrentAndLocation(
-        location = location.toLocation(),
-        current = current.toCurrent(),
-        forecast = forecast.toForecast(),
+internal fun ForecastWithCurrentAndLocationDto.toDomain(): ForecastWithCurrentAndLocationData {
+    return ForecastWithCurrentAndLocationData(
+        locationData = location.toLocation(),
+        currentData = current.toCurrent(),
+        forecastData = forecast.toForecast(),
     )
 }
 
-internal fun RelationForecastWithCurrentAndLocation.toDomain(): ForecastWithCurrentAndLocation {
-    return ForecastWithCurrentAndLocation(
-        location = location.toLocation(),
-        current = current.toCurrent(),
-        forecast = forecast.toForecast(),
+internal fun RelationForecastWithCurrentAndLocation.toDomain(): ForecastWithCurrentAndLocationData {
+    return ForecastWithCurrentAndLocationData(
+        locationData = location.toLocation(),
+        currentData = current.toCurrent(),
+        forecastData = forecast.toForecast(),
     )
 }
 
-internal fun ForecastDto.toForecast(): Forecast {
-    return Forecast(
-        forecastDay = forecastDay.map { it.toForecastDay() },
+internal fun ForecastDto.toForecast(): ForecastData {
+    return ForecastData(
+        forecastDayData = forecastDay.map { it.toForecastDay() },
     )
 }
 
-internal fun ForecastWithDays.toForecast(): Forecast {
-    return Forecast(
-        forecastDay = forecastDays.map { it.toForecastDay() },
+internal fun ForecastWithDays.toForecast(): ForecastData {
+    return ForecastData(
+        forecastDayData = forecastDays.map { it.toForecastDay() },
     )
 }
 
-internal fun ForecastDayWithHours.toForecastDay(): ForecastDay {
-    return ForecastDay(
+internal fun ForecastDayWithHours.toForecastDay(): ForecastDayData {
+    return ForecastDayData(
         dateEpoch = forecastDay.dateEpoch,
-        day = forecastDay.day.toDay(),
-        astro = forecastDay.astro.toAstro(),
-        hour = hours.map { it.toHour() },
+        dayData = forecastDay.day.toDay(),
+        astroData = forecastDay.astro.toAstro(),
+        hourData = hours.map { it.toHour() },
     )
 }
 
-internal fun AstroDbo.toAstro(): Astro {
-    return Astro(
+internal fun AstroDbo.toAstro(): AstroData {
+    return AstroData(
         sunrise = sunrise,
         sunset = sunset,
         moonrise = moonrise,
@@ -82,8 +82,8 @@ internal fun AstroDbo.toAstro(): Astro {
     )
 }
 
-internal fun DayDbo.toDay(): Day {
-    return Day(
+internal fun DayDbo.toDay(): DayData {
+    return DayData(
         maxTempC = maxTempC,
         maxTempF = maxTempF,
         minTempC = minTempC,
@@ -103,12 +103,12 @@ internal fun DayDbo.toDay(): Day {
         dailyWillItSnow = dailyWillItSnow,
         dailyChanceOfSnow = dailyChanceOfSnow,
         uv = uv,
-        condition = condition.toCondition(),
+        conditionData = condition.toCondition(),
     )
 }
 
-internal fun DayDto.toDay(): Day {
-    return Day(
+internal fun DayDto.toDay(): DayData {
+    return DayData(
         maxTempC = maxTempC,
         maxTempF = maxTempF,
         minTempC = minTempC,
@@ -128,12 +128,12 @@ internal fun DayDto.toDay(): Day {
         dailyWillItSnow = dailyWillItSnow,
         dailyChanceOfSnow = dailyChanceOfSnow,
         uv = uv,
-        condition = condition.toCondition(),
+        conditionData = condition.toCondition(),
     )
 }
 
-internal fun AstroDto.toAstro(): Astro {
-    return Astro(
+internal fun AstroDto.toAstro(): AstroData {
+    return AstroData(
         sunrise = sunrise,
         sunset = sunset,
         moonrise = moonrise,
@@ -145,13 +145,13 @@ internal fun AstroDto.toAstro(): Astro {
     )
 }
 
-internal fun CurrentDto.toCurrent(): Current {
-    return Current(
+internal fun CurrentDto.toCurrent(): CurrentData {
+    return CurrentData(
         lastUpdatedEpoch = lastUpdatedEpoch,
         tempC = tempC,
         tempF = tempF,
         isDay = isDay,
-        condition = condition.toCondition(),
+        conditionData = condition.toCondition(),
         windMph = windMph,
         windKph = windKph,
         windDegree = windDegree,
@@ -172,13 +172,13 @@ internal fun CurrentDto.toCurrent(): Current {
     )
 }
 
-internal fun CurrentDbo.toCurrent(): Current {
-    return Current(
+internal fun CurrentDbo.toCurrent(): CurrentData {
+    return CurrentData(
         lastUpdatedEpoch = lastUpdatedEpoch,
         tempC = tempC,
         tempF = tempF,
         isDay = isDay,
-        condition = condition.toCondition(),
+        conditionData = condition.toCondition(),
         windMph = windMph,
         windKph = windKph,
         windDegree = windDegree,
@@ -241,8 +241,8 @@ internal fun HourDto.toDbo(
     )
 }
 
-internal fun HourDto.toHour(): Hour {
-    return Hour(
+internal fun HourDto.toHour(): HourData {
+    return HourData(
         timeEpoch = timeEpoch,
         tempC = tempC,
         tempF = tempF,
@@ -275,12 +275,12 @@ internal fun HourDto.toHour(): Hour {
         gustMph = gustMph,
         gustKph = gustKph,
         uv = uv,
-        condition = condition.toCondition()
+        conditionData = condition.toCondition()
     )
 }
 
-internal fun HourDbo.toHour(): Hour {
-    return Hour(
+internal fun HourDbo.toHour(): HourData {
+    return HourData(
         timeEpoch = timeEpoch,
         tempC = tempC,
         tempF = tempF,
@@ -313,7 +313,7 @@ internal fun HourDbo.toHour(): Hour {
         gustMph = gustMph,
         gustKph = gustKph,
         uv = uv,
-        condition = condition.toCondition()
+        conditionData = condition.toCondition()
     )
 }
 
@@ -329,12 +329,12 @@ internal fun ForecastDayDto.toDbo(
     )
 }
 
-internal fun ForecastDayDto.toForecastDay(): ForecastDay {
-    return ForecastDay(
+internal fun ForecastDayDto.toForecastDay(): ForecastDayData {
+    return ForecastDayData(
         dateEpoch = dateEpoch,
-        day = day.toDay(),
-        astro = astro.toAstro(),
-        hour = hour.map { it.toHour() },
+        dayData = day.toDay(),
+        astroData = astro.toAstro(),
+        hourData = hour.map { it.toHour() },
     )
 }
 
@@ -412,24 +412,24 @@ internal fun ConditionDto.toDbo(): ConditionDbo {
     )
 }
 
-internal fun ConditionDto.toCondition(): Condition {
-    return Condition(
+internal fun ConditionDto.toCondition(): ConditionData {
+    return ConditionData(
         text = text,
         icon = icon,
         code = code,
     )
 }
 
-internal fun ConditionDbo.toCondition(): Condition {
-    return Condition(
+internal fun ConditionDbo.toCondition(): ConditionData {
+    return ConditionData(
         text = text,
         icon = icon,
         code = code,
     )
 }
 
-internal fun LocationDto.toLocation(): Location {
-    return Location(
+internal fun LocationDto.toLocation(): LocationData {
+    return LocationData(
         id = id.toLong(),
         name = name,
         region = region,
@@ -442,7 +442,7 @@ internal fun LocationDto.toLocation(): Location {
     )
 }
 
-internal fun Location.toDbo(): LocationDbo {
+internal fun LocationData.toDbo(): LocationDbo {
     return LocationDbo(
         id = id,
         name = name,
@@ -456,8 +456,8 @@ internal fun Location.toDbo(): LocationDbo {
     )
 }
 
-internal fun LocationDbo.toLocation(): Location {
-    return Location(
+internal fun LocationDbo.toLocation(): LocationData {
+    return LocationData(
         id = id,
         name = name,
         region = region,

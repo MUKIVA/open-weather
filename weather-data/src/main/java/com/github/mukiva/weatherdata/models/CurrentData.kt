@@ -2,12 +2,12 @@ package com.github.mukiva.weatherdata.models
 
 import kotlinx.datetime.LocalDateTime
 
-public data class Current(
+public data class CurrentData(
     var lastUpdatedEpoch: LocalDateTime,
     var tempC: Double,
     var tempF: Double,
     var isDay: Int,
-    var condition: Condition,
+    var conditionData: ConditionData,
     var windMph: Double,
     var windKph: Double,
     var windDegree: Int,

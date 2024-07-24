@@ -64,19 +64,19 @@ class AndroidDefaultPlugin : Plugin<Project> {
                 }
                 isDebuggable = false
                 isProfileable = true
-                isMinifyEnabled = false
+                isMinifyEnabled = true
 
                 signingConfig = signingConfigs.findByName("debug")
             }
         }
 
         compileOptions {
-            sourceCompatibility = JavaVersion.VERSION_17
-            targetCompatibility = JavaVersion.VERSION_17
+            sourceCompatibility = JavaVersion.VERSION_1_8
+            targetCompatibility = JavaVersion.VERSION_1_8
         }
 
         (this as ExtensionAware).configure<KotlinJvmOptions> {
-            jvmTarget = JavaVersion.VERSION_17.toString()
+            jvmTarget = JavaVersion.VERSION_1_8.toString()
         }
 
         sourceSets.forEach { source ->

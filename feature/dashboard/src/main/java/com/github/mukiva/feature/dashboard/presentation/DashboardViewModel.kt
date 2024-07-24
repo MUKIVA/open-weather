@@ -24,22 +24,22 @@ internal class DashboardViewModel @Inject constructor(
     private val getAllLocationsUseCase: GetAllLocationsUseCase,
     private val router: IDashboardRouter,
     private val forecastLoader: IForecastLoader,
-    private val currentWeatherUpdater: CurrentWeatherWidgetProvider.Updater,
-    settingsRepository: ISettingsRepository
+//    private val currentWeatherUpdater: CurrentWeatherWidgetProvider.Updater,
+//    settingsRepository: ISettingsRepository
 )
     : ViewModel()
     , IForecastLoader by forecastLoader
     , IDashboardRouter by router
 {
 
-    init {
-        settingsRepository.getUnitsType()
-            .onEach {
-                currentWeatherUpdater.update()
-                requestLoad()
-            }
-            .launchIn(viewModelScope)
-    }
+//    init {
+//        settingsRepository.getUnitsType()
+//            .onEach {
+//                currentWeatherUpdater.update()
+//                requestLoad()
+//            }
+//            .launchIn(viewModelScope)
+//    }
 
     val state: StateFlow<IDashboardState>
         get() = mState.asStateFlow()

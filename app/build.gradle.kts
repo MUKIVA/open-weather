@@ -15,11 +15,38 @@ android {
         applicationId = "com.github.mukiva.openweather"
         versionCode = 1
         versionName = "1.0"
+
+        resourceConfigurations += setOf("ru", "en")
+
+        ndk {
+            //noinspection ChromeOsAbiSupport
+            abiFilters += setOf("armeabi-v7a", "arm64-v8a")
+        }
+
+    }
+
+    lint {
+        baseline = file("lint-baseline.xml")
     }
 
     buildFeatures {
         viewBinding = true
         buildConfig = true
+    }
+
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "/okhttp3/internal/publicsuffix/NOTICE"
+            excludes += "/kotlin"
+            excludes += "/META-INF/androidx.*.version"
+            excludes += "/META-INF/com.google.*.version"
+            excludes += "/META-INF/kotlinx.*.version"
+            excludes += "/META-INF/kotlinx_*.version"
+            excludes += "/kotlin-tooling-metadata.json"
+            excludes += "/DebugProbesKt.bin"
+            excludes += "/META-INF/com/android/build/gradle/app-metadata.properties"
+        }
     }
 }
 

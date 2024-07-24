@@ -1,6 +1,6 @@
 package com.github.mukiva.weatherdata.models
 
-public data class Day(
+public data class DayData(
     val maxTempC: Double,
     val maxTempF: Double,
     val minTempC: Double,
@@ -20,5 +20,5 @@ public data class Day(
     val dailyWillItSnow: Int,
     val dailyChanceOfSnow: Int,
     val uv: Double,
-    val condition: Condition,
+    val conditionData: ConditionData,
 )

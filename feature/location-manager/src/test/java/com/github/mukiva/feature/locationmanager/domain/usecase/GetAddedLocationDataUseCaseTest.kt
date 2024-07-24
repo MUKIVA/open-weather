@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.mockito.kotlin.mock
 
-class GetAddedLocationUseCaseTest {
+class GetAddedLocationDataUseCaseTest {
 
     private val mMockLocationRepository = mock<ILocationRepository>()
 

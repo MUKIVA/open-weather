@@ -3,7 +3,7 @@ package com.github.mukiva.weatherdata
 import com.github.mukiva.openweather.core.domain.settings.Lang
 import com.github.mukiva.weatherapi.IWeatherApi
 import com.github.mukiva.weatherapi.models.ForecastWithCurrentAndLocationDto
-import com.github.mukiva.weatherdata.models.ForecastWithCurrentAndLocation
+import com.github.mukiva.weatherdata.models.ForecastWithCurrentAndLocationData
 import com.github.mukiva.weatherdata.utils.ForecastMergeStrategy
 import com.github.mukiva.weatherdata.utils.IDataMergeStrategy
 import com.github.mukiva.weatherdata.utils.RequestResult
@@ -28,9 +28,9 @@ public interface IForecastRepository {
         locationId: Long,
         lang: Lang,
         onlyCache: Boolean = false,
-        forecastMergeStrategy: IDataMergeStrategy<RequestResult<ForecastWithCurrentAndLocation>> =
+        forecastMergeStrategy: IDataMergeStrategy<RequestResult<ForecastWithCurrentAndLocationData>> =
             ForecastMergeStrategy()
-    ): Flow<RequestResult<ForecastWithCurrentAndLocation>>
+    ): Flow<RequestResult<ForecastWithCurrentAndLocationData>>
 }
 
 internal class ForecastRepository(
@@ -41,8 +41,8 @@ internal class ForecastRepository(
         locationId: Long,
         lang: Lang,
         onlyCache: Boolean,
-        forecastMergeStrategy: IDataMergeStrategy<RequestResult<ForecastWithCurrentAndLocation>>
-    ): Flow<RequestResult<ForecastWithCurrentAndLocation>> = when (onlyCache) {
+        forecastMergeStrategy: IDataMergeStrategy<RequestResult<ForecastWithCurrentAndLocationData>>
+    ): Flow<RequestResult<ForecastWithCurrentAndLocationData>> = when (onlyCache) {
         true -> getLocalForecast(locationId)
         false -> {
             val remote = getRemoteForecast(locationId, lang)
@@ -54,7 +54,7 @@ internal class ForecastRepository(
     private fun getRemoteForecast(
         locationId: Long,
         lang: Lang,
-    ): Flow<RequestResult<ForecastWithCurrentAndLocation>> {
+    ): Flow<RequestResult<ForecastWithCurrentAndLocationData>> {
         val languageCode = if (lang == Lang.SYSTEM) {
             Locale.getDefault().language
         } else {
@@ -73,7 +73,7 @@ internal class ForecastRepository(
 
     private fun getLocalForecast(
         locationId: Long
-    ): Flow<RequestResult<ForecastWithCurrentAndLocation>> {
+    ): Flow<RequestResult<ForecastWithCurrentAndLocationData>> {
         val local = database.forecastDao
             .getCache(locationId)
             .map(::cacheValidate)

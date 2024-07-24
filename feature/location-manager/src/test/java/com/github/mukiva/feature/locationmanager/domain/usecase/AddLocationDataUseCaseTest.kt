@@ -11,7 +11,7 @@ import org.mockito.Mockito.mock
 import org.mockito.kotlin.any
 
 
-class AddLocationUseCaseTest {
+class AddLocationDataUseCaseTest {
 
     private val mMockLocationRepository = mock<ILocationRepository>()
     private val mDomainLocation = createLocationMock()

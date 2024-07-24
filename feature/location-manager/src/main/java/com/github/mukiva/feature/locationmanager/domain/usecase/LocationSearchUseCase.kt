@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
-import com.github.mukiva.weatherdata.models.Location as DataLocation
+import com.github.mukiva.weatherdata.models.LocationData as DataLocation
 
 internal class LocationSearchUseCase @Inject constructor(
     private val repository: ILocationRepository,

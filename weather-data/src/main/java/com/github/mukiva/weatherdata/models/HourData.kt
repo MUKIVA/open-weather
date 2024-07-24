@@ -2,7 +2,7 @@ package com.github.mukiva.weatherdata.models
 
 import kotlinx.datetime.LocalDateTime
 
-public data class Hour(
+public data class HourData(
     val timeEpoch: LocalDateTime,
     val tempC: Double,
     val tempF: Double,
@@ -35,5 +35,5 @@ public data class Hour(
     val gustMph: Double,
     val gustKph: Double,
     val uv: Double,
-    val condition: Condition
+    val conditionData: ConditionData
 )

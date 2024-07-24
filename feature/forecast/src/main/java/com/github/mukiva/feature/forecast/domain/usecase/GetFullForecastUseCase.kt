@@ -11,8 +11,8 @@ import com.github.mukiva.openweather.core.domain.weather.Temp
 import com.github.mukiva.openweather.core.domain.weather.WindDirection
 import com.github.mukiva.weatherdata.IForecastRepository
 import com.github.mukiva.weatherdata.ISettingsRepository
-import com.github.mukiva.weatherdata.models.Forecast
-import com.github.mukiva.weatherdata.models.Hour
+import com.github.mukiva.weatherdata.models.ForecastData
+import com.github.mukiva.weatherdata.models.HourData
 import com.github.mukiva.weatherdata.utils.RequestResult
 import com.github.mukiva.weatherdata.utils.map
 import kotlinx.coroutines.flow.Flow
@@ -34,7 +34,7 @@ internal class GetFullForecastUseCase @Inject constructor(
             .getLocalization()
             .first()
         val request = forecastRepo.getForecast(locationId, lang, getCached)
-            .map { requestResult -> requestResult.map { it.forecast } }
+            .map { requestResult -> requestResult.map { it.forecastData } }
         val unitsTypeFlow = settingsRepository.getUnitsType()
 
         return unitsTypeFlow.combine(request) { unitsType, requestResult ->
@@ -43,14 +43,14 @@ internal class GetFullForecastUseCase @Inject constructor(
     }
 
     private fun toHourlyForecast(
-        forecast: Forecast,
+        forecastData: ForecastData,
         unitsType: UnitsType
     ): List<HourlyForecast> {
-        return forecast.forecastDay.mapIndexed { index, forecastDay ->
+        return forecastData.forecastDayData.mapIndexed { index, forecastDay ->
             HourlyForecast(
                 index = index,
                 date = forecastDay.dateEpoch,
-                hours = forecastDay.hour.mapIndexed { id, hour ->
+                hours = forecastDay.hourData.mapIndexed { id, hour ->
                     asForecastItem(id, hour, unitsType)
                 }
             )
@@ -59,9 +59,9 @@ internal class GetFullForecastUseCase @Inject constructor(
 
     private fun asForecastItem(
         index: Int,
-        hour: Hour,
+        hourData: HourData,
         unitsType: UnitsType,
-    ): ForecastItem = with(hour) {
+    ): ForecastItem = with(hourData) {
         return ForecastItem(
             id = index,
             humidity = humidity,
@@ -70,7 +70,7 @@ internal class GetFullForecastUseCase @Inject constructor(
             temp = Temp(unitsType, tempC, tempF),
             feelsLike = Temp(unitsType, feelsLikeC, feelsLikeF),
             cloud = cloud,
-            weatherIconCode = condition.code,
+            weatherIconCode = conditionData.code,
             isDay = isDay == 1,
             dateTime = timeEpoch,
             windSpeed = Speed(unitsType, windKph, windMph),

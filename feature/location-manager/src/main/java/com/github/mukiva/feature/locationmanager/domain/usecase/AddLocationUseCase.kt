@@ -7,14 +7,14 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import javax.inject.Inject
-import com.github.mukiva.weatherdata.models.Location as DataLocation
+import com.github.mukiva.weatherdata.models.LocationData as DataLocation
 
 internal class AddLocationUseCase @Inject constructor(
     private val repository: ILocationRepository
 ) {
     suspend operator fun invoke(location: Location): RequestResult<Unit> {
         return repository.addLocalLocation(
-            location = location.toData()
+            locationData = location.toData()
         )
     }
 

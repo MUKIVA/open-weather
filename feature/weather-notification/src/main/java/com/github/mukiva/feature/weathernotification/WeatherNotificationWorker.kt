@@ -5,7 +5,6 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import androidx.core.app.NotificationCompat
-import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.github.mukiva.core.ui.getTempString
@@ -13,11 +12,8 @@ import com.github.mukiva.openweather.core.domain.weather.Temp
 import com.github.mukiva.weatherdata.IForecastRepository
 import com.github.mukiva.weatherdata.ILocationRepository
 import com.github.mukiva.weatherdata.ISettingsRepository
-import com.github.mukiva.weatherdata.models.Location
+import com.github.mukiva.weatherdata.models.LocationData
 import com.github.mukiva.weatherdata.utils.RequestResult
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterIsInstance
@@ -25,23 +21,15 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import javax.inject.Inject
 
-@HiltWorker
-class WeatherNotificationWorker @AssistedInject internal constructor(
-    @Assisted applicationContext: Context,
-    @Assisted workerParameters: WorkerParameters,
+class WeatherNotificationWorker internal constructor(
+    applicationContext: Context,
+    workerParameters: WorkerParameters,
     private val settingsRepository: ISettingsRepository,
     private val locationRepository: ILocationRepository,
     private val forecastRepository: IForecastRepository
 ) : CoroutineWorker(applicationContext, workerParameters) {
-
-    @AssistedFactory
-    interface Factory {
-        fun create(
-            appContext: Context,
-            workerParameters: WorkerParameters
-        ): WeatherNotificationWorker
-    }
 
     override suspend fun doWork(): Result {
         notifyAboutCurrentWeather()
@@ -57,7 +45,7 @@ class WeatherNotificationWorker @AssistedInject internal constructor(
         val unitsType = settingsRepository.getUnitsType()
             .first()
         locationRepository.getAllLocal()
-            .filterIsInstance<RequestResult.Success<List<Location>>>()
+            .filterIsInstance<RequestResult.Success<List<LocationData>>>()
             .map { requestResult -> checkNotNull(requestResult.data) }
             .filter { locations -> locations.isNotEmpty() }
             .flatMapLatest { locations ->
@@ -69,8 +57,8 @@ class WeatherNotificationWorker @AssistedInject internal constructor(
                 if (requestResult is RequestResult.Success) {
                     val data = checkNotNull(requestResult.data)
                     sendNotification(
-                        locationName = data.location.name,
-                        currentTemp = Temp(unitsType, data.current.tempC, data.current.tempF)
+                        locationName = data.locationData.name,
+                        currentTemp = Temp(unitsType, data.currentData.tempC, data.currentData.tempF)
                     )
                 }
             }
@@ -110,6 +98,23 @@ class WeatherNotificationWorker @AssistedInject internal constructor(
     companion object {
         private const val NOTIFICATION_ID = 0
     }
+}
+
+class WeatherNotificationWorkerFactory @Inject constructor(
+    private val settingsRepository: ISettingsRepository,
+    private val locationRepository: ILocationRepository,
+    private val forecastRepository: IForecastRepository
+) {
+    fun create(
+        applicationContext: Context,
+        workerParameters: WorkerParameters,
+    ) = WeatherNotificationWorker(
+        applicationContext,
+        workerParameters,
+        settingsRepository,
+        locationRepository,
+        forecastRepository
+    )
 }
 
 fun createWeatherNotificationLauncher(
