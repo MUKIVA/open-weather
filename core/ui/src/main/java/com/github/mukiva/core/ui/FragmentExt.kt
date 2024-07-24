@@ -4,7 +4,6 @@ import android.os.Parcelable
 import android.util.TypedValue
 import android.view.View
 import androidx.annotation.DimenRes
-import androidx.annotation.IntegerRes
 import androidx.annotation.MainThread
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -165,32 +164,5 @@ class LazyAdapterDelegate<T>(
             mValue = this
         }
         else -> value
-    }
-}
-
-fun Fragment.getSpeedString(speed: Speed): String = with(speed) {
-    return when (unitsType) {
-        UnitsType.METRIC ->
-            getString(R.string.template_kmh, value.roundToInt())
-        UnitsType.IMPERIAL ->
-            getString(R.string.template_mph, value.roundToInt())
-    }
-}
-
-fun Fragment.getTempString(temp: Temp): String = with(temp) {
-    return when (unitsType) {
-        UnitsType.METRIC ->
-            getString(R.string.template_celsius, value.roundToInt())
-        UnitsType.IMPERIAL ->
-            getString(R.string.template_fahrenheit, value.roundToInt())
-    }
-}
-
-fun Fragment.getPressureString(pressure: Pressure): String = with(pressure) {
-    return when (unitsType) {
-        UnitsType.METRIC ->
-            getString(R.string.template_mb, value.roundToInt())
-        UnitsType.IMPERIAL ->
-            getString(R.string.template_mmhg, value.roundToInt())
     }
 }

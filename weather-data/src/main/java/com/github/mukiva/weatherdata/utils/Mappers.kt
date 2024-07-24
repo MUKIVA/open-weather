@@ -430,7 +430,7 @@ internal fun ConditionDbo.toCondition(): ConditionData {
 
 internal fun LocationDto.toLocation(): LocationData {
     return LocationData(
-        id = id.toLong(),
+        id = id,
         name = name,
         region = region,
         country = country,

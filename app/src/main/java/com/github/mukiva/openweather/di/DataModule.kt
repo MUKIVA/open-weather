@@ -1,7 +1,6 @@
 package com.github.mukiva.openweather.di
 
 import android.content.Context
-import com.github.mukiva.feature.weathernotification.WeatherNotificationWorker
 import com.github.mukiva.feature.weathernotification.WeatherNotificationWorkerFactory
 import com.github.mukiva.openweather.BuildConfig
 import com.github.mukiva.openweather.createMainWorkerFactory

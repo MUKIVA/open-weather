@@ -5,8 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.github.mukiva.feature.dashboard.domain.model.Location
 import com.github.mukiva.feature.dashboard.domain.usecase.GetAllLocationsUseCase
 import com.github.mukiva.feature.dashboard.navigation.IDashboardRouter
-import com.github.mukiva.feature.dashboard.ui.widget.CurrentWeatherWidgetProvider
-import com.github.mukiva.weatherdata.ISettingsRepository
 import com.github.mukiva.weatherdata.utils.RequestResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job

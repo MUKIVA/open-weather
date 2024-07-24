@@ -41,20 +41,6 @@ internal class CurrentWeatherWidgetProvider : AppWidgetProvider() {
         ) : State()
     }
 
-    class Updater(
-        private val context: Context?
-    ) {
-        fun update() {
-            val applicationContext = context?.applicationContext ?: return
-            val componentName = ComponentName(applicationContext, CurrentWeatherWidgetProvider::class.java)
-            val widgetIds = AppWidgetManager.getInstance(applicationContext).getAppWidgetIds(componentName)
-            val updateIntent = Intent(applicationContext, CurrentWeatherWidgetProvider::class.java)
-                .setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE)
-                .putExtras(bundleOf(AppWidgetManager.EXTRA_APPWIDGET_IDS to widgetIds))
-            applicationContext.sendBroadcast(updateIntent)
-        }
-    }
-
     @Inject
     lateinit var getCurrentWeatherUseCase: GetCurrentWeatherUseCase
 
