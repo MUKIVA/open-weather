@@ -1,10 +1,10 @@
 <h1>Screen</h1>
 
-![](/images/1.jpg)
-![](/images/2.jpg)
-![](/images/3.jpg)
-![](/images/4.jpg)
-![](/images/5.jpg)
+<img height="800" src="/images/1.jpg" width="360"/>
+<img height="800" src="/images/2.jpg" width="360"/>
+<img height="800" src="/images/3.jpg" width="360"/>
+<img height="800" src="/images/4.jpg" width="360"/>
+<img height="800" src="/images/5.jpg" width="360"/>
 
 <h1>RU</h1>
 
