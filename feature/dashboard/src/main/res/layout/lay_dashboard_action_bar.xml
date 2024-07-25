@@ -11,11 +11,11 @@
     <com.google.android.material.appbar.CollapsingToolbarLayout
         android:id="@+id/collapsingAppbarLayout"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="?attr/collapsingToolbarLayoutLargeSize"
         android:paddingHorizontal="16dp"
         app:layout_scrollFlags="scroll|exitUntilCollapsed"
         app:expandedTitleTextAppearance="@style/TextAppearance.Material3.HeadlineLarge"
-        app:collapsedTitleTextAppearance="@style/TextAppearance.Material3.TitleLarge"
+        app:collapsedTitleTextAppearance="@style/TextAppearance.Material3.TitleLarge.Bold"
         app:expandedTitleTextColor="@android:color/transparent">
 
         <include

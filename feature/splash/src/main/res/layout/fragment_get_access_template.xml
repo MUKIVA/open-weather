@@ -39,6 +39,7 @@
             android:id="@+id/getPermissionButton"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:maxLines="1"
             android:text="@string/get_permission"/>
 
         <Space
@@ -49,6 +50,7 @@
             android:id="@+id/skipButton"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:maxLines="1"
             android:text="@string/skip_get_permission"/>
 
     </LinearLayout>
