@@ -63,6 +63,8 @@ internal class LocationRepository(
     }
 
     override suspend fun updateLocations(locationData: List<LocationData>): RequestResult<Unit> = wrapTry {
+        database.forecastDao
+            .cleanCache()
         database.locationDao
             .updateLocations(locationData.map { location -> location.toDbo() })
     }

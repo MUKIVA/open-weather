@@ -83,6 +83,8 @@ internal class LocationManagerAppbarComponent(
             when (item.itemId) {
                 R.id.remove -> {
                     onRemoveSelectedLocations()
+                    mEditOnBackPressedDispatcher.remove()
+                    onEnterNormalMode()
                     true
                 }
                 R.id.selectAll -> {

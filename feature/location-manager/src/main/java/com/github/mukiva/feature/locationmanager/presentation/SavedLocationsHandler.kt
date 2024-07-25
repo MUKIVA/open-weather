@@ -65,14 +65,14 @@ internal class SavedLocationsHandler @Inject constructor(
         val state = mSavedLocationsState.value as? ISavedLocationsState.Content
             ?: return
         val newData = state.data.filter { editableLocation -> !editableLocation.isSelected }
-        mHandlerScope.launch { updateStoredLocationsUseCase(newData) }
+        mHandlerScope.launch(Dispatchers.IO) { updateStoredLocationsUseCase(newData) }
         mSavedLocationsState.update { ISavedLocationsState.Content(newData) }
     }
     override fun moveLocation(from: Int, to: Int) {
         val state = mSavedLocationsState.value as? ISavedLocationsState.Content
             ?: return
         val newData = state.data.swapAll(from, to)
-        mHandlerScope.launch { updateStoredLocationsUseCase(newData) }
+        mHandlerScope.launch(Dispatchers.IO) { updateStoredLocationsUseCase(newData) }
         mSavedLocationsState.update { state.copy(data = newData) }
     }
     override fun selectAllEditable() {
