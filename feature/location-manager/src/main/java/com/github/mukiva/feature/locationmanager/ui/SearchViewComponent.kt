@@ -29,7 +29,10 @@ internal class SearchViewComponent(
 
     private val mSearchViewListAdapter by lazy {
         LocationManagerSearchAdapter(
-            onAddCallback = onAddLocation
+            onAddCallback = { location ->
+                onAddLocation(location)
+                binding.searchView.hide()
+            }
         )
     }
 
