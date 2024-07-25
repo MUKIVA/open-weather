@@ -13,8 +13,8 @@ android {
 
     defaultConfig {
         applicationId = "com.github.mukiva.openweather"
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.0-RC02"
 
         resourceConfigurations += setOf("ru", "en")
 
