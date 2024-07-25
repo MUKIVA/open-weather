@@ -9,8 +9,11 @@ import com.github.mukiva.weatherdata.utils.map
 import com.github.mukiva.weatherdata.utils.toDbo
 import com.github.mukiva.weatherdata.utils.toLocation
 import com.github.mukiva.weatherdatabase.WeatherDatabase
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import java.util.Locale
@@ -35,38 +38,39 @@ internal class LocationRepository(
         }
 
         val remoteRequest = flow { this.emit(gateway.search(q, languageCode)) }
+            .flowOn(Dispatchers.IO)
             .map { result -> result.asRequestResult() }
             .map { requestResult ->
                 requestResult.map { locations ->
                     locations.map { it.toLocation() }
                 }
             }
-        val start = flow<RequestResult<List<LocationData>>> { emit(RequestResult.InProgress(null)) }
+        val start = flowOf<RequestResult<List<LocationData>>>(RequestResult.InProgress(null))
         return merge(start, remoteRequest)
     }
 
     override fun searchRemote(lon: Double, lat: Double, lang: Lang): Flow<RequestResult<List<LocationData>>> {
         return searchRemote(q = "$lat,$lon", lang)
+            .flowOn(Dispatchers.IO)
     }
 
     override fun getAllLocal(): Flow<RequestResult<List<LocationData>>> {
         val localRequest = database.locationDao.getAll()
+            .flowOn(Dispatchers.IO)
             .map { locationsDbo -> locationsDbo.map { it.toLocation() } }
             .map { locations -> RequestResult.Success(locations) }
-        val start = flow<RequestResult<List<LocationData>>> { emit(RequestResult.InProgress(null)) }
+        val start = flowOf<RequestResult<List<LocationData>>>(RequestResult.InProgress(null))
+
         return merge(start, localRequest)
     }
 
     override suspend fun addLocalLocation(locationData: LocationData) = wrapTry<Unit> {
-        database.locationDao
-            .insert(locationData.toDbo())
+        database.locationDao.insert(locationData.toDbo())
     }
 
     override suspend fun updateLocations(locationData: List<LocationData>): RequestResult<Unit> = wrapTry {
-        database.forecastDao
-            .cleanCache()
-        database.locationDao
-            .updateLocations(locationData.map { location -> location.toDbo() })
+        database.forecastDao.cleanCache()
+        database.locationDao.updateLocations(locationData.map { location -> location.toDbo() })
     }
 
     private suspend fun <T : Any> wrapTry(block: suspend () -> T): RequestResult<T> {
