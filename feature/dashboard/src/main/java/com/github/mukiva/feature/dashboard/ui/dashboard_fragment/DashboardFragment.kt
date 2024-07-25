@@ -1,13 +1,11 @@
 package com.github.mukiva.feature.dashboard.ui.dashboard_fragment
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.github.mukiva.core.ui.component.component
-import com.github.mukiva.core.ui.uiLazy
 import com.github.mukiva.core.ui.viewBindings
 import com.github.mukiva.feature.dashboard.R
 import com.github.mukiva.feature.dashboard.databinding.FragmentDashboardBinding
@@ -65,12 +63,7 @@ internal class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
     }
 
     private fun initTabLayout() = with(mBinding) {
-
-        TabLayoutMediator(layActionBar.tabs, viewPager, true, true) { tab, index ->
-//            val inflater = LayoutInflater.from(requireContext())
-//            val view = ItemDayTabBinding.inflate(inflater, tabLayout, false)
-//            tab.customView = view.root
-        }.attach()
-
+        TabLayoutMediator(layActionBar.tabs, viewPager, true, true) { _, _ -> }
+            .attach()
     }
 }
