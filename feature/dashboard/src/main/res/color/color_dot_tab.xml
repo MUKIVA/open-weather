@@ -4,6 +4,6 @@
         android:color="?attr/colorPrimary"
         android:state_selected="true" />
     <item
-        android:color="?attr/colorOnPrimary"
+        android:color="?attr/colorPrimaryContainer"
         android:state_selected="false" />
 </selector>
