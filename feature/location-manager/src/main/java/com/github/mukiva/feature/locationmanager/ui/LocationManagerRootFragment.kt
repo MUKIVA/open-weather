@@ -26,6 +26,7 @@ internal class LocationManagerRootFragment : Fragment(R.layout.fragment_location
             onNavigateUp = mViewModel::goBack,
             onSelectAll = mViewModel::selectAllEditable,
             onRemoveSelectedLocations = mViewModel::removeSelectedLocations,
+            onEnterEditMode = mViewModel::enterEditMode
         )
     }
 
@@ -60,8 +61,5 @@ internal class LocationManagerRootFragment : Fragment(R.layout.fragment_location
 
         mSearchViewComponent.init()
         mSearchViewComponent.subscribeOnViewModel(mViewModel, viewLifecycleOwner)
-
-        (requireActivity() as? AppCompatActivity)
-            ?.setSupportActionBar(mBinding.layLocationManagerAppBar.searchBar)
     }
 }

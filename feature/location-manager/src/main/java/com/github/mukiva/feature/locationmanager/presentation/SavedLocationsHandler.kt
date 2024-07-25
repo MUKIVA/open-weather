@@ -35,13 +35,15 @@ internal class SavedLocationsHandler @Inject constructor(
             .collect(mSavedLocationsState::emit)
     }
 
-    override fun enterEditMode(location: EditableLocation) {
+    override fun enterEditMode(location: EditableLocation?) {
         val state = mSavedLocationsState.value as? ISavedLocationsState.Content
             ?: return
         val newData = state.data.map { editableLocation ->
             editableLocation.copy(
                 isEditable = true,
-                isSelected = location.location.id == editableLocation.location.id
+                isSelected = location?.let {
+                    location.location.id == editableLocation.location.id
+                } ?: false
             )
         }
         mSavedLocationsState.update { ISavedLocationsState.Content(newData) }

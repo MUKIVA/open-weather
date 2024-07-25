@@ -12,6 +12,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
 import com.github.mukiva.core.ui.KEY_ARGS
 import com.github.mukiva.navigation.domain.IRouter
 import com.github.mukiva.navigation.ui.IOnCreateHandler
@@ -33,7 +34,11 @@ internal class DefaultRouterImpl @AssistedInject constructor(
             if (activity !is AppCompatActivity) return
 
             val currentNavController = f.findNavController()
-            AppBarConfiguration(currentNavController.graph)
+            val appBarConfiguration = AppBarConfiguration(currentNavController.graph)
+
+            if (activity.supportActionBar == null) return
+
+            NavigationUI.setupActionBarWithNavController(activity, currentNavController, appBarConfiguration)
         }
     }
 
