@@ -10,6 +10,7 @@ import com.github.mukiva.core.ui.viewBindings
 import com.github.mukiva.feature.dashboard.R
 import com.github.mukiva.feature.dashboard.databinding.FragmentDashboardBinding
 import com.github.mukiva.feature.dashboard.presentation.DashboardViewModel
+import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -57,5 +58,12 @@ internal class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
 
         mPagerComponent.init()
         mPagerComponent.subscribeOnViewModel(mViewModel, viewLifecycleOwner)
+
+        initTabLayout()
+    }
+
+    private fun initTabLayout() = with(mBinding) {
+        TabLayoutMediator(layActionBar.tabs, viewPager, true, true) { _, _ -> }
+            .attach()
     }
 }

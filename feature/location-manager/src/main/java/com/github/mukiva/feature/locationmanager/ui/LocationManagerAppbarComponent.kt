@@ -23,6 +23,7 @@ internal class LocationManagerAppbarComponent(
     private val binding: LayLocationManagerAppbarBinding,
     private val onBackPressedDispatcher: () -> OnBackPressedDispatcher,
     private val onEnterNormalMode: () -> Unit,
+    private val onEnterEditMode: () -> Unit,
     private val onNavigateUp: () -> Unit,
     private val onSelectAll: () -> Unit,
     private val onRemoveSelectedLocations: () -> Unit,
@@ -42,6 +43,7 @@ internal class LocationManagerAppbarComponent(
     }
 
     override fun init() {
+        initSearchBar()
         initListeners()
         initInsets()
     }
@@ -81,6 +83,8 @@ internal class LocationManagerAppbarComponent(
             when (item.itemId) {
                 R.id.remove -> {
                     onRemoveSelectedLocations()
+                    mEditOnBackPressedDispatcher.remove()
+                    onEnterNormalMode()
                     true
                 }
                 R.id.selectAll -> {
@@ -123,6 +127,19 @@ internal class LocationManagerAppbarComponent(
         toolbar.visible()
         onBackPressedDispatcher()
             .addCallback(mEditOnBackPressedDispatcher)
+    }
+
+    private fun initSearchBar() = with(binding) {
+        searchBar.inflateMenu(R.menu.view_locations_menu)
+        searchBar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.edit -> {
+                    onEnterEditMode()
+                    return@setOnMenuItemClickListener true
+                }
+            }
+            false
+        }
     }
 }
 

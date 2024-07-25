@@ -7,5 +7,6 @@
     <string name="search_clear_field_description">Clear field</string>
     <string name="remove_selected_locations_description">Remove locations</string>
     <string name="select_all_description">Select all</string>
+    <string name="edit_locations">Edit</string>
     <string name="saved_locatios_empty_view">No saved locations</string>
 </resources>

@@ -14,9 +14,12 @@ import com.github.mukiva.weatherdata.utils.toDomain
 import com.github.mukiva.weatherdatabase.WeatherDatabase
 import com.github.mukiva.weatherdatabase.models.ForecastDbo
 import com.github.mukiva.weatherdatabase.models.ForecastRequestCacheDbo
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
@@ -64,10 +67,12 @@ internal class ForecastRepository(
         val remote = flow { emit(gateway.forecast("id:$locationId", FORECAST_DAYS, languageCode)) }
             .map { result -> result.asRequestResult() }
             .onEach { saveForecastCache(locationId, it) }
-        val start = flow<RequestResult<ForecastWithCurrentAndLocationDto>> {
-            emit(RequestResult.InProgress(null))
-        }
+        val start = flowOf<RequestResult<ForecastWithCurrentAndLocationDto>>(
+            RequestResult.InProgress(null)
+        )
+
         return merge(start, remote)
+            .flowOn(Dispatchers.IO)
             .map { requestResult -> requestResult.map { dto -> dto.toDomain() } }
     }
 
@@ -76,12 +81,15 @@ internal class ForecastRepository(
     ): Flow<RequestResult<ForecastWithCurrentAndLocationData>> {
         val local = database.forecastDao
             .getCache(locationId)
+            .flowOn(Dispatchers.IO)
             .map(::cacheValidate)
 
-        val start = flow<RequestResult<ForecastWithCurrentAndLocationDbo>> {
-            emit(RequestResult.InProgress(null))
-        }
+        val start = flowOf<RequestResult<ForecastWithCurrentAndLocationDbo>>(
+            RequestResult.InProgress(null)
+        )
+
         return merge(start, local)
+            .flowOn(Dispatchers.IO)
             .map { requestResult ->
                 requestResult.map { cache ->
                     cache.toDomain()

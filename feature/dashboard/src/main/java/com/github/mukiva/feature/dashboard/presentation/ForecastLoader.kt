@@ -19,7 +19,7 @@ internal class ForecastLoader @Inject constructor(
     private val getCurrentUseCase: GetCurrentUseCase
 ) : IForecastLoader {
 
-    private val mLoaderScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
+    private val mLoaderScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
     private val mLoadingFlows = HashMap<Long, StateFlow<ICurrentState>>()
 
     override fun loadForecast(locationId: Long) {
@@ -44,7 +44,7 @@ internal class ForecastLoader @Inject constructor(
 
     private suspend fun createState(locationId: Long): StateFlow<ICurrentState> {
         return getCurrentUseCase.invoke(locationId)
-            .flowOn(Dispatchers.Default)
+            .flowOn(Dispatchers.Main)
             .map(::asState)
             .stateIn(
                 scope = mLoaderScope,

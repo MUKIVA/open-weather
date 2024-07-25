@@ -4,7 +4,9 @@ import com.github.mukiva.feature.dashboard.domain.model.Location
 import com.github.mukiva.weatherdata.ILocationRepository
 import com.github.mukiva.weatherdata.utils.RequestResult
 import com.github.mukiva.weatherdata.utils.map
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import com.github.mukiva.weatherdata.models.LocationData as DataLocation
@@ -14,6 +16,7 @@ internal class GetAllLocationsUseCase @Inject constructor(
 ) {
     operator fun invoke(): Flow<RequestResult<List<Location>>> {
         return locationRepository.getAllLocal()
+            .flowOn(Dispatchers.Default)
             .map { requestResult -> requestResult.map(::toLocation) }
     }
 

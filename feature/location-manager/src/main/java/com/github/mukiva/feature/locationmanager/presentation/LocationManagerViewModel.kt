@@ -24,8 +24,13 @@ internal class LocationManagerViewModel @Inject constructor(
         appBarHandler.enterNormalMode()
     }
 
-    override fun enterEditMode(location: EditableLocation) {
+    override fun enterEditMode(location: EditableLocation?) {
         appBarHandler.enterEditMode()
         savedLocationsHandler.enterEditMode(location)
+    }
+
+    override fun enterEditMode() {
+        appBarHandler.enterEditMode()
+        savedLocationsHandler.enterEditMode(null)
     }
 }

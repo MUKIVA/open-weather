@@ -2,7 +2,6 @@ package com.github.mukiva.feature.locationmanager.ui
 
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.github.mukiva.core.ui.component.component
@@ -26,6 +25,7 @@ internal class LocationManagerRootFragment : Fragment(R.layout.fragment_location
             onNavigateUp = mViewModel::goBack,
             onSelectAll = mViewModel::selectAllEditable,
             onRemoveSelectedLocations = mViewModel::removeSelectedLocations,
+            onEnterEditMode = mViewModel::enterEditMode
         )
     }
 
@@ -60,8 +60,5 @@ internal class LocationManagerRootFragment : Fragment(R.layout.fragment_location
 
         mSearchViewComponent.init()
         mSearchViewComponent.subscribeOnViewModel(mViewModel, viewLifecycleOwner)
-
-        (requireActivity() as? AppCompatActivity)
-            ?.setSupportActionBar(mBinding.layLocationManagerAppBar.searchBar)
     }
 }

@@ -7,5 +7,6 @@
     <string name="search_clear_field_description">Отчистить поле</string>
     <string name="remove_selected_locations_description">Удалить локации</string>
     <string name="select_all_description">Выбрать всё</string>
+    <string name="edit_locations">Редактировать</string>
     <string name="saved_locatios_empty_view">Нет сохраненных локаций</string>
 </resources>

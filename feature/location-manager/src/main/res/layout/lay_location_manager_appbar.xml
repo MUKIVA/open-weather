@@ -18,12 +18,12 @@
 
             <com.google.android.material.search.SearchBar
                 android:id="@+id/searchBar"
+                style="@style/Widget.Material3.SearchBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/def_h_padding"
                 android:layout_marginVertical="@dimen/def_v_padding"
                 android:hint="@string/search_hint"
-                app:elevation="@dimen/def_max_elevation"
                 app:navigationIcon="@drawable/ic_cancel"
                 app:defaultMarginsEnabled="false"
                 tools:alpha="0.5"/>
