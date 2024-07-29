@@ -28,22 +28,20 @@ internal class ForecastLoader @Inject constructor(
         }
     }
 
-    override suspend fun provideForecastState(locationId: Long): Flow<ICurrentState> {
+    override fun provideForecastState(locationId: Long): Flow<ICurrentState> {
         return mLoadingFlows[locationId] ?: createState(locationId).apply {
             mLoadingFlows[locationId] = this
         }
     }
 
     override fun cleanLoadedData() {
-        mLoaderScope.launch {
-            for (key in mLoadingFlows.keys) {
-                mLoadingFlows[key] = createState(key)
-            }
+        for (key in mLoadingFlows.keys) {
+            mLoadingFlows[key] = createState(key)
         }
     }
 
-    private suspend fun createState(locationId: Long): StateFlow<ICurrentState> {
-        return getCurrentUseCase.invoke(locationId)
+    private fun createState(locationId: Long): StateFlow<ICurrentState> {
+        return getCurrentUseCase(locationId)
             .flowOn(Dispatchers.Main)
             .map(::asState)
             .stateIn(
