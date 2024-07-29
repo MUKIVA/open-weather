@@ -4,6 +4,6 @@ import kotlinx.coroutines.flow.Flow
 
 internal interface IForecastLoader {
     fun loadForecast(locationId: Long)
-    suspend fun provideForecastState(locationId: Long): Flow<ICurrentState>
+    fun provideForecastState(locationId: Long): Flow<ICurrentState>
     fun cleanLoadedData()
 }

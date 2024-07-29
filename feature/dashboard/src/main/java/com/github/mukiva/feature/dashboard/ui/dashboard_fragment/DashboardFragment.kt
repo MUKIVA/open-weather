@@ -26,11 +26,9 @@ internal class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
             onSettingsClick = mViewModel::goSettings,
             onManageLocationsClick = mViewModel::goLocationManager,
             onReloadClick = {
-                lifecycleScope.launch {
-                    mViewModel.requestLoad()
-                    mBinding.viewPager.currentItem = 0
-                    mViewModel.selectPage(0)
-                }
+                mViewModel.requestLoad()
+                mBinding.viewPager.currentItem = 0
+                mViewModel.selectPage(0)
             }
         )
     }

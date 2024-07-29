@@ -21,7 +21,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import javax.inject.Inject
 
 class WeatherNotificationWorker internal constructor(
     applicationContext: Context,
@@ -85,7 +84,7 @@ class WeatherNotificationWorker internal constructor(
 
         val notification = NotificationCompat
             .Builder(applicationContext, WeatherNotificationChannelHolder.CURRENT_WEATHER_CHANNEL_ID)
-            .setSmallIcon(com.github.mukiva.core.ui.R.drawable.ic_launcher_foreground)
+            .setSmallIcon(com.github.mukiva.core.ui.R.drawable.ic_launcher_foreground_small)
             .setContentTitle(applicationContext.getString(R.string.notification_title))
             .setSilent(true)
             .setPriority(NotificationCompat.PRIORITY_LOW)
@@ -98,23 +97,6 @@ class WeatherNotificationWorker internal constructor(
     companion object {
         private const val NOTIFICATION_ID = 0
     }
-}
-
-class WeatherNotificationWorkerFactory @Inject constructor(
-    private val settingsRepository: ISettingsRepository,
-    private val locationRepository: ILocationRepository,
-    private val forecastRepository: IForecastRepository
-) {
-    fun create(
-        applicationContext: Context,
-        workerParameters: WorkerParameters,
-    ) = WeatherNotificationWorker(
-        applicationContext,
-        workerParameters,
-        settingsRepository,
-        locationRepository,
-        forecastRepository
-    )
 }
 
 fun createWeatherNotificationLauncher(

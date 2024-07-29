@@ -20,10 +20,12 @@ import com.github.mukiva.weatherdata.models.ForecastDayData
 import com.github.mukiva.weatherdata.utils.RequestResult
 import com.github.mukiva.weatherdata.utils.map
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.format.Padding
 import kotlinx.datetime.format.char
@@ -37,21 +39,29 @@ internal class GetCurrentUseCase @Inject constructor(
     private val settingsRepository: ISettingsRepository
 ) {
 
-    suspend operator fun invoke(locationId: Long): Flow<RequestResult<Forecast>> {
+    @OptIn(ExperimentalCoroutinesApi::class)
+    operator fun invoke(locationId: Long): Flow<RequestResult<Forecast>> {
         val lang = settingsRepository.getLocalization()
             .flowOn(Dispatchers.Default)
-            .first()
         val unitsType = settingsRepository.getUnitsType()
             .flowOn(Dispatchers.Default)
-        val request = forecastRepository.getForecast(
-            locationId = locationId,
-            lang = lang
-        ).flowOn(Dispatchers.Default)
-        return request.combine(unitsType) { requestResult, units ->
-            requestResult.map { dataForecast ->
-                asDomainForecast(dataForecast, units)
-            }
+
+        return combine(lang, unitsType) { language, units ->
+            language to units
         }
+            .flatMapLatest { (language, units) ->
+                forecastRepository.getForecast(
+                    locationId = locationId,
+                    lang = language
+                )
+                    .flowOn(Dispatchers.Default)
+                    .map { requestResult ->
+                        requestResult.map { dataForecast ->
+                            asDomainForecast(dataForecast, units)
+                        }
+                    }
+            }
+
     }
 
     private fun asDomainForecast(

@@ -4,10 +4,6 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 
-interface INotificationChannelHolder {
-    fun initChannels()
-}
-
 class WeatherNotificationChannelHolder internal constructor(
     private val applicationContext: Context
 ): INotificationChannelHolder {
