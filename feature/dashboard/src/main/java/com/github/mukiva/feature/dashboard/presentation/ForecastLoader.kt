@@ -19,22 +19,27 @@ internal class ForecastLoader @Inject constructor(
     private val getCurrentUseCase: GetCurrentUseCase
 ) : IForecastLoader {
 
-    private val mLoaderScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+    private val mLoaderScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
     private val mLoadingFlows = HashMap<Long, StateFlow<ICurrentState>>()
+    private val mMutex: Any = object {}
 
     override fun loadForecast(locationId: Long) {
         mLoaderScope.launch {
-            mLoadingFlows[locationId] = createState(locationId)
+            synchronized(mMutex) {
+                mLoadingFlows[locationId] = createState(locationId)
+            }
         }
     }
 
     override fun provideForecastState(locationId: Long): Flow<ICurrentState> {
-        return mLoadingFlows[locationId] ?: createState(locationId).apply {
-            mLoadingFlows[locationId] = this
+        return synchronized(mMutex) {
+            mLoadingFlows[locationId] ?: createState(locationId).apply {
+                mLoadingFlows[locationId] = this
+            }
         }
     }
 
-    override fun cleanLoadedData() {
+    override fun cleanLoadedData() = synchronized(mMutex) {
         for (key in mLoadingFlows.keys) {
             mLoadingFlows[key] = createState(key)
         }
@@ -42,7 +47,7 @@ internal class ForecastLoader @Inject constructor(
 
     private fun createState(locationId: Long): StateFlow<ICurrentState> {
         return getCurrentUseCase(locationId)
-            .flowOn(Dispatchers.Main)
+            .flowOn(Dispatchers.IO)
             .map(::asState)
             .stateIn(
                 scope = mLoaderScope,
