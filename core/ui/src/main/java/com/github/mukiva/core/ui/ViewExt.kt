@@ -53,12 +53,7 @@ fun View.getDistanceString(distance: Distance): String = with(distance) {
 }
 
 fun View.getPressureString(pressure: Pressure): String = with(pressure) {
-    return when (unitsType) {
-        UnitsType.METRIC ->
-            context.getString(R.string.template_mb, value.roundToInt())
-        UnitsType.IMPERIAL ->
-            context.getString(R.string.template_mmhg, value.roundToInt())
-    }
+    return context.getString(R.string.template_mmhg, value.roundToInt())
 }
 
 fun View.getPrecipitationString(precipitation: Precipitation): String = with(precipitation) {
