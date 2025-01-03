@@ -71,12 +71,12 @@ class AndroidDefaultPlugin : Plugin<Project> {
         }
 
         compileOptions {
-            sourceCompatibility = JavaVersion.VERSION_17
-            targetCompatibility = JavaVersion.VERSION_17
+            sourceCompatibility = JavaVersion.VERSION_21
+            targetCompatibility = JavaVersion.VERSION_21
         }
 
         (this as ExtensionAware).configure<KotlinJvmOptions> {
-            jvmTarget = JavaVersion.VERSION_17.toString()
+            jvmTarget = JavaVersion.VERSION_21.toString()
         }
 
         sourceSets.forEach { source ->
