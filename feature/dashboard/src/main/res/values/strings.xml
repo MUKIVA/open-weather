@@ -69,4 +69,7 @@
 
     <string name="yes">Yes</string>
     <string name="no">No</string>
+
+    <string name="no_data">No data</string>
+
 </resources>

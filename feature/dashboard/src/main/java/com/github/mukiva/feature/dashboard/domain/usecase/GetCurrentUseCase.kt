@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.datetime.LocalTime
+import kotlinx.datetime.format.DateTimeFormat
 import kotlinx.datetime.format.Padding
 import kotlinx.datetime.format.char
 import javax.inject.Inject
@@ -118,10 +119,10 @@ internal class GetCurrentUseCase @Inject constructor(
     private fun asDomainAstro(
         dayAstro: DataAstro
     ) = Astro(
-        sunrise = LocalTime.parse(dayAstro.sunrise, dateTimeFormatter),
-        sunset = LocalTime.parse(dayAstro.sunset, dateTimeFormatter),
-        moonrise = LocalTime.parse(dayAstro.moonrise, dateTimeFormatter),
-        moonset = LocalTime.parse(dayAstro.moonset, dateTimeFormatter),
+        sunrise = LocalTime.parseOrNull(dayAstro.sunrise, dateTimeFormatter),
+        sunset = LocalTime.parseOrNull(dayAstro.sunset, dateTimeFormatter),
+        moonrise = LocalTime.parseOrNull(dayAstro.moonrise, dateTimeFormatter),
+        moonset = LocalTime.parseOrNull(dayAstro.moonset, dateTimeFormatter),
     )
 
     private fun asDomainDayForecast(
@@ -145,4 +146,14 @@ internal class GetCurrentUseCase @Inject constructor(
         country = dataLocation.country,
         priority = dataLocation.priority
     )
+
+    private fun LocalTime.Companion.parseOrNull(
+        input: CharSequence,
+        format: DateTimeFormat<LocalTime>
+    ) = try {
+        parse(input, format)
+    } catch (_: Exception) {
+        null
+    }
+
 }
