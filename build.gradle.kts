@@ -60,8 +60,8 @@ tasks.withType<Detekt>().configureEach {
 }
 
 tasks.withType<Detekt>().configureEach {
-    jvmTarget = JavaVersion.VERSION_17.toString()
+    jvmTarget = JavaVersion.VERSION_21.toString()
 }
 tasks.withType<DetektCreateBaselineTask>().configureEach {
-    jvmTarget = JavaVersion.VERSION_17.toString()
+    jvmTarget = JavaVersion.VERSION_21.toString()
 }

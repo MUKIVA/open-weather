@@ -4,6 +4,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import com.github.mukiva.core.ui.component.Component
+import com.github.mukiva.feature.dashboard.R
 import com.github.mukiva.feature.dashboard.databinding.LayAstroBinding
 import com.github.mukiva.feature.dashboard.domain.model.Astro
 import com.github.mukiva.feature.dashboard.presentation.DashboardViewModel
@@ -43,9 +44,14 @@ internal class AstroComponent(
     }
 
     private fun onUpdateState(state: Astro) = with(binding) {
-        fieldSunrice.text = mTimeFormatter.format(state.sunrise)
-        fieldSunset.text = mTimeFormatter.format(state.sunset)
-        fieldMoonrice.text = mTimeFormatter.format(state.moonrise)
-        fieldMoonset.text = mTimeFormatter.format(state.moonset)
+        updateField(state.sunrise, fieldSunrice::text::set)
+        updateField(state.sunset, fieldSunset::text::set)
+        updateField(state.moonrise, fieldMoonrice::text::set)
+        updateField(state.moonset, fieldMoonset::text::set)
+    }
+
+    private fun updateField(value: LocalTime?, fieldSetter: (String) -> Unit) {
+        fieldSetter(value?.let { mTimeFormatter.format(it) }
+            ?: binding.root.context.getString(R.string.no_data))
     }
 }
