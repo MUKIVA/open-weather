@@ -4,8 +4,6 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
-    alias(libs.plugins.composeMultiplatform)
-    alias(libs.plugins.composeCompiler)
 }
 
 kotlin {
@@ -21,22 +19,27 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "ComposeApp"
+            baseName = "OnboardingApi"
             isStatic = true
         }
     }
 
     sourceSets {
         commonMain.dependencies {
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material3)
+
+        }
+
+        androidMain.dependencies {
+
+        }
+
+        iosMain.dependencies {
+
         }
     }
-
 }
 
 android {
-    namespace = "com.github.mukiva.openweather.core.theme"
+    namespace = "com.github.mukiva.openweather.feature.onboarding.api"
     compileSdk =libs.versions.android.compileSdk.get().toInt()
 }

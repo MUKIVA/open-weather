@@ -31,3 +31,15 @@ dependencyResolutionManagement {
 include(":composeApp")
 
 include(":core:theme")
+
+include(":feature:main:api")
+include(":feature:main:impl")
+
+include(":feature:onboarding:api")
+include(":feature:onboarding:impl")
+
+include(":feature:settings:api")
+include(":feature:settings:impl")
+
+include(":feature:manager:api")
+include(":feature:manager:impl")
