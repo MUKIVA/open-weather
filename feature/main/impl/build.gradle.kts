@@ -26,7 +26,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-
+            implementation(projects.feature.main.api)
         }
 
         androidMain.dependencies {

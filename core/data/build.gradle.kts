@@ -1,9 +1,11 @@
+import org.gradle.kotlin.dsl.invoke
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.koltinxSerialization)
 }
 
 kotlin {
@@ -19,27 +21,20 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "OnboardingImpl"
+            baseName = "CoreData"
             isStatic = true
         }
     }
 
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.feature.onboarding.api)
-        }
-
-        androidMain.dependencies {
-
-        }
-
-        iosMain.dependencies {
-
+            implementation(libs.kotlinx.serialization.json)
         }
     }
+
 }
 
 android {
-    namespace = "com.github.mukiva.openweather.feature.onboarding.impl"
+    namespace = "com.github.mukiva.openweather.core.data"
     compileSdk =libs.versions.android.compileSdk.get().toInt()
 }

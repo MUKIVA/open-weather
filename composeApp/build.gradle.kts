@@ -53,6 +53,19 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
 
             implementation(projects.core.theme)
+            implementation(projects.core.data)
+
+            implementation(projects.feature.main.api)
+            implementation(projects.feature.main.impl)
+
+            implementation(projects.feature.manager.api)
+            implementation(projects.feature.manager.impl)
+
+            implementation(projects.feature.onboarding.api)
+            implementation(projects.feature.onboarding.impl)
+
+            implementation(projects.feature.settings.api)
+            implementation(projects.feature.settings.impl)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

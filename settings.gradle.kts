@@ -31,6 +31,7 @@ dependencyResolutionManagement {
 include(":composeApp")
 
 include(":core:theme")
+include(":core:data")
 
 include(":feature:main:api")
 include(":feature:main:impl")
