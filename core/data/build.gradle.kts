@@ -1,16 +1,19 @@
-import org.gradle.kotlin.dsl.invoke
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import com.android.build.api.dsl.androidLibrary
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.androidKotlinMultiplatformLibrary)
     alias(libs.plugins.koltinxSerialization)
 }
 
 kotlin {
-    androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    androidLibrary {
+        namespace = "com.github.mukiva.openweather.core.data"
+        compileSdk = libs.versions.android.compileSdk.get().toInt()
+        minSdk = libs.versions.android.minSdk.get().toInt()
+
+        withJava()
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_21)
         }
@@ -32,9 +35,4 @@ kotlin {
         }
     }
 
-}
-
-android {
-    namespace = "com.github.mukiva.openweather.core.data"
-    compileSdk =libs.versions.android.compileSdk.get().toInt()
 }

@@ -1,5 +1,8 @@
 package com.github.mukiva.openweather.core.data.domain.params
 
+import kotlin.jvm.JvmInline
+
+@JvmInline
 value class ParamDays(val count: Int) {
 
     init { assertInAvailableRange(count) }

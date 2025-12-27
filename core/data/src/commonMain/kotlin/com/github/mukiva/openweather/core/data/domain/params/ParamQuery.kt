@@ -1,7 +1,6 @@
 package com.github.mukiva.openweather.core.data.domain.params
 
-import com.github.mukiva.openweather.core.data.domain.common.IPType
-
+import kotlin.jvm.JvmInline
 
 sealed interface ParamQuery {
 
@@ -16,8 +15,10 @@ sealed interface ParamQuery {
 
     }
 
+    @JvmInline
     value class City(val name: String) : ParamQuery
 
+    @JvmInline
     value class SearchId(val id: Int) : ParamQuery
 
 }

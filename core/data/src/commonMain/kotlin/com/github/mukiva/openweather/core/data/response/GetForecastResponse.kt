@@ -1,6 +1,5 @@
 package com.github.mukiva.openweather.core.data.response
 
-import com.github.mukiva.openweather.core.data.dto.AlertDto
 import com.github.mukiva.openweather.core.data.dto.AlertsDto
 import com.github.mukiva.openweather.core.data.dto.CurrentWeatherDto
 import com.github.mukiva.openweather.core.data.dto.ForecastDto
